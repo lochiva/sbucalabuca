@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; media-src *; img-src * 'self' data: gap: ;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.css"  />
+        <link rel="stylesheet" type="text/css" href="iconfont/material-icons.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/materialize.min.css" medial="all" />
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <title>Hello World</title>
+    </head>
+    <body>
+      <div data-role="page" id="home">
+          <div data-role="header">
+            <div data-role="navbar">
+              <ul>
+                <li><a href="#home" data-icon="home" class="ui-btn-active ui-state-persist" data-transition="slide">Home</a></li>
+                <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
+                <li><a href="#camera" data-icon="camera" data-transition="slide">Photo</a></li>
+              </ul>
+            </div>
+          </div>
+          <div data-role="main" class="ui-content">
+            <div class="center-div">
+              <img src="img/itoa.png" width="250" height="84" />
+                <h5>Itoa App</h5>
+                <div id="deviceready" class="blink">
+                    <p class="event listening">Connecting to Device</p>
+                    <p class="event received">Device is Ready</p>
+                </div>
+            </div>
+          </div>
+      </div>
+      <div data-role="page" id="info">
+          <div data-role="header">
+            <div data-role="navbar">
+              <ul>
+                <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
+                <li><a href="#info" data-icon="info" class="ui-btn-active ui-state-persist" data-transition="slide">Info</a></li>
+                <li><a href="#camera" data-icon="camera" data-transition="slide">Photo</a></li>
+              </ul>
+            </div>
+          </div>
+          <div data-role="main" class="ui-content">
+            <div class="center-div">
+              <h4>Info:</h4>
+              <h6>ITOA srl con socio unico<br />
+              Via Massari 189 - 10148 Torino<br />
+              P.IVA/C.F. 11489070018<br />
+              www.itoa.it info@itoa.it</h6><br/>
+              <button id = "getPosition">Posizione corrente</button>
+            </div>
+          </div>
+      </div>
+      <div data-role="page" id="camera">
+          <div data-role="header" id="headerCamera">
+            <div data-role="navbar">
+              <ul>
+                <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
+                <li><a href="#info" data-icon="info" data-transition="slide" data-direction="reverse">Info</a></li>
+                <li><a href="#camera" data-icon="camera" class="ui-btn-active ui-state-persist"  data-transition="slide">Photo</a></li>
+              </ul>
+            </div>
+          </div>
+          <div data-role="main" class="ui-content">
+            <div class="pictures">
+              <p><img id="originalPicture" src="" width="400"/></p>
+            </div>
+          </div>
+          <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer" id="footerCamera">
+            <a id="startCameraButton" class="waves-effect waves-light btn ">
+              <i class="material-icons icon-size-custom">camera_alt</i></a>
+            <!--<button id="stopCameraButton" class="ui-btn ui-corner-all ui-shadow ui-icon-minus ui-btn-icon-left">Stop Camera</button>-->
+            <a id="takePictureButton" class="waves-effect waves-light btn " >
+              <i class="material-icons icon-size-custom">camera</i></a>
+            <a id="switchCameraButton" class="waves-effect waves-light btn " >
+              <i class="material-icons icon-size-custom">switch_camera</i></a>
+            <a id="openModal" class="waves-effect waves-light btn " >
+              <i class="material-icons icon-size-custom">send</i></a>
+          </div>
+          <div id="modalInvio" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <div class="input-field col s12">
+                  <textarea id="textarea1" class="materialize-textarea"></textarea>
+                  <label for="textarea1">Inserisci una nota</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <a id="sendData" href="#" class=" modal-action modal-close waves-effect waves-green btn-flat">Invia Immagine</a>
+            </div>
+          </div>
+      </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script type="text/javascript" src="js/materialize.min.js"></script>
+        <script type="text/javascript" src="js/firebase.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
