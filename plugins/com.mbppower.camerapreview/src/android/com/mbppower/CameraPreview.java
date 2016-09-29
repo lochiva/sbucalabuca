@@ -8,6 +8,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import java.util.Arrays;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -30,6 +33,14 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
 	private CameraActivity fragment;
 	private CallbackContext takePictureCallbackContext;
 	private int containerViewId = 1;
+	private final String [] permissions = {
+  			Manifest.permission.CAMERA,
+		  Manifest.permission.READ_EXTERNAL_STORAGE,
+		  Manifest.permission.WRITE_EXTERNAL_STORAGE
+		};
+	private final int permissionsReqId = 0;
+	private CallbackContext execCallback;
+	private JSONArray execArgs;`
 	public CameraPreview(){
 		super();
 		Log.d(TAG, "Constructing");
@@ -41,9 +52,16 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
     	if (setOnPictureTakenHandlerAction.equals(action)){
     		return setOnPictureTakenHandler(args, callbackContext);
     	}
-        else if (startCameraAction.equals(action)){
-    		return startCamera(args, callbackContext);
-    	}
+			else if (startCameraAction.equals(action)) {
+				if (cordova.hasPermission(permissions[0])) {
+					return startCamera(args, callbackContext);
+				}
+				else {
+					execCallback = callbackContext;
+					execArgs = args;
+					cordova.requestPermissions(this, permissionsReqId, permissions);
+				}
+			}
 	    else if (takePictureAction.equals(action)){
 		    return takePicture(args, callbackContext);
 	    }
@@ -65,6 +83,21 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
 
     	return false;
     }
+
+	@Override
+		public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+		  for(int r:grantResults)
+		  {
+		    if(r == PackageManager.PERMISSION_DENIED)
+		    {
+		      execCallback.sendPluginResult(new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION));
+		      return;
+		    }
+		  }
+		  if (requestCode == permissionsReqId) {
+		    startCamera(execArgs, execCallback);
+		  }
+		}
 
 	private boolean startCamera(final JSONArray args, CallbackContext callbackContext) {
         if(fragment != null){
