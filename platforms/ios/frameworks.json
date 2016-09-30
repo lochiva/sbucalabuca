@@ -1,9 +1,5 @@
 {
     "ImageIO.framework": 2,
     "CoreLocation.framework": 3,
-    "CoreImage.framework": 2,
-    "OpenGLES.framework": 2,
-    "GLKit.framework": 2,
-    "CoreVideo.framework": 2,
     "AVFoundation.framework": 2
 }

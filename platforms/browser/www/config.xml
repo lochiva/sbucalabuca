@@ -1,17 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.lochiva.itoa" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.lochiva.sbuca" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <feature name="Device">
         <param name="browser-package" value="Device" />
     </feature>
     <feature name="Camera">
         <param name="browser-package" value="Camera" />
     </feature>
-    <name>Itoa</name>
+    <name>Sbuca</name>
     <description>
-        Una semplice applicazione estremamente professionale
+        A sample mobile application that sends geolocalizate pictures.
     </description>
-    <author email="info@itoa.it" href="http://www.lochiva.com">
-        Itoa Team
+    <author email="info@lochiva.com" href="http://www.lochiva.com">
+        Lochiva Team
     </author>
     <content src="index.html" />
     <access origin="*" />

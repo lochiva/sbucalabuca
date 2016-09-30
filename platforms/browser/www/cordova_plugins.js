@@ -45,22 +45,6 @@ module.exports = [
         "runs": true
     },
     {
-        "file": "plugins/com.mbppower.camerapreview/www/CameraPreview.js",
-        "id": "com.mbppower.camerapreview.CameraPreview",
-        "pluginId": "com.mbppower.camerapreview",
-        "clobbers": [
-            "cordova.plugins.camerapreview"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.js",
-        "id": "cordova-plugin-screen-orientation.screenorientation",
-        "pluginId": "cordova-plugin-screen-orientation",
-        "clobbers": [
-            "cordova.plugins.screenorientation"
-        ]
-    },
-    {
         "file": "plugins/cordova-plugin-file/www/DirectoryEntry.js",
         "id": "cordova-plugin-file.DirectoryEntry",
         "pluginId": "cordova-plugin-file",
@@ -240,43 +224,25 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
-        "id": "cordova-plugin-file-transfer.FileTransferError",
-        "pluginId": "cordova-plugin-file-transfer",
+        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.js",
+        "id": "cordova-plugin-screen-orientation.screenorientation",
+        "pluginId": "cordova-plugin-screen-orientation",
         "clobbers": [
-            "window.FileTransferError"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
-        "id": "cordova-plugin-file-transfer.FileTransfer",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransfer"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-file-transfer/www/browser/FileTransfer.js",
-        "id": "cordova-plugin-file-transfer.BrowserFileTransfer",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransfer"
+            "cordova.plugins.screenorientation"
         ]
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-console": "1.0.5-dev",
-    "cordova-plugin-device": "1.1.4-dev",
     "cordova-plugin-whitelist": "1.3.0",
+    "cordova-plugin-device": "1.1.3",
+    "cordova-plugin-console": "1.0.4",
     "cordova-plugin-compat": "1.0.0",
     "cordova-plugin-camera": "2.3.0",
-    "com.mbppower.camerapreview": "0.0.8",
-    "cordova-plugin-screen-orientation": "1.4.2",
-    "cordova-plugin-geolocation": "2.3.0",
     "cordova-plugin-file": "4.3.0",
-    "cordova-plugin-file-transfer": "1.6.0"
+    "cordova-plugin-geolocation": "2.3.0",
+    "cordova-plugin-screen-orientation": "1.4.2"
 }
 // BOTTOM OF METADATA
 });

@@ -21,71 +21,60 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
-    startCamera: function(){
-      document.getElementById('originalPicture').src = "";
-      app.photoCaptured = false;
-      $('#originalPicture').attr("width",$(document).width()-50);
-      var physicalScreenWidth = $(document).width();
-      var physicalScreenHeight = $(document).height();
-      width = physicalScreenWidth - 80;
-      if(screen.orientation.angle === 0 || screen.orientation.angle == 180){
-        heigth = physicalScreenHeight - $('#footerCamera').height() - $('#headerCamera').height() -30;
+    /**
+    * TAKE PICTURE FUNCTION
+    */
+    takePicture: function() {
+        navigator.camera.getPicture(onSuccess, onFail, { quality: 100,
+            destinationType: Camera.DestinationType.FILE_URI });
 
-        //$('#originalPicture').attr("height","");
-      }else{
-        heigth = physicalScreenHeight - $('#footerCamera').height() - $('#headerCamera').height() -30;
-        //$('#originalPicture').attr("width",$(document).width()-50);
-        //$('#originalPicture').attr("height",height);
-      }
-      cordova.plugins.camerapreview.startCamera({x: 40, y: 70, width: width, height:heigth, camera: "back", tapPhoto: true, previewDrag: true, toBack: false});
-      //cordova.plugins.camerapreview.switchCamera();
-      //cordova.plugins.camerapreview.switchCamera();
+        function onSuccess(imageURI) {
+            document.getElementById('originalPicture').src = imageURI;
+            $('#originalPicture').attr("width",$(document).width()-28);
+            return imageURI;
+        }
+
+        function onFail(message) {
+            Materialize.toast('Errore scatto foto: '+message, 3000 );
+            return false;
+        }
+
     },
+    /**
+    * GET POSITION FUNCTION FOR GEOLOCALIZATION
+    */
+    getPosition: function(dialog){
+      startSpinner();
 
-    stopCamera: function(){
-      cordova.plugins.camerapreview.stopCamera();
-    },
+       var options = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 3600000
+       };
 
-    takePicture: function(){
-      cordova.plugins.camerapreview.takePicture();
-    },
+       var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 
-    switchCamera: function(){
-      cordova.plugins.camerapreview.switchCamera();
-    },
+       function onSuccess(position) {
+         stopSpinner();
+         if(dialog !== false){
+            alert('Latitude: '          + position.coords.latitude          + '\n' +
+               'Longitude: '         + position.coords.longitude         + '\n' +
+               'Altitude: '          + position.coords.altitude          + '\n' +
+               'Accuracy: '          + position.coords.accuracy          + '\n' +
+               'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+               'Heading: '           + position.coords.heading           + '\n' +
+               'Speed: '             + position.coords.speed             + '\n' +
+               'Timestamp: '         + position.timestamp                + '\n');
+             }else{
+               return [position.coords.latitude,position.coords.longitude];
+             }
+       }
 
-    show: function(){
-      cordova.plugins.camerapreview.show();
-    },
-
-    hide: function(){
-      cordova.plugins.camerapreview.hide();
-    },
-    initCamera: function(){
-
-      //document.getElementById('originalPicture').src = "";
-      this.startCamera();
-
-      //console.log(physicalScreenWidth+" --- "+physicalScreenHeight);
-        document.getElementById('startCameraButton').addEventListener('click', this.startCamera, false);
-        //document.getElementById('stopCameraButton').addEventListener('click', this.stopCamera, false);
-        document.getElementById('takePictureButton').addEventListener('click', this.takePicture, false);
-        document.getElementById('switchCameraButton').addEventListener('click', this.switchCamera, false);
-        //document.getElementById('showButton').addEventListener('click', this.show, false);
-        //document.getElementById('hideButton').addEventListener('click', this.hide, false);
-        //window.addEventListener('orientationchange', this.onStopCamera, false);
-
-        //console.log(screen.orientation.angle);
-
-
-
-        cordova.plugins.camerapreview.setOnPictureTakenHandler(function(result){
-
-          document.getElementById('originalPicture').src = result[0]; //originalPicturePath;
-          //document.getElementById('previewPicture').src = result[1]; //previewPicturePath;
-          cordova.plugins.camerapreview.stopCamera();
-          app.photoCaptured = true;
-        });
+       function onError(error) {
+         stopSpinner();
+          Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000) ;
+          return false;
+       }
     },
     // Bind Event Listeners
     //
@@ -119,6 +108,7 @@ var app = {
 
 $(document).ready(function() {
     app.initialize();
+    $('#originalPicture').attr("width",($(window).width()-28));
     var config = {
         apiKey: "AIzaSyBd10R4YgN46rRg6w3gkOvwi4KvRvxkFNE",
         authDomain: "iotaapp-da647.firebaseapp.com",
@@ -130,9 +120,15 @@ $(document).ready(function() {
 
         var errorCode = error.code;
         var errorMessage = error.message;
+        Materialize.toast('Connettività assente', 3000 );
 
       });
-    var pages = ["#home","#info","#camera"];
+
+    /**
+    *  SWIPE FUNCTIONS
+    * Functions that detect the swipe for moving the pages.
+    */
+    var pages = ["#home","#camera","#info"];
     $( document ).on( "swipeleft", pages,function() {
       var position = 0;
           //$( ":mobile-pagecontainer" ).pagecontainer( "change", pages[0] );
@@ -155,30 +151,39 @@ $(document).ready(function() {
         }
 
     });
+    /**
+    * END SWIPE FUNCTIONS
+    */
 
+  /**
+  * PAGECHANGE BIND take picture if not taked
+  */
   $(document).on("pagechange",function(){
     var id = $(':mobile-pagecontainer').pagecontainer( 'getActivePage' ).attr( 'id' );
     if(id == 'camera' && app.photoCaptured === false){
-      app.initCamera();
-    }else{
-
-      app.stopCamera();
+        if(app.takePicture() !== false){
+          app.photoCaptured = true;
+        }
     }
   });
+
+  /**
+  * ORIENTATION CHANGE BIND  for improve css
+  */
   window.addEventListener("orientationchange", function(){
     if(screen.orientation.angle === 0 || screen.orientation.angle == 180){
       $('.center-div').css('margin-top',100);
     }else{
-      $('.center-div').css('margin-top',50);
+      $('.center-div').css('margin-top',30);
     }
-    var id = $(':mobile-pagecontainer').pagecontainer( 'getActivePage' ).attr( 'id' );
-    if(id == 'camera'){
-
-      app.stopCamera();
-      //app.initCamera();
-    }
+    $('#originalPicture').attr("width",($(window).width()-28));
   });
-  document.getElementById("getPosition").addEventListener("click", getPosition);
+
+  /**
+  * BUTTONS LISTENERS
+  */
+  document.getElementById('startCameraButton').addEventListener('click', app.takePicture, false);
+  document.getElementById("getPosition").addEventListener("click", app.getPosition);
   document.getElementById("openModal").addEventListener("click", function(){
         if(app.photoCaptured === false ){
           Materialize.toast('Prima di inviare devi scattare una foto', 3000 );
@@ -188,53 +193,40 @@ $(document).ready(function() {
         }
 
   });
+
+  /**
+  * SEND DATA LISTENER function use firebase for send image with data to database
+  */
   document.getElementById("sendData").addEventListener("click", function(){
+
       if(app.photoCaptured === false ){
         Materialize.toast('Prima di inviare devi scattare una foto', 3000 );
         return false;
       }
+      startSpinner();
         var optionsPos = {
              enableHighAccuracy: true,
-             timeout: 4000,
+             timeout: 10000,
              maximumAge: 3600000
         };
 
        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, optionsPos);
 
       function onSuccess(position){
-          /// Con plugin cordova
-            /*var win = function (r) {
-                Materialize.toast('Foto inviata con successo!', 3000) ;
-            };
 
-            var fail = function (error) {
-                Materialize.toast('Errore invio foto! Code: '+error.code, 3000) ;
-            };
-
-            var imageURI = document.getElementById('originalPicture').src;
-            var options = new FileUploadOptions();
-            options.fileKey="file";
-            options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
-            options.mimeType="image/jpeg";
-
-            var params = {};
-            params.value1 = position.coords.latitude;
-            params.value2 = position.coords.longitude;
-            var uri = encodeURI("gs://iotaapp-da647.appspot.com/");
-
-            options.params = params;
-            options.chunkedMode = false;
-            //Materialize.toast(imageURI, 3000) ;
-            var ft = new FileTransfer();
-            ft.upload(imageURI,uri , win, fail, options);*/
         /// Con firebase
-
+          var code = '';
           var imageURI = document.getElementById('originalPicture').src;
           var fileName = imageURI.substr(imageURI.lastIndexOf('/')+1);
           //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
           var storageRef = firebase.storage().ref();
-          var id = fileName+new Date().getTime()+position.coords.latitude+device.uuid;
-          id = id.hashCode();
+          var data = (new Date()).toISOString().substring(0, 19).replace('T', ' ');
+          if(device.uuid === null || device.uuid === undefined){
+            code = fileName.hashCode();
+          }else{
+            code = device.uuid.hashCode();
+          }
+          var id = data.replace(' ','_')+'-'+code;
 
           var getFileBlob = function(url, cb) {
               var xhr = new XMLHttpRequest();
@@ -259,75 +251,48 @@ $(document).ready(function() {
           };
 
           getFileObject(imageURI, function(fileObject) {
-              var uploadTask = storageRef.child('images/'+id+'.jpg').put(fileObject);
+              var uploadTask = storageRef.child('images/'+data.substring(0,10)+'/'+id+'.jpg').put(fileObject);
 
               uploadTask.on('state_changed', function(snapshot) {
                   console.log(snapshot);
               }, function(error) {
+                  stopSpinner();
                   console.log(error);
               }, function() {
-                firebase.database().ref('images/'+id).set({
+                firebase.database().ref('images/'+data.substring(0,10)+'/'+id).set({
                     image: id+'.jpg',
                     nota: $('#textarea1').val(),
-                    timpestamp: (new Date()).toISOString().substring(0, 19).replace('T', ' '),
+                    timpestamp: data,
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
                   });
+                  stopSpinner();
                   Materialize.toast('Immagine inviata con successo!', 3000 , 'rounded') ;
                   $('#textarea1').val("");
-                  /*var downloadURL = uploadTask.snapshot.downloadURL;
-                  console.log(downloadURL); */
 
               });
           });
 
-
-
       }
 
       function onError(error){
-             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000) ;
+             stopSpinner();
+             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000) ;
              return false;
       }
 
 
   });
 
-  function getPosition(dialog) {
-
-     var options = {
-        enableHighAccuracy: true,
-        timeout: 3000,
-        maximumAge: 3600000
-     };
-
-     var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
-
-     function onSuccess(position) {
-       if(dialog !== false){
-          alert('Latitude: '          + position.coords.latitude          + '\n' +
-             'Longitude: '         + position.coords.longitude         + '\n' +
-             'Altitude: '          + position.coords.altitude          + '\n' +
-             'Accuracy: '          + position.coords.accuracy          + '\n' +
-             'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-             'Heading: '           + position.coords.heading           + '\n' +
-             'Speed: '             + position.coords.speed             + '\n' +
-             'Timestamp: '         + position.timestamp                + '\n');
-           }else{
-             return [position.coords.latitude,position.coords.longitude];
-           }
-     }
-
-     function onError(error) {
-        Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000) ;
-        return false;
-     }
-  }
-
 });
+
 function cleanString(string){
   return string.replace(/[|&;$%@"<>()+,./]/g, "");
 }
+
+/**
+* SIMPLE HASH CODE FUNCTION FOR STRING
+*/
 String.prototype.hashCode = function(){
 	var hash = 0;
 	if (this.length === 0) return hash;
@@ -338,26 +303,13 @@ String.prototype.hashCode = function(){
 	}
 	return hash;
 };
-/*
-public void setCamera(Camera camera, int cameraId) {
-    mCamera = camera;
-    this.cameraId = cameraId;
-    if (mCamera != null) {
-      List<String> mFocusModes = mCamera.getParameters().getSupportedFocusModes();
 
-      Camera.Parameters params = mCamera.getParameters();
-      if (mFocusModes.contains("continuous-picture")) {
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-      } else if (mFocusModes.contains("continuous-video")){
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-      } else if (mFocusModes.contains("auto")){
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-      }
-      mCamera.setParameters(params);
-        mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
-        setCameraDisplayOrientation();
-        //mCamera.getParameters().setRotation(getDisplayOrientation());
-        //requestLayout();
-    }
-}
+/**
+* START AND STOP SPINNER FUNCTIONS
 */
+function startSpinner(){
+  $('.custom-spinner').css('z-index',10);
+}
+function stopSpinner(){
+  $('.custom-spinner').css('z-index',-10);
+}

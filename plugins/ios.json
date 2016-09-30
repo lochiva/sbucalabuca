@@ -7,39 +7,32 @@
         "files": {}
     },
     "installed_plugins": {
-        "com.mbppower.camerapreview": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
-        },
-        "cordova-plugin-camera": {
-            "CAMERA_USAGE_DESCRIPTION": " ",
-            "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
-            "PACKAGE_NAME": "com.lochiva.itoa"
-        },
-        "cordova-plugin-console": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         },
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         },
-        "cordova-plugin-screen-orientation": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
+        "cordova-plugin-camera": {
+            "CAMERA_USAGE_DESCRIPTION": "Used to take geolocalizate picture",
+            "PHOTOLIBRARY_USAGE_DESCRIPTION": "Used to look saved picture",
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         },
-        "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
-        },
-        "cordova-plugin-file-transfer": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
-        }
-    },
-    "dependent_plugins": {
         "cordova-plugin-compat": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.lochiva.itoa"
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-screen-orientation": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         }
-    }
+    },
+    "dependent_plugins": {}
 }
