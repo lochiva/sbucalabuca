@@ -26,11 +26,13 @@ var app = {
     */
     takePicture: function() {
         navigator.camera.getPicture(onSuccess, onFail, { quality: 100,
+            correctOrientation: true,
             destinationType: Camera.DestinationType.FILE_URI });
 
         function onSuccess(imageURI) {
             document.getElementById('originalPicture').src = imageURI;
-            $('#originalPicture').attr("width",$(document).width()-28);
+            $("#originalPicture").attr("width",($(window).width()-28));
+            $('#originalPicture').width(($(window).width()-28));
             return imageURI;
         }
 
@@ -108,7 +110,7 @@ var app = {
 
 $(document).ready(function() {
     app.initialize();
-    $('#originalPicture').attr("width",($(window).width()-28));
+    $('#originalPicture').width(($(window).width()-28));
     var config = {
         apiKey: "AIzaSyBd10R4YgN46rRg6w3gkOvwi4KvRvxkFNE",
         authDomain: "iotaapp-da647.firebaseapp.com",
@@ -170,13 +172,17 @@ $(document).ready(function() {
   /**
   * ORIENTATION CHANGE BIND  for improve css
   */
-  window.addEventListener("orientationchange", function(){
-    if(screen.orientation.angle === 0 || screen.orientation.angle == 180){
-      $('.center-div').css('margin-top',100);
-    }else{
-      $('.center-div').css('margin-top',30);
-    }
-    $('#originalPicture').attr("width",($(window).width()-28));
+  $( window ).on( "orientationchange", function( event ) {
+      if(event.orientation == 'portrait'){
+        $('.center-div').css('margin-top',100);
+        $("#originalPicture").attr("width",($(window).width()-28));
+        $('#originalPicture').width(($(window).width()-28));
+      }else{
+        $('.center-div').css('margin-top',30);
+        $("#originalPicture").attr("width",($(window).width()-28));
+        $('#originalPicture').width(($(window).width()-28));
+      }
+      //Materialize.toast( "This device is in " + event.orientation + " mode!", 3000 );
   });
 
   /**
@@ -251,24 +257,31 @@ $(document).ready(function() {
           };
 
           getFileObject(imageURI, function(fileObject) {
-              var uploadTask = storageRef.child('images/'+data.substring(0,10)+'/'+id+'.jpg').put(fileObject);
+              var uploadTask = storageRef.child('images/'+id+'.jpg').put(fileObject);
 
               uploadTask.on('state_changed', function(snapshot) {
-                  console.log(snapshot);
+                  //console.log(snapshot);
               }, function(error) {
                   stopSpinner();
-                  console.log(error);
+                  //console.log(error);
               }, function() {
-                firebase.database().ref('images/'+data.substring(0,10)+'/'+id).set({
+                firebase.database().ref('images/'+id).set({
+                    user: code,
                     image: id+'.jpg',
                     nota: $('#textarea1').val(),
-                    timpestamp: data,
+                    timestamp: data,
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
-                  });
-                  stopSpinner();
-                  Materialize.toast('Immagine inviata con successo!', 3000 , 'rounded') ;
-                  $('#textarea1').val("");
+                  },function(error) {
+                      if (error) {
+                        Materialize.toast("Errore salvataggio dati: " + error, 3000);
+                      } else {
+                        stopSpinner();
+                        Materialize.toast('Immagine inviata con successo!', 3000 , 'rounded') ;
+                        $('#textarea1').val("");
+                      }
+                    });
+
 
               });
           });
