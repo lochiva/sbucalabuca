@@ -7,21 +7,18 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
-        },
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
-        },
-        "cordova-plugin-console": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
-        },
         "cordova-plugin-camera": {
             "CAMERA_USAGE_DESCRIPTION": "Used to take geolocalizate picture",
             "PHOTOLIBRARY_USAGE_DESCRIPTION": "Used to look saved picture",
             "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "cordova-plugin-file": {
@@ -31,6 +28,9 @@
             "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "cordova-plugin-screen-orientation": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },

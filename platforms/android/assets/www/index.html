@@ -18,8 +18,9 @@
     under the License.
 -->
 <html>
-    <head>
-        <!--
+
+<head>
+    <!--
         Customize this policy to fit your own app's needs. For more guidance, see:
             https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
         Some notes:
@@ -28,136 +29,173 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; media-src * 'self' data: gap: blob: ; img-src * 'self' data: gap: ;">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <link rel="stylesheet" type="text/css" href="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.css"  />
-        <link rel="stylesheet" type="text/css" href="iconfont/material-icons.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="css/materialize.min.css" medial="all" />
-        <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Sbuca la Buca</title>
-    </head>
-    <body>
-      <div data-role="page" id="home">
-          <div data-role="header">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; media-src * 'self' data: gap: blob: ; img-src * 'self' data: gap: ;">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="iconfont/material-icons.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="css/materialize.min.css" medial="all" />
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>Sbuca la Buca</title>
+</head>
+
+<body>
+    <div data-role="page" id="home">
+        <div data-role="header">
             <div data-role="navbar">
-              <ul>
-                <li><a href="#home" data-icon="home" class="ui-btn-active ui-state-persist" data-transition="slide">Home</a></li>
-                <li><a href="#camera" data-icon="camera" data-transition="slide">Photo</a></li>
-                <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
-              </ul>
+                <ul>
+                    <li><a href="#home" data-icon="home" class="ui-btn-active ui-state-persist" data-transition="slide">Home</a></li>
+                    <li><a href="#camera" data-icon="camera" data-transition="slide">Photo</a></li>
+                    <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
+                </ul>
             </div>
-          </div>
-          <div data-role="main" class="ui-content">
+        </div>
+        <div data-role="main" class="ui-content">
             <div class="custom-spinner">
-              <div class="preloader-wrapper big active " >
-               <div class="spinner-layer spinner-blue-only">
-                 <div class="circle-clipper left">
-                   <div class="circle"></div>
-                 </div><div class="gap-patch">
-                   <div class="circle"></div>
-                 </div><div class="circle-clipper right">
-                   <div class="circle"></div>
-                 </div>
-               </div>
-             </div>
-          </div>
+                <div class="preloader-wrapper big active ">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="center-div">
-              <img src="img/logo.png" width="200" height="150" />
+                <img src="img/logo.png" width="200" height="150" />
                 <h5>Sbuca la Buca App</h5>
                 <div id="deviceready" class="blink">
                     <p class="event listening">Connecting to Device</p>
                     <p class="event received">Device is Ready</p>
                 </div>
             </div>
-          </div>
-      </div>
-      <div data-role="page" id="camera">
-          <div data-role="header" id="headerCamera">
+        </div>
+    </div>
+    <div data-role="page" id="camera">
+        <div data-role="header" id="headerCamera">
             <div data-role="navbar">
-              <ul>
-                <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse" >Home</a></li>
-                <li><a href="#camera" data-icon="camera" class="ui-btn-active ui-state-persist" data-transition="slide">Photo</a></li>
-                <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
-              </ul>
+                <ul>
+                    <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
+                    <li><a href="#camera" data-icon="camera" class="ui-btn-active ui-state-persist" data-transition="slide">Photo</a></li>
+                    <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
+                </ul>
             </div>
-          </div>
-          <div data-role="main" class="ui-content">
+        </div>
+        <div data-role="main" class="ui-content">
             <div class="custom-spinner">
-              <div class="preloader-wrapper big active " >
-               <div class="spinner-layer spinner-blue-only">
-                 <div class="circle-clipper left">
-                   <div class="circle"></div>
-                 </div><div class="gap-patch">
-                   <div class="circle"></div>
-                 </div><div class="circle-clipper right">
-                   <div class="circle"></div>
-                 </div>
-               </div>
-             </div>
-          </div>
-            <div class="pictures">
-              <p><img id="originalPicture" src="" width="400"/></p>
+                <div class="preloader-wrapper big active ">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer" id="footerCamera">
+            <div class="pictures row">
+                <div class="col s12">
+                    <img id="originalPicture" src="" class="responsive-img" />
+                </div>
+            </div>
+        </div>
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer" id="footerCamera">
             <a id="startCameraButton" class="waves-effect waves-light btn ">
-              <i class="material-icons icon-size-custom">camera_alt</i></a>
-            <a id="openModal" class="waves-effect waves-light btn " >
-              <i class="material-icons icon-size-custom">send</i></a>
-          </div>
-          <div id="modalInvio" class="modal modal-fixed-footer">
+                <i class="material-icons icon-size-custom">camera_alt</i></a>
+            <a id="openModal" class="waves-effect waves-light btn ">
+                <i class="material-icons icon-size-custom">send</i></a>
+        </div>
+        <div id="modalInvio" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <div class="input-field col s12">
-                  <textarea id="textarea1" class="materialize-textarea"></textarea>
-                  <label for="textarea1">Inserisci una nota</label>
+                    <textarea id="textarea1" class="materialize-textarea"></textarea>
+                    <label for="textarea1">Inserisci una nota</label>
                 </div>
             </div>
             <div class="modal-footer">
-              <a id="sendData" href="#" class=" modal-action modal-close waves-effect waves-green btn-flat">Invia Immagine</a>
+                <a id="sendData" href="#" class=" modal-action modal-close waves-effect waves-green btn-flat">Invia Immagine</a>
             </div>
-          </div>
-      </div>
-      <div data-role="page" id="info">
-          <div data-role="header">
+        </div>
+    </div>
+    <div data-role="page" id="info">
+        <div data-role="header">
             <div data-role="navbar">
-              <ul>
-                <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse" >Home</a></li>
-                <li><a href="#camera" data-icon="camera" data-transition="slide" data-direction="reverse">Photo</a></li>
-                <li><a href="#info" data-icon="info" class="ui-btn-active ui-state-persist" data-transition="slide">Info</a></li>
-              </ul>
+                <ul>
+                    <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
+                    <li><a href="#camera" data-icon="camera" data-transition="slide" data-direction="reverse">Photo</a></li>
+                    <li><a href="#info" data-icon="info" class="ui-btn-active ui-state-persist" data-transition="slide">Info</a></li>
+                </ul>
             </div>
-          </div>
-          <div data-role="main" class="ui-content">
+        </div>
+        <div data-role="main" class="ui-content">
             <div class="custom-spinner">
-              <div class="preloader-wrapper big active " >
-               <div class="spinner-layer spinner-blue-only">
-                 <div class="circle-clipper left">
-                   <div class="circle"></div>
-                 </div><div class="gap-patch">
-                   <div class="circle"></div>
-                 </div><div class="circle-clipper right">
-                   <div class="circle"></div>
-                 </div>
-               </div>
-             </div>
-          </div>
+                <div class="preloader-wrapper big active ">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="center-div">
-              <h4>Info:</h4>
-              <h6>ITOA srl con socio unico<br />
+                <h4>Info:</h4>
+                <h6>ITOA srl con socio unico<br />
               Via Massari 189 - 10148 Torino<br />
               P.IVA/C.F. 11489070018<br />
               www.itoa.it info@itoa.it</h6><br/>
-              <button id = "getPosition">Posizione corrente</button>
+                <button id="getPosition">Posizione corrente</button>
+                <button id="openGallery">Apri galleria</button>
             </div>
-          </div>
+        </div>
+    </div>
+    <div data-role="page" id="gallery">
+      <div data-role="header">
+      <h1 style="font-weight:800;">Galleria</h1>
+          <a href="#info" data-transition="flip" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-back">
+        Torna indietro</a>
       </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script>
-        <script type="text/javascript" src="js/materialize.min.js"></script>
-        <script type="text/javascript" src="js/firebase.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-    </body>
+        <div data-role="main" class="ui-content">
+            <div class="custom-spinner">
+                <div class="preloader-wrapper big active ">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="image-container" class="row">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/jquery2.1.4.js"></script>
+    <script type="text/javascript" src="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/firebase.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+
 </html>

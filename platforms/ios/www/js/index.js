@@ -25,12 +25,12 @@ var app = {
     * TAKE PICTURE FUNCTION
     */
     takePicture: function() {
-        navigator.camera.getPicture(onSuccess, onFail, { quality: 100,
+        navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+            correctOrientation: true,
             destinationType: Camera.DestinationType.FILE_URI });
 
         function onSuccess(imageURI) {
             document.getElementById('originalPicture').src = imageURI;
-            $('#originalPicture').attr("width",$(document).width()-28);
             return imageURI;
         }
 
@@ -49,7 +49,7 @@ var app = {
        var options = {
           enableHighAccuracy: true,
           timeout: 10000,
-          maximumAge: 3600000
+          maximumAge: 10000
        };
 
        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
@@ -108,7 +108,6 @@ var app = {
 
 $(document).ready(function() {
     app.initialize();
-    $('#originalPicture').attr("width",$(document).width()-28);
     var config = {
         apiKey: "AIzaSyBd10R4YgN46rRg6w3gkOvwi4KvRvxkFNE",
         authDomain: "iotaapp-da647.firebaseapp.com",
@@ -170,13 +169,15 @@ $(document).ready(function() {
   /**
   * ORIENTATION CHANGE BIND  for improve css
   */
-  window.addEventListener("orientationchange", function(){
-    if(screen.orientation.angle === 0 || screen.orientation.angle == 180){
-      $('.center-div').css('margin-top',100);
-    }else{
-      $('.center-div').css('margin-top',30);
-    }
-    $('#originalPicture').attr("width",$(document).width()-28);
+  $( window ).on( "orientationchange", function( event ) {
+      if(event.orientation == 'portrait'){
+        $('.center-div').css('margin-top',100);
+
+      }else{
+        $('.center-div').css('margin-top',30);
+
+      }
+      //Materialize.toast( "This device is in " + event.orientation + " mode!", 3000 );
   });
 
   /**
@@ -198,7 +199,7 @@ $(document).ready(function() {
   * SEND DATA LISTENER function use firebase for send image with data to database
   */
   document.getElementById("sendData").addEventListener("click", function(){
-
+      var nota = $('#textarea1').val();
       if(app.photoCaptured === false ){
         Materialize.toast('Prima di inviare devi scattare una foto', 3000 );
         return false;
@@ -207,7 +208,7 @@ $(document).ready(function() {
         var optionsPos = {
              enableHighAccuracy: true,
              timeout: 10000,
-             maximumAge: 3600000
+             maximumAge: 10000
         };
 
        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, optionsPos);
@@ -220,7 +221,7 @@ $(document).ready(function() {
           var fileName = imageURI.substr(imageURI.lastIndexOf('/')+1);
           //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
           var storageRef = firebase.storage().ref();
-          var data = (new Date()).toISOString().substring(0, 19).replace('T', ' ');
+          var data = (new Date(position.timestamp)).toISOString().substring(0, 19).replace('T', ' ');
           if(device.uuid === null || device.uuid === undefined){
             code = fileName.hashCode();
           }else{
@@ -251,24 +252,43 @@ $(document).ready(function() {
           };
 
           getFileObject(imageURI, function(fileObject) {
-              var uploadTask = storageRef.child('images/'+data.substring(0,10)+'/'+id+'.jpg').put(fileObject);
+              var uploadTask = storageRef.child('images/'+id+'.jpg').put(fileObject);
 
               uploadTask.on('state_changed', function(snapshot) {
-                  console.log(snapshot);
+                  //console.log(snapshot);
               }, function(error) {
                   stopSpinner();
-                  console.log(error);
+                  Materialize.toast("Errore salvataggio immagine: "+error, 3000);
               }, function() {
-                firebase.database().ref('images/'+data.substring(0,10)+'/'+id).set({
+                /*firebase.database().ref('images/'+id).set({
+                    user: code,
                     image: id+'.jpg',
-                    nota: $('#textarea1').val(),
-                    timpestamp: data,
+                    nota: nota,
+                    timestamp: data,
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
-                  });
-                  stopSpinner();
-                  Materialize.toast('Immagine inviata con successo!', 3000 , 'rounded') ;
-                  $('#textarea1').val("");
+                  },function(error) {
+                      if (error) {
+                        Materialize.toast("Errore salvataggio dati: "+error, 3000);
+                        stopSpinner();
+                      } else {
+                        stopSpinner();
+                        Materialize.toast('Immagine inviata con successo!', 3000 , 'rounded') ;
+                        $('#textarea1').val("");
+                      }
+                    });*/
+                    firebase.database().ref('images/'+id).set({
+                      user: code,
+                      image: id+'.jpg',
+                      nota: nota,
+                      timestamp: data,
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    });
+                    stopSpinner();
+                    Materialize.toast('Immagine inviata con successo!', 3000 , 'rounded') ;
+                    $('#textarea1').val("");
+
 
               });
           });
