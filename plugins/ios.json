@@ -32,6 +32,9 @@
         },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },
     "dependent_plugins": {}

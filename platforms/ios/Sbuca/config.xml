@@ -34,6 +34,9 @@
     <feature name="YoikScreenOrientation">
         <param name="ios-package" value="YoikScreenOrientation" />
     </feature>
+    <feature name="FileTransfer">
+        <param name="ios-package" value="CDVFileTransfer" />
+    </feature>
     <name>Sbuca</name>
     <description>
         A sample mobile application that sends geolocalizate pictures.
@@ -66,4 +69,5 @@
     <preference name="PaginationBreakingMode" value="page" />
     <preference name="PaginationMode" value="unpaginated" />
     <preference name="CameraUsesGeolocation" value="false" />
+    <preference name="iosPersistentFileLocation" value="Library" />
 </widget>

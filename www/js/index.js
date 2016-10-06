@@ -50,7 +50,7 @@ var app = {
 
         var options = {
             enableHighAccuracy: true,
-            timeout: 10000,
+            timeout: 20000,
             maximumAge: 10000
         };
 
@@ -77,6 +77,100 @@ var app = {
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000);
             return false;
         }
+    },
+
+    createFile: function(name, dataObj){
+      var uri = window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+
+
+          var url = fs.root.getFile(name, { create: true, exclusive: false }, function (fileEntry) {
+
+
+              app.writeFile(fileEntry, dataObj);
+              return fileEntry.fullPath;
+
+          }, onErrorCreateFile);
+          return url;
+      }, onErrorLoadFs);
+      function onErrorCreateFile(error){
+        Materialize.toast('Errore creazione file: '+error.code+' nome: '+name, 3000);
+        return false;
+
+      }
+      function onErrorLoadFs(error){
+        Materialize.toast('Errore caricamento directory: '+error.code, 3000);
+        return false;
+      }
+
+      return uri;
+
+    },
+
+    writeFile: function(fileEntry, dataObj) {
+    // Create a FileWriter object for our FileEntry (log.txt).
+        fileEntry.createWriter(function (fileWriter) {
+
+            fileWriter.onwriteend = function() {
+                //console.log("Successful file write...");
+                //readFile(fileEntry);
+                Materialize.toast("File scritto: " + fileEntry.toURL(), 3000);
+                return fileEntry.fullPath;
+            };
+
+            fileWriter.onerror = function (e) {
+                Materialize.toast("Errore scrittura file: " + e.toString(), 3000);
+            };
+
+            // If data object is not passed in,
+            // create a new Blob instead.
+            if (!dataObj) {
+                Materialize.toast('Errore file non trovato!', 3000);
+            }
+
+            fileWriter.write(dataObj);
+        });
+    },
+
+    saveFileDownload: function(url,name) {
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function() {
+            if (this.status == 200) {
+
+                var blob = new Blob([this.response], { type: 'image/jpg' });
+                app.createFile(name,blob);
+            }
+        };
+        xhr.send();
+    },
+
+    readFile: function(name) {
+
+      var uri = window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+
+
+          var url = fs.root.getFile(name, {}, function (fileEntry) {
+              return fileEntry.toURL();
+          }, onErrorCreateFile);
+
+          return url;
+
+      }, onErrorLoadFs);
+      function onErrorCreateFile(error){
+        Materialize.toast('Errore lettura file: '+error.code+' nome: '+name, 3000);
+        return false;
+
+      }
+      function onErrorLoadFs(error){
+        Materialize.toast('Errore caricamento directory: '+error.code, 3000);
+        return false;
+      }
+
+      return uri;
+
     },
     // Bind Event Listeners
     //
@@ -201,12 +295,16 @@ $(document).ready(function() {
         }
 
     });
+    /**
+     * Gallery Page function
+     */
     document.getElementById('openGallery').addEventListener('click', function() {
         startSpinner();
         var code = '';
         $(":mobile-pagecontainer").pagecontainer("change", '#gallery', {
             transition: "flip"
         });
+
         var ref = firebase.database().ref('/images/');
         if(device.uuid !== null){
           code = device.uuid.hashCode();
@@ -214,23 +312,37 @@ $(document).ready(function() {
 
         ref.orderByChild('user').equalTo(code).once('value').then(function(snapshot) {
             var prova = snapshot.val();
+            $('#image-container').html('');
             if(prova !== null && prova !== ''){
               $.each(prova, function(index, element) {
-                  var storageRef = firebase.storage().ref("images/" + element.image);
-                  storageRef.getDownloadURL().then(function(url) {
-                      $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
-                          '<img class="responsive-img" src="' + url + '"><span class="card-title">' + element.timestamp + '</span></div>' +
-                          '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
-                          '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
-                      );
+                /*window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+                    var url = fs.root.getFile(element.image, {}, function (fileEntry) {
 
-                  });
+                        appendGalleryContent(fileEntry.toURL(),element);
+                        return fileEntry.toURL();
+                    }, onErrorReadFile);
+                }, onErrorLoadFs);
+                function onErrorReadFile(error){
+                  readFirebaseGallery(element);
+                }
+                function onErrorLoadFs(error){
+                  readFirebaseGallery(element);
+                }*/
+                readFirebaseGallery(element);
+
 
               });
               stopSpinner();
+            }else{
+              stopSpinner();
+              return false;
             }
 
+        }).catch(function(error) {
+          Materialize.toast('Errore connessione: '+error, 3000);
+          stopSpinner();
         });
+
     }, false);
     /**
      * SEND DATA LISTENER function use firebase for send image with data to database
@@ -245,7 +357,7 @@ $(document).ready(function() {
         var optionsPos = {
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 10000
+            maximumAge: 20000
         };
 
         var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, optionsPos);
@@ -264,7 +376,8 @@ $(document).ready(function() {
             } else {
                 code = device.uuid.hashCode();
             }
-            var id = data.replace(' ', '_') + '-' + code;
+            var id = data.replace(/ /g, '_') + '-' + code;
+            id = id.replace(/:/g,'-');
 
             var getFileBlob = function(url, cb) {
                 var xhr = new XMLHttpRequest();
@@ -290,6 +403,7 @@ $(document).ready(function() {
 
             getFileObject(imageURI, function(fileObject) {
                 var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
+                //app.createFile(  id + '.jpg',fileObject);
 
                 uploadTask.on('state_changed', function(snapshot) {
                     //console.log(snapshot);
@@ -321,6 +435,13 @@ $(document).ready(function() {
                         timestamp: data,
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
+                    }).then(function() {
+  
+
+                    }).catch(function(error) {
+                      Materialize.toast('Errore scrittura database: '+error, 3000);
+                      stopSpinner();
+
                     });
                     stopSpinner();
                     Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
@@ -359,6 +480,36 @@ function deleteImage(elem){
     Materialize.toast('Errore cancellazione immagine: '+error, 3000);
     stopSpinner();
   });
+}
+
+
+
+function readFirebaseGallery(element)
+{
+  startSpinner();
+  var storageRef = firebase.storage().ref("images/" + element.image);
+  storageRef.getDownloadURL().then(function(url) {
+
+      //app.saveFileDownload(url,element.image);
+      appendGalleryContent(url,element);
+
+  }).catch(function(error) {
+    Materialize.toast('Errore connessione: '+error, 3000);
+    stopSpinner();
+    return false;
+  });
+  stopSpinner();
+
+}
+
+function appendGalleryContent(url,element)
+{
+  $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
+      '<img class="responsive-img" src="' + url + '"><span class="card-title">' + element.timestamp + '</span></div>' +
+      '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
+      '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
+  );
+
 }
 
 function cleanString(string) {

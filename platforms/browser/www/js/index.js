@@ -50,7 +50,7 @@ var app = {
 
         var options = {
             enableHighAccuracy: true,
-            timeout: 10000,
+            timeout: 20000,
             maximumAge: 10000
         };
 
@@ -78,6 +78,100 @@ var app = {
             return false;
         }
     },
+
+    createFile: function(name, dataObj){
+      var uri = window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+
+
+          var url = fs.root.getFile(name, { create: true, exclusive: false }, function (fileEntry) {
+
+
+              app.writeFile(fileEntry, dataObj);
+              return fileEntry.fullPath;
+
+          }, onErrorCreateFile);
+          return url;
+      }, onErrorLoadFs);
+      function onErrorCreateFile(error){
+        Materialize.toast('Errore creazione file: '+error.code+' nome: '+name, 3000);
+        return false;
+
+      }
+      function onErrorLoadFs(error){
+        Materialize.toast('Errore caricamento directory: '+error.code, 3000);
+        return false;
+      }
+
+      return uri;
+
+    },
+
+    writeFile: function(fileEntry, dataObj) {
+    // Create a FileWriter object for our FileEntry (log.txt).
+        fileEntry.createWriter(function (fileWriter) {
+
+            fileWriter.onwriteend = function() {
+                //console.log("Successful file write...");
+                //readFile(fileEntry);
+                Materialize.toast("File scritto: " + fileEntry.toURL(), 3000);
+                return fileEntry.fullPath;
+            };
+
+            fileWriter.onerror = function (e) {
+                Materialize.toast("Errore scrittura file: " + e.toString(), 3000);
+            };
+
+            // If data object is not passed in,
+            // create a new Blob instead.
+            if (!dataObj) {
+                Materialize.toast('Errore file non trovato!', 3000);
+            }
+
+            fileWriter.write(dataObj);
+        });
+    },
+
+    saveFileDownload: function(url,name) {
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function() {
+            if (this.status == 200) {
+
+                var blob = new Blob([this.response], { type: 'image/jpg' });
+                app.createFile(name,blob);
+            }
+        };
+        xhr.send();
+    },
+
+    readFile: function(name) {
+
+      var uri = window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+
+
+          var url = fs.root.getFile(name, {}, function (fileEntry) {
+              return fileEntry.toURL();
+          }, onErrorCreateFile);
+
+          return url;
+
+      }, onErrorLoadFs);
+      function onErrorCreateFile(error){
+        Materialize.toast('Errore lettura file: '+error.code+' nome: '+name, 3000);
+        return false;
+
+      }
+      function onErrorLoadFs(error){
+        Materialize.toast('Errore caricamento directory: '+error.code, 3000);
+        return false;
+      }
+
+      return uri;
+
+    },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -95,7 +189,6 @@ var app = {
         //console.log($(document).height()+" ---  "+$(document).width());
     },
     photoCaptured: false,
-    code: '',
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);
@@ -111,10 +204,6 @@ var app = {
 
 $(document).ready(function() {
     app.initialize();
-    if(device.uuid !== null){
-      app.code = device.uuid.hashCode();
-    }
-
     var config = {
         apiKey: "AIzaSyBd10R4YgN46rRg6w3gkOvwi4KvRvxkFNE",
         authDomain: "iotaapp-da647.firebaseapp.com",
@@ -206,29 +295,54 @@ $(document).ready(function() {
         }
 
     });
+    /**
+     * Gallery Page function
+     */
     document.getElementById('openGallery').addEventListener('click', function() {
+        startSpinner();
+        var code = '';
         $(":mobile-pagecontainer").pagecontainer("change", '#gallery', {
             transition: "flip"
         });
+
         var ref = firebase.database().ref('/images/');
-        ref.orderByChild('user').equalTo(app.code).once('value').then(function(snapshot) {
+        if(device.uuid !== null){
+          code = device.uuid.hashCode();
+        }
+
+        ref.orderByChild('user').equalTo(932412100).once('value').then(function(snapshot) {
             var prova = snapshot.val();
+            $('#image-container').html('');
             if(prova !== null && prova !== ''){
               $.each(prova, function(index, element) {
-                  var storageRef = firebase.storage().ref("images/" + element.image);
-                  storageRef.getDownloadURL().then(function(url) {
-                      $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
-                          '<img class="responsive-img" src="' + url + '"><span class="card-title">' + element.timestamp + '</span></div>' +
-                          '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
-                          '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
-                      );
+                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+                    var url = fs.root.getFile(element.image, {}, function (fileEntry) {
 
-                  });
+                        appendGalleryContent(fileEntry.toURL(),element);
+                        return fileEntry.toURL();
+                    }, onErrorReadFile);
+                }, onErrorLoadFs);
+                function onErrorReadFile(error){
+                  readFirebaseGallery(element);
+                }
+                function onErrorLoadFs(error){
+                  readFirebaseGallery(element);
+                }
+
+
 
               });
+              stopSpinner();
+            }else{
+              stopSpinner();
+              return false;
             }
 
+        }).catch(function(error) {
+          Materialize.toast('Errore connessione: '+error, 3000);
+          stopSpinner();
         });
+
     }, false);
     /**
      * SEND DATA LISTENER function use firebase for send image with data to database
@@ -243,7 +357,7 @@ $(document).ready(function() {
         var optionsPos = {
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 10000
+            maximumAge: 20000
         };
 
         var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, optionsPos);
@@ -257,12 +371,13 @@ $(document).ready(function() {
             //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
             var storageRef = firebase.storage().ref();
             var data = (new Date(position.timestamp)).toISOString().substring(0, 19).replace('T', ' ');
-            if (app.code === '' ) {
+            if (device.uuid === null || device.uuid === undefined) {
                 code = fileName.hashCode();
             } else {
-                code = app.code;
+                code = device.uuid.hashCode();
             }
-            var id = data.replace(' ', '_') + '-' + code;
+            var id = data.replace(/ /g, '_') + '-' + code;
+            id = id.replace(/:/g,'-');
 
             var getFileBlob = function(url, cb) {
                 var xhr = new XMLHttpRequest();
@@ -288,7 +403,8 @@ $(document).ready(function() {
 
             getFileObject(imageURI, function(fileObject) {
                 var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
-
+                app.createFile(  id + '.jpg',fileObject);
+                //Materialize.toast("Creazione " + app.readFile(id + '.jpg'), 5000);
                 uploadTask.on('state_changed', function(snapshot) {
                     //console.log(snapshot);
                 }, function(error) {
@@ -357,6 +473,36 @@ function deleteImage(elem){
     Materialize.toast('Errore cancellazione immagine: '+error, 3000);
     stopSpinner();
   });
+}
+
+
+
+function readFirebaseGallery(element)
+{
+  startSpinner();
+  var storageRef = firebase.storage().ref("images/" + element.image);
+  storageRef.getDownloadURL().then(function(url) {
+      //app.createFile('')
+      app.saveFileDownload(url,element.image);
+      appendGalleryContent(url,element);
+
+  }).catch(function(error) {
+    Materialize.toast('Errore connessione: '+error, 3000);
+    stopSpinner();
+    return false;
+  });
+  stopSpinner();
+
+}
+
+function appendGalleryContent(url,element)
+{
+  $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
+      '<img class="responsive-img" src="' + url + '"><span class="card-title">' + element.timestamp + '</span></div>' +
+      '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
+      '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
+  );
+
 }
 
 function cleanString(string) {

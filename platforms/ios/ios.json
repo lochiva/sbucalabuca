@@ -35,6 +35,10 @@
                         {
                             "xml": "<feature name=\"YoikScreenOrientation\"><param name=\"ios-package\" value=\"YoikScreenOrientation\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"FileTransfer\"><param name=\"ios-package\" value=\"CDVFileTransfer\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -88,6 +92,9 @@
             "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },
@@ -369,6 +376,22 @@
             "merges": [
                 "cordova.plugins.screenorientation"
             ]
+        },
+        {
+            "id": "cordova-plugin-file-transfer.FileTransferError",
+            "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+            "pluginId": "cordova-plugin-file-transfer",
+            "clobbers": [
+                "window.FileTransferError"
+            ]
+        },
+        {
+            "id": "cordova-plugin-file-transfer.FileTransfer",
+            "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+            "pluginId": "cordova-plugin-file-transfer",
+            "clobbers": [
+                "window.FileTransfer"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -379,6 +402,7 @@
         "cordova-plugin-file": "4.3.0",
         "cordova-plugin-geolocation": "2.3.0",
         "cordova-plugin-screen-orientation": "1.4.2",
-        "cordova-plugin-whitelist": "1.3.0"
+        "cordova-plugin-whitelist": "1.3.0",
+        "cordova-plugin-file-transfer": "1.6.0"
     }
 }

@@ -29,6 +29,7 @@
 		12CFA18A8E6F476AB4C0C59F /* CDVLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6020EA6D22F84FEAB181949A /* CDVLocation.m */; };
 		DCD37B7F96524F55AB73B24D /* YoikScreenOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEDD0F0B17B48E39DDC84DE /* YoikScreenOrientation.m */; };
 		A76F0B099AAA478E804DD056 /* CDVViewController+UpdateSupportedOrientations.m in Sources */ = {isa = PBXBuildFile; fileRef = 8221975DF6A74EC48C5B50DC /* CDVViewController+UpdateSupportedOrientations.m */; };
+		313707BCD7EB46EDA3BC4D8B /* CDVFileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FBBE96F3A528492C8A4114D3 /* CDVFileTransfer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +95,8 @@
 		8221975DF6A74EC48C5B50DC /* CDVViewController+UpdateSupportedOrientations.m */ = {isa = PBXFileReference; name = "CDVViewController+UpdateSupportedOrientations.m"; path = "cordova-plugin-screen-orientation/CDVViewController+UpdateSupportedOrientations.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 		3E564BD171C14E8EA62EEBCA /* YoikScreenOrientation.h */ = {isa = PBXFileReference; name = "YoikScreenOrientation.h"; path = "cordova-plugin-screen-orientation/YoikScreenOrientation.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		134BFBC69BAA4B9F89900BD4 /* CDVViewController+UpdateSupportedOrientations.h */ = {isa = PBXFileReference; name = "CDVViewController+UpdateSupportedOrientations.h"; path = "cordova-plugin-screen-orientation/CDVViewController+UpdateSupportedOrientations.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		FBBE96F3A528492C8A4114D3 /* CDVFileTransfer.m */ = {isa = PBXFileReference; name = "CDVFileTransfer.m"; path = "cordova-plugin-file-transfer/CDVFileTransfer.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		F36C09089E564B3DAB1F6E29 /* CDVFileTransfer.h */ = {isa = PBXFileReference; name = "CDVFileTransfer.h"; path = "cordova-plugin-file-transfer/CDVFileTransfer.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +228,8 @@
 				8221975DF6A74EC48C5B50DC /* CDVViewController+UpdateSupportedOrientations.m */,
 				3E564BD171C14E8EA62EEBCA /* YoikScreenOrientation.h */,
 				134BFBC69BAA4B9F89900BD4 /* CDVViewController+UpdateSupportedOrientations.h */,
+				FBBE96F3A528492C8A4114D3 /* CDVFileTransfer.m */,
+				F36C09089E564B3DAB1F6E29 /* CDVFileTransfer.h */,
 			);
 			name = Plugins;
 			path = "Sbuca/Plugins";
@@ -347,6 +352,7 @@
 				12CFA18A8E6F476AB4C0C59F /* CDVLocation.m in Sources */,
 				DCD37B7F96524F55AB73B24D /* YoikScreenOrientation.m in Sources */,
 				A76F0B099AAA478E804DD056 /* CDVViewController+UpdateSupportedOrientations.m in Sources */,
+				313707BCD7EB46EDA3BC4D8B /* CDVFileTransfer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
