@@ -189,6 +189,7 @@ var app = {
         //console.log($(document).height()+" ---  "+$(document).width());
     },
     photoCaptured: false,
+    firebaseConnected: true,
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);
@@ -216,8 +217,19 @@ $(document).ready(function() {
         var errorCode = error.code;
         var errorMessage = error.message;
         Materialize.toast('Connettività assente', 3000);
+        app.firebaseConnected = false;
 
     });
+    var connectedRef = firebase.database().ref(".info/connected");
+      connectedRef.on("value", function(snap) {
+        if (snap.val() === true) {
+          Materialize.toast('Connettività ritrovata', 3000);
+          app.firebaseConnected = true;
+        } else {
+          Materialize.toast('Connettività persa', 3000);
+          app.firebaseConnected = false;
+        }
+      });
 
     /**
      *  SWIPE FUNCTIONS
@@ -304,10 +316,15 @@ $(document).ready(function() {
         $(":mobile-pagecontainer").pagecontainer("change", '#gallery', {
             transition: "flip"
         });
-
+        firebase.database().goOnline();
         var ref = firebase.database().ref('/images/');
         if(device.uuid !== null){
           code = device.uuid.hashCode();
+        }
+        if(app.firebaseConnected === false){
+          Materialize.toast('Connettività assente', 3000);
+          stopSpinner();
+          return false;
         }
 
         ref.orderByChild('user').equalTo(code).once('value').then(function(snapshot) {
@@ -352,6 +369,10 @@ $(document).ready(function() {
         if (app.photoCaptured === false) {
             Materialize.toast('Prima di inviare devi scattare una foto', 3000);
             return false;
+        }
+        if(app.firebaseConnected === false){
+          Materialize.toast('Connettività assente', 3000);
+          return false;
         }
         startSpinner();
         var optionsPos = {
@@ -428,6 +449,7 @@ $(document).ready(function() {
                             $('#textarea1').val("");
                           }
                         });*/
+                    firebase.database().goOnline();
                     firebase.database().ref('images/' + id).set({
                         user: code,
                         image: id + '.jpg',
@@ -436,7 +458,7 @@ $(document).ready(function() {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
                     }).then(function() {
-  
+
 
                     }).catch(function(error) {
                       Materialize.toast('Errore scrittura database: '+error, 3000);

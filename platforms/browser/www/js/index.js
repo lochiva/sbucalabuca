@@ -218,6 +218,14 @@ $(document).ready(function() {
         Materialize.toast('Connettività assente', 3000);
 
     });
+    var connectedRef = firebase.database().ref(".info/connected");
+      connectedRef.on("value", function(snap) {
+        if (snap.val() === true) {
+          Materialize.toast('Connettività ritrovata', 3000);
+        } else {
+          Materialize.toast('Connettività assente', 3000);
+        }
+      });
 
     /**
      *  SWIPE FUNCTIONS
@@ -304,18 +312,18 @@ $(document).ready(function() {
         $(":mobile-pagecontainer").pagecontainer("change", '#gallery', {
             transition: "flip"
         });
-
+        firebase.database().goOnline();
         var ref = firebase.database().ref('/images/');
         if(device.uuid !== null){
           code = device.uuid.hashCode();
         }
 
-        ref.orderByChild('user').equalTo(932412100).once('value').then(function(snapshot) {
+        ref.orderByChild('user').equalTo(code).once('value').then(function(snapshot) {
             var prova = snapshot.val();
             $('#image-container').html('');
             if(prova !== null && prova !== ''){
               $.each(prova, function(index, element) {
-                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+                /*window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
                     var url = fs.root.getFile(element.image, {}, function (fileEntry) {
 
                         appendGalleryContent(fileEntry.toURL(),element);
@@ -327,8 +335,8 @@ $(document).ready(function() {
                 }
                 function onErrorLoadFs(error){
                   readFirebaseGallery(element);
-                }
-
+                }*/
+                readFirebaseGallery(element);
 
 
               });
@@ -403,8 +411,8 @@ $(document).ready(function() {
 
             getFileObject(imageURI, function(fileObject) {
                 var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
-                app.createFile(  id + '.jpg',fileObject);
-                //Materialize.toast("Creazione " + app.readFile(id + '.jpg'), 5000);
+                //app.createFile(  id + '.jpg',fileObject);
+
                 uploadTask.on('state_changed', function(snapshot) {
                     //console.log(snapshot);
                 }, function(error) {
@@ -428,6 +436,7 @@ $(document).ready(function() {
                             $('#textarea1').val("");
                           }
                         });*/
+                    firebase.database().goOnline();
                     firebase.database().ref('images/' + id).set({
                         user: code,
                         image: id + '.jpg',
@@ -435,6 +444,13 @@ $(document).ready(function() {
                         timestamp: data,
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
+                    }).then(function() {
+
+
+                    }).catch(function(error) {
+                      Materialize.toast('Errore scrittura database: '+error, 3000);
+                      stopSpinner();
+
                     });
                     stopSpinner();
                     Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
@@ -482,8 +498,8 @@ function readFirebaseGallery(element)
   startSpinner();
   var storageRef = firebase.storage().ref("images/" + element.image);
   storageRef.getDownloadURL().then(function(url) {
-      //app.createFile('')
-      app.saveFileDownload(url,element.image);
+
+      //app.saveFileDownload(url,element.image);
       appendGalleryContent(url,element);
 
   }).catch(function(error) {
