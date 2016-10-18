@@ -40,6 +40,9 @@ $(document).ready(function() {
         app.firebaseConnected = false;
 
     });
+    app.windowHeight = window.innerHeight;
+    app.windowWidth = window.innerWidth;
+    $('#map').css('height',(app.windowHeight-150));
 
     // firebase bind of connection event
     var connectedRef = firebase.database().ref(".info/connected");
@@ -100,6 +103,8 @@ $(document).ready(function() {
             if (app.takePicture() !== false) {
                 app.photoCaptured = true;
             }
+        }else if(id == 'home'){
+          google.maps.event.trigger(app.map,'resize');
         }
     });
 
@@ -107,13 +112,19 @@ $(document).ready(function() {
      * ORIENTATION CHANGE BIND  for improve css
      */
     $(window).on("orientationchange", function(event) {
+
         if (event.orientation == 'portrait') {
+            $('.app-title').show();
             $('.center-div').css('margin-top', 100);
+            $('#map').css('height',(app.windowHeight-150));
 
         } else {
             $('.center-div').css('margin-top', 30);
+            $('.app-title').hide();
+            $('#map').css('height',(app.windowWidth-120));
 
         }
+        google.maps.event.trigger(app.map,'resize');
 
     });
 
@@ -200,93 +211,86 @@ $(document).ready(function() {
             return false;
         }
         startSpinner();
-        var optionsPos = {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 20000
-        };
-
-        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, optionsPos);
-
-        function onSuccess(position) {
-
-            /// Con firebase
-            var code = '';
-            var imageURI = document.getElementById('originalPicture').src;
-            var fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-            //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
-            var storageRef = firebase.storage().ref();
-            var data = (new Date(position.timestamp)).toISOString().substring(0, 19).replace('T', ' ');
-            if (device.uuid === null || device.uuid === undefined) {
-                code = fileName.hashCode();
-            } else {
-                code = device.uuid.hashCode();
-            }
-            var id = data.replace(/ /g, '_') + '-' + code;
-            id = id.replace(/:/g, '-');
-
-            var getFileBlob = function(url, cb) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", url);
-                xhr.responseType = "blob";
-                xhr.addEventListener('load', function() {
-                    cb(xhr.response);
-                });
-                xhr.send();
-            };
-
-            var blobToFile = function(blob, name) {
-                blob.lastModifiedDate = new Date();
-                blob.name = name;
-                return blob;
-            };
-
-            var getFileObject = function(filePathOrUrl, cb) {
-                getFileBlob(filePathOrUrl, function(blob) {
-                    cb(blobToFile(blob, 'test.jpg'));
-                });
-            };
-
-            getFileObject(imageURI, function(fileObject) {
-                var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
-                //app.createFile(  id + '.jpg',fileObject);
-
-                uploadTask.on('state_changed', function(snapshot) {
-                    //console.log(snapshot);
-                }, function(error) {
-                    stopSpinner();
-                    Materialize.toast("Errore salvataggio immagine: " + error, 3000);
-                }, function() {
-
-                    firebase.database().goOnline();
-                    firebase.database().ref('images/' + id).set({
-                        user: code,
-                        image: id + '.jpg',
-                        nota: nota,
-                        timestamp: data,
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    }).then(function() {
-
-                    }).catch(function(error) {
-                        Materialize.toast('Errore scrittura database: ' + error, 3000);
-                        stopSpinner();
-
-                    });
-                    stopSpinner();
-                    Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
-                    $('#textarea1').val("");
 
 
-                });
-            });
+        if(app.position.longitude !== '' && app.position.latitude !== ''){
+          /// Con firebase
+          var code = '';
+          var imageURI = document.getElementById('originalPicture').src;
+          var fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+          //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
+          var storageRef = firebase.storage().ref();
+          var data = (new Date()).toISOString().substring(0, 19).replace('T', ' ');
+          if (device.uuid === null || device.uuid === undefined) {
+              code = fileName.hashCode();
+          } else {
+              code = device.uuid.hashCode();
+          }
+          var id = data.replace(/ /g, '_') + '-' + code;
+          id = id.replace(/:/g, '-');
 
-        }
+          var getFileBlob = function(url, cb) {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", url);
+              xhr.responseType = "blob";
+              xhr.addEventListener('load', function() {
+                  cb(xhr.response);
+              });
+              xhr.send();
+          };
 
-        function onError(error) {
-            stopSpinner();
-            Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000);
-            return false;
+          var blobToFile = function(blob, name) {
+              blob.lastModifiedDate = new Date();
+              blob.name = name;
+              return blob;
+          };
+
+          var getFileObject = function(filePathOrUrl, cb) {
+              getFileBlob(filePathOrUrl, function(blob) {
+                  cb(blobToFile(blob, 'test.jpg'));
+              });
+          };
+
+          getFileObject(imageURI, function(fileObject) {
+              var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
+              //app.createFile(  id + '.jpg',fileObject);
+
+              uploadTask.on('state_changed', function(snapshot) {
+                  //console.log(snapshot);
+              }, function(error) {
+                  stopSpinner();
+                  Materialize.toast("Errore salvataggio immagine: " + error, 3000);
+              }, function() {
+
+                  firebase.database().goOnline();
+                  firebase.database().ref('images/' + id).set({
+                      user: code,
+                      image: id + '.jpg',
+                      nota: nota,
+                      timestamp: data,
+                      latitude: app.position.latitude,
+                      longitude: app.position.longitude
+                  }).then(function() {
+
+                  }).catch(function(error) {
+                      Materialize.toast('Errore scrittura database: ' + error, 3000);
+                      stopSpinner();
+
+                  });
+                  stopSpinner();
+                  Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
+                  $('#textarea1').val("");
+
+                  reloadMarkers();
+
+
+              });
+          });
+
+        }else{
+          stopSpinner();
+          Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000);
+          return false;
         }
 
 

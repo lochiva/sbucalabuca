@@ -35,6 +35,9 @@
         },
         "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },
     "dependent_plugins": {}

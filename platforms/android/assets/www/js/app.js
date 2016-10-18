@@ -50,37 +50,45 @@ var app = {
      */
     getPosition: function(dialog) {
         startSpinner();
+        if(app.position.longitude !== '' && app.position.latitude !== ''){
 
-        var options = {
-            enableHighAccuracy: true,
-            timeout: 20000,
-            maximumAge: 10000
-        };
+                  alert('Latitudine: ' + app.position.longitude + '\n' +
+                      'Longitudine: ' + app.position.latitude + '\n' +
+                      'Data ed ora della posizione: '+ (new Date(app.position.timestamp+(3600*1000*2))).toISOString().substring(0, 19).replace('T', ' ') );
+                stopSpinner();
 
-        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+        }else{
 
-        function onSuccess(position) {
-            stopSpinner();
-            if (dialog !== false) {
-                alert('Latitude: ' + position.coords.latitude + '\n' +
-                    'Longitude: ' + position.coords.longitude + '\n' +
-                    'Altitude: ' + position.coords.altitude + '\n' +
-                    'Accuracy: ' + position.coords.accuracy + '\n' +
-                    'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' +
-                    'Heading: ' + position.coords.heading + '\n' +
-                    'Speed: ' + position.coords.speed + '\n' +
-                    'Timestamp: ' + position.timestamp + '\n');
-            } else {
-                return [position.coords.latitude, position.coords.longitude];
-            }
-        }
-
-        function onError(error) {
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000);
             return false;
+
         }
+
+
+
     },
+
+    watchPosition: function(){
+      function onSuccess(position) {
+          app.position.latitude = position.coords.latitude;
+          app.position.longitude = position.coords.longitude;
+          app.position.timestamp = position.timestamp;
+
+         }
+
+         // onError Callback receives a PositionError object
+         //
+         function onError(error) {
+
+         }
+
+         // Options: throw an error if no update is received every 30 seconds.
+         //
+         var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {  maximumAge: 20000, timeout: 30000,enableHighAccuracy: true });
+
+    },
+
 
     createFile: function(name, dataObj) {
         var uri = window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
@@ -184,6 +192,27 @@ var app = {
         return uri;
 
     },
+    onOnline: function() {
+       app.loadMapsApi();
+   },
+
+    onResume: function() {
+      console.log(app.position);
+        app.loadMapsApi();
+    },
+    loadMapsApi: function() {
+        if (navigator.connection.type === Connection.NONE || app.map !== '') {
+            return;
+        }
+
+        $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQRGGpSnZPgJBYhC1UaEfjXAJ6BUCuBBQ&libraries=geometry&sensor=true&callback=app.onMapsApiLoaded');
+    },
+
+    onMapsApiLoaded : function () {
+     // Maps API loaded and ready to be used.
+     loadMap();
+
+     },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -197,21 +226,35 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        document.addEventListener("online", app.onOnline, false);
+        document.addEventListener("resume", app.onResume, false);
+        app.loadMapsApi();
+        app.watchPosition();
+
         //app.init();
         //console.log($(document).height()+" ---  "+$(document).width());
     },
     //
     photoCaptured: false,
+
+    position: {
+      longitude : '',
+      latitude : '',
+      timestamp: ''
+    },
+    map: '',
+    windowHeight: '',
+    windowWidth: '',
     //
     firebaseConnected: true,
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
+        /*var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
 
         listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        receivedElement.setAttribute('style', 'display:block;');*/
 
         console.log('Received Event: ' + id);
     }

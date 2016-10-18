@@ -184,6 +184,20 @@ var app = {
         return uri;
 
     },
+    onOnline: function() {
+       this.loadMapsApi();
+   },
+
+    onResume: function() {
+        this.loadMapsApi();
+    },
+    loadMapsApi: function() {console.log(navigator.connection);
+        if (navigator.connection.type === Connection.NONE || (global.google !== undefined && global.google.maps)) {
+            return;
+        }
+
+        //$.getScript('https://maps.googleapis.com/maps/api/js?sensor=true&callback=onMapsApiLoaded');
+    },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -197,6 +211,9 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        //document.addEventListener("online", this.onOnline, false);
+        //document.addEventListener("resume", this.onResume, false);
+        app.loadMapsApi();
         //app.init();
         //console.log($(document).height()+" ---  "+$(document).width());
     },

@@ -37,6 +37,9 @@
     <feature name="FileTransfer">
         <param name="ios-package" value="CDVFileTransfer" />
     </feature>
+    <feature name="NetworkStatus">
+        <param name="ios-package" value="CDVConnection" />
+    </feature>
     <name>Sbuca</name>
     <description>
         A sample mobile application that sends geolocalizate pictures.

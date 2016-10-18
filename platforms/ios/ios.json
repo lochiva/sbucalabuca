@@ -39,6 +39,10 @@
                         {
                             "xml": "<feature name=\"FileTransfer\"><param name=\"ios-package\" value=\"CDVFileTransfer\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\"><param name=\"ios-package\" value=\"CDVConnection\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -95,6 +99,9 @@
             "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },
@@ -392,6 +399,23 @@
             "clobbers": [
                 "window.FileTransfer"
             ]
+        },
+        {
+            "id": "cordova-plugin-network-information.network",
+            "file": "plugins/cordova-plugin-network-information/www/network.js",
+            "pluginId": "cordova-plugin-network-information",
+            "clobbers": [
+                "navigator.connection",
+                "navigator.network.connection"
+            ]
+        },
+        {
+            "id": "cordova-plugin-network-information.Connection",
+            "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+            "pluginId": "cordova-plugin-network-information",
+            "clobbers": [
+                "Connection"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -403,6 +427,7 @@
         "cordova-plugin-geolocation": "2.3.0",
         "cordova-plugin-screen-orientation": "1.4.2",
         "cordova-plugin-whitelist": "1.3.0",
-        "cordova-plugin-file-transfer": "1.6.0"
+        "cordova-plugin-file-transfer": "1.6.0",
+        "cordova-plugin-network-information": "1.3.0"
     }
 }

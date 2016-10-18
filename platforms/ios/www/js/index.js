@@ -41,6 +41,14 @@ $(document).ready(function() {
 
     });
 
+    /*global.onMapsApiLoaded = function () {
+     // Maps API loaded and ready to be used.
+     var map = new google.maps.Map(document.getElementById("map"), {
+         zoom: 8,
+         center: new google.maps.LatLng(-34.397, 150.644)
+       });
+    };*/
+
     // firebase bind of connection event
     var connectedRef = firebase.database().ref(".info/connected");
     connectedRef.on("value", function(snap) {
