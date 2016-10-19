@@ -114,7 +114,7 @@ function loadMap() {
                             infowindow.setContent('<div class="row"><div class="col s12">' +
                                 '<div class="card">' +
                                 '<div class="card-image info-image">' +
-                                '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title">' + element.timestamp + '</span></div>' +
+                                '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title">' + element.date + '</span></div>' +
                                 '<div class="card-content"><p>' + element.nota + '</p></div></div></div></div>');
                             infowindow.open(app.map, marker);
                         };
@@ -235,7 +235,7 @@ function reloadMarkers(){
                           infowindow.setContent('<div class="row"><div class="col s12">' +
                               '<div class="card">' +
                               '<div class="card-image info-image">' +
-                              '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title">' + element.timestamp + '</span></div>' +
+                              '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title">' + element.date + '</span></div>' +
                               '<div class="card-content"><p>' + element.nota + '</p></div></div></div></div>');
                           infowindow.open(app.map, marker);
                       };

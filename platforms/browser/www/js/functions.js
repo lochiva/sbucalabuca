@@ -67,7 +67,7 @@ function readFirebaseGallery(element) {
  */
 function appendGalleryContent(url, element) {
     $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
-        '<img class="responsive-img" src="' + url + '"><span class="card-title">' + element.timestamp + '</span></div>' +
+        '<img class="responsive-img" src="' + url + '"><span class="card-title">' + element.date + '</span></div>' +
         '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
         '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
     );

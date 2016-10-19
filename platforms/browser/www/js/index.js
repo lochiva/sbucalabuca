@@ -20,8 +20,11 @@
  * INITIALIZE OF APPLICATION
  */
 $(document).ready(function() {
+    startSpinner();
     // app initialize
     app.initialize();
+    // set timeZone difference
+    app.timeZoneDifference = new Date().getTimezoneOffset() * 60000;
     // firebase configurations
     var config = {
         apiKey: "AIzaSyBAiA4VQdynEdIgKBJJOnCY3Mz6nGhjg74",
@@ -30,19 +33,28 @@ $(document).ready(function() {
         storageBucket: "gs://sbuca-6248d.appspot.com",
         messagingSenderId: "851026370852"
     };
-    // firebase initialize and sign in
+    // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
-    firebase.auth().signInWithEmailAndPassword('sbuca.app@email.com', 'sbucaapp!').catch(function(error) {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (!user)  {
+          startSpinner();
+        firebase.auth().signInAnonymously().catch(function(error) {
 
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        Materialize.toast('Connettività assente', 3000);
-        app.firebaseConnected = false;
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            Materialize.toast('Connettività assente', 3000);
+            app.firebaseConnected = false;
 
+        });
+          stopSpinner();
+      } else {
+
+      }
     });
+    // Set window dimension variables and map dimension
     app.windowHeight = window.innerHeight;
     app.windowWidth = window.innerWidth;
-    $('#map').css('height',(app.windowHeight-150));
+    $('#map').css('height',(app.windowHeight-140));
 
     // firebase bind of connection event
     var connectedRef = firebase.database().ref(".info/connected");
@@ -116,12 +128,12 @@ $(document).ready(function() {
         if (event.orientation == 'portrait') {
             $('.app-title').show();
             $('.center-div').css('margin-top', 100);
-            $('#map').css('height',(app.windowHeight-150));
+            $('#map').css('height',(app.windowHeight-140));
 
         } else {
             $('.center-div').css('margin-top', 30);
             $('.app-title').hide();
-            $('#map').css('height',(app.windowWidth-120));
+            $('#map').css('height',(app.windowWidth-110));
 
         }
         google.maps.event.trigger(app.map,'resize');
@@ -220,7 +232,8 @@ $(document).ready(function() {
           var fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
           //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
           var storageRef = firebase.storage().ref();
-          var data = (new Date()).toISOString().substring(0, 19).replace('T', ' ');
+          var timeStamp = new Date().getTime();
+          var data = (new Date(timeStamp-app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' ');
           if (device.uuid === null || device.uuid === undefined) {
               code = fileName.hashCode();
           } else {
@@ -267,7 +280,8 @@ $(document).ready(function() {
                       user: code,
                       image: id + '.jpg',
                       nota: nota,
-                      timestamp: data,
+                      timestamp: timeStamp,
+                      date: data,
                       latitude: app.position.latitude,
                       longitude: app.position.longitude
                   }).then(function() {

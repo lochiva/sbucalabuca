@@ -54,7 +54,7 @@ var app = {
 
                   alert('Latitudine: ' + app.position.longitude + '\n' +
                       'Longitudine: ' + app.position.latitude + '\n' +
-                      'Data-ora: '+ (new Date(app.position.timestamp+(3600*1000*2))).toISOString().substring(0, 19).replace('T', ' ') );
+                      'Data ed ora della posizione: '+ (new Date(app.position.timestamp-app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' ') );
                 stopSpinner();
 
         }else{
@@ -197,7 +197,7 @@ var app = {
    },
 
     onResume: function() {
-      console.log(app.position);
+
         app.loadMapsApi();
     },
     loadMapsApi: function() {
@@ -225,6 +225,7 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        stopSpinner();
         app.receivedEvent('deviceready');
         document.addEventListener("online", app.onOnline, false);
         document.addEventListener("resume", app.onResume, false);
@@ -245,6 +246,7 @@ var app = {
     map: '',
     windowHeight: '',
     windowWidth: '',
+    timeZoneDifference: '',
     //
     firebaseConnected: true,
     // Update DOM on a Received Event
