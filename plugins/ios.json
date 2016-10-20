@@ -41,6 +41,12 @@
         },
         "uk.co.workingedge.phonegap.plugin.launchnavigator": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },
     "dependent_plugins": {

@@ -36,7 +36,7 @@ $(document).ready(function() {
     // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged(function(user) {
-        if (!user)  {
+        if (!user)  {
             startSpinner();
             firebase.auth().signInAnonymously().catch(function(error) {
 

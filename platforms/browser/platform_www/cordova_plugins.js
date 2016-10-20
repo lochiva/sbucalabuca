@@ -285,6 +285,34 @@ module.exports = [
         "clobbers": [
             "launchnavigator"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+        "id": "cordova-plugin-statusbar.statusbar",
+        "pluginId": "cordova-plugin-statusbar",
+        "clobbers": [
+            "window.StatusBar"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/src/browser/StatusBarProxy.js",
+        "id": "cordova-plugin-statusbar.StatusBarProxy",
+        "pluginId": "cordova-plugin-statusbar",
+        "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+        "id": "cordova-plugin-splashscreen.SplashScreen",
+        "pluginId": "cordova-plugin-splashscreen",
+        "clobbers": [
+            "navigator.splashscreen"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-splashscreen/src/browser/SplashScreenProxy.js",
+        "id": "cordova-plugin-splashscreen.SplashScreenProxy",
+        "pluginId": "cordova-plugin-splashscreen",
+        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -300,7 +328,9 @@ module.exports.metadata =
     "cordova-plugin-screen-orientation": "1.4.2",
     "cordova-plugin-file-transfer": "1.6.0",
     "cordova-plugin-network-information": "1.3.0",
-    "uk.co.workingedge.phonegap.plugin.launchnavigator": "3.2.1"
+    "uk.co.workingedge.phonegap.plugin.launchnavigator": "3.2.1",
+    "cordova-plugin-statusbar": "2.2.0",
+    "cordova-plugin-splashscreen": "4.0.0"
 }
 // BOTTOM OF METADATA
 });

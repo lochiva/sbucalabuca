@@ -82,10 +82,10 @@
                 </div>-->
             </div>
             <div id="modal-image" class="modal modal-fixed-footer">
-            <div class="modal-content">
-              <div class="row">
-                <div class="col s12">
-                  <img id="modal-img" src="" class="responsive-img"/>
+            <div class="modal-content modal-content-img">
+              <div class="row" style="height:100%;">
+                <div class="col s12 center-align" style="height:100%;">
+                  <img id="modal-img" src="" class="responsive-img" style="max-height:100%;"/>
                 </div>
               </div>
             </div>
@@ -171,6 +171,7 @@
                   <h6>Lettura info non riuscita!</h6>
               </div>
                 <button id="getPosition">Posizione corrente</button>
+                <button onClick="app.exitApp()" >Chiudi app</button>
             </div>
         </div>
     </div>
@@ -181,8 +182,8 @@
     <script type="text/javascript" src="js/assets/firebase.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>
-    <script type="text/javascript" src="js/map.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <!--<script type="text/javascript" src="js/map.js"></script>-->
+    <script type="text/javascript" src="js/myindex.js"></script>
 </body>
 
 </html>

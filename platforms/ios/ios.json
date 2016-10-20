@@ -51,6 +51,22 @@
                         {
                             "xml": "<feature name=\"LaunchNavigator\"><param name=\"ios-package\" value=\"LaunchNavigator\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"StatusBar\"><param name=\"ios-package\" value=\"CDVStatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"StatusBarOverlaysWebView\" value=\"true\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"StatusBarStyle\" value=\"lightcontent\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SplashScreen\"><param name=\"ios-package\" value=\"CDVSplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -122,6 +138,12 @@
             "PACKAGE_NAME": "com.lochiva.sbuca"
         },
         "uk.co.workingedge.phonegap.plugin.launchnavigator": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },
@@ -460,6 +482,22 @@
             "merges": [
                 "launchnavigator"
             ]
+        },
+        {
+            "id": "cordova-plugin-statusbar.statusbar",
+            "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+            "pluginId": "cordova-plugin-statusbar",
+            "clobbers": [
+                "window.StatusBar"
+            ]
+        },
+        {
+            "id": "cordova-plugin-splashscreen.SplashScreen",
+            "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+            "pluginId": "cordova-plugin-splashscreen",
+            "clobbers": [
+                "navigator.splashscreen"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -474,6 +512,8 @@
         "cordova-plugin-file-transfer": "1.6.0",
         "cordova-plugin-network-information": "1.3.0",
         "cordova-plugin-actionsheet": "2.3.1",
-        "uk.co.workingedge.phonegap.plugin.launchnavigator": "3.2.1"
+        "uk.co.workingedge.phonegap.plugin.launchnavigator": "3.2.1",
+        "cordova-plugin-statusbar": "2.2.0",
+        "cordova-plugin-splashscreen": "4.0.0"
     }
 }

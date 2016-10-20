@@ -81,10 +81,10 @@ static BOOL debugEnabled;
 
         case CMMapAppUber:
             return @"uber://";
-            
+
         case CMMapAppTomTom:
             return @"tomtomhome://";
-        
+
         case CMMapAppSygic:
             return @"com.sygic.aura://";
 
@@ -184,18 +184,18 @@ static BOOL debugEnabled;
     if (![CMMapLauncher isMapAppInstalled:mapApp]) {
         return NO;
     }
-    
+
     Class mapItemClass = [MKMapItem class];
     bool gte_iOS6 = mapItemClass && [mapItemClass respondsToSelector:@selector(openMapsWithItems:launchOptions:)];
 
     if (mapApp == CMMapAppAppleMaps && gte_iOS6) {
-        
+
             NSDictionary* launchOptions;
             if (directionsMode) {
                 if([directionsMode isEqual: @"walking"]){
                     directionsMode = MKLaunchOptionsDirectionsModeWalking;
                 }else if([directionsMode isEqual: @"transit"]){
-                    directionsMode = MKLaunchOptionsDirectionsModeTransit;
+                    //directionsMode = MKLaunchOptionsDirectionsModeTransit;
                 }else{
                     directionsMode = MKLaunchOptionsDirectionsModeDriving;
                 }
@@ -211,13 +211,13 @@ static BOOL debugEnabled;
                     launchOptions = @{key: [extras objectForKey:key]};
                 }
             }
-        
+
         if(start.mapItem == nil){
             start.mapItem = [MKMapItem mapItemForCurrentLocation];
         }
 
             return [MKMapItem openMapsWithItems:@[start.mapItem, end.mapItem] launchOptions:launchOptions];
-        
+
     } else if (mapApp == CMMapAppGoogleMaps || (mapApp == CMMapAppAppleMaps && !gte_iOS6)) {
         NSString* startStr;
         if([self isEmptyCoordinate:start.coordinate]){
@@ -225,14 +225,14 @@ static BOOL debugEnabled;
         }else{
             startStr = [CMMapLauncher googleMapsStringForMapPoint:start];
         }
-        
+
         NSString* endStr;
         if([self isEmptyCoordinate:end.coordinate]){
             endStr = [end.address stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         }else{
             endStr = [CMMapLauncher googleMapsStringForMapPoint:end];
         }
-        
+
         NSMutableString* url = [[NSString stringWithFormat:@"%@?saddr=%@&daddr=%@",
                                  [self urlPrefixForMapApp:CMMapAppGoogleMaps],
                                  startStr,
@@ -517,4 +517,3 @@ static BOOL debugEnabled;
 }
 
 @end
-

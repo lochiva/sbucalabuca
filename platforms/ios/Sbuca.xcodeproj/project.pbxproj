@@ -38,6 +38,9 @@
 		0AD81CCACAF3434C9CCAE3CD /* CMMapLauncher.m in Sources */ = {isa = PBXBuildFile; fileRef = C1B6D58CAB0E43909D82E40A /* CMMapLauncher.m */; };
 		4D002F3BC49A4793BC5FB4CB /* LaunchNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FA508816BC48A3A2257244 /* LaunchNavigator.m */; };
 		3665FBF01807411FB475D5CF /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4920C6F0F2844DE084737585 /* MapKit.framework */; };
+		89FAA591CAC2472287A82406 /* CDVStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A75ADD4F9F4FD0BD5A60C5 /* CDVStatusBar.m */; };
+		1B4A2C84D3D74ABE960F118E /* CDVSplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 92AA10905DBC40F0A1BD5C7E /* CDVSplashScreen.m */; };
+		E2B76BAB489545D08BED588E /* CDVViewController+SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = F480788E611D4C31975CFB81 /* CDVViewController+SplashScreen.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +121,12 @@
 		F077C42EF0724116976A09CF /* CMMapLauncher.h */ = {isa = PBXFileReference; name = "CMMapLauncher.h"; path = "uk.co.workingedge.phonegap.plugin.launchnavigator/CMMapLauncher.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		ED8A6F23DA82442AB5D34EE9 /* LaunchNavigator.h */ = {isa = PBXFileReference; name = "LaunchNavigator.h"; path = "uk.co.workingedge.phonegap.plugin.launchnavigator/LaunchNavigator.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		4920C6F0F2844DE084737585 /* MapKit.framework */ = {isa = PBXFileReference; name = "MapKit.framework"; path = "System/Library/Frameworks/MapKit.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		D0A75ADD4F9F4FD0BD5A60C5 /* CDVStatusBar.m */ = {isa = PBXFileReference; name = "CDVStatusBar.m"; path = "cordova-plugin-statusbar/CDVStatusBar.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		E91D597F43EA4024B1EEBACF /* CDVStatusBar.h */ = {isa = PBXFileReference; name = "CDVStatusBar.h"; path = "cordova-plugin-statusbar/CDVStatusBar.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		92AA10905DBC40F0A1BD5C7E /* CDVSplashScreen.m */ = {isa = PBXFileReference; name = "CDVSplashScreen.m"; path = "cordova-plugin-splashscreen/CDVSplashScreen.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		F480788E611D4C31975CFB81 /* CDVViewController+SplashScreen.m */ = {isa = PBXFileReference; name = "CDVViewController+SplashScreen.m"; path = "cordova-plugin-splashscreen/CDVViewController+SplashScreen.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		9B5EA3E13B8142D0AC6A0606 /* CDVSplashScreen.h */ = {isa = PBXFileReference; name = "CDVSplashScreen.h"; path = "cordova-plugin-splashscreen/CDVSplashScreen.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		6DA80CB19FA946D38D2DC53C /* CDVViewController+SplashScreen.h */ = {isa = PBXFileReference; name = "CDVViewController+SplashScreen.h"; path = "cordova-plugin-splashscreen/CDVViewController+SplashScreen.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -267,6 +276,12 @@
 				53FA508816BC48A3A2257244 /* LaunchNavigator.m */,
 				F077C42EF0724116976A09CF /* CMMapLauncher.h */,
 				ED8A6F23DA82442AB5D34EE9 /* LaunchNavigator.h */,
+				D0A75ADD4F9F4FD0BD5A60C5 /* CDVStatusBar.m */,
+				E91D597F43EA4024B1EEBACF /* CDVStatusBar.h */,
+				92AA10905DBC40F0A1BD5C7E /* CDVSplashScreen.m */,
+				F480788E611D4C31975CFB81 /* CDVViewController+SplashScreen.m */,
+				9B5EA3E13B8142D0AC6A0606 /* CDVSplashScreen.h */,
+				6DA80CB19FA946D38D2DC53C /* CDVViewController+SplashScreen.h */,
 			);
 			name = Plugins;
 			path = "Sbuca/Plugins";
@@ -395,6 +410,9 @@
 				C8D27EE6070E4C65A67FD24F /* ActionSheet.m in Sources */,
 				0AD81CCACAF3434C9CCAE3CD /* CMMapLauncher.m in Sources */,
 				4D002F3BC49A4793BC5FB4CB /* LaunchNavigator.m in Sources */,
+				89FAA591CAC2472287A82406 /* CDVStatusBar.m in Sources */,
+				1B4A2C84D3D74ABE960F118E /* CDVSplashScreen.m in Sources */,
+				E2B76BAB489545D08BED588E /* CDVViewController+SplashScreen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

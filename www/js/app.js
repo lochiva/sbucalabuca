@@ -239,6 +239,12 @@ var app = {
     openNavigator: function(cord1,crod2){
       launchnavigator.navigate([cord1, crod2]);
     },
+
+    exitApp: function()
+    {
+        navigator.app.exitApp();
+    },
+
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:

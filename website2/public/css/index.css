@@ -65,3 +65,7 @@ a {
 .mouse-pointer {
     cursor: pointer;
 }
+.modal-content-img{
+    padding:5px !important;
+    padding-top:10px !important;
+}

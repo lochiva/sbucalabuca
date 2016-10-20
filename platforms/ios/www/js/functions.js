@@ -170,7 +170,13 @@ String.prototype.hashCode = function() {
  * START AND STOP SPINNER FUNCTIONS
  */
 function startSpinner() {
-    $('.custom-spinner').css('z-index', 10);
+    $('.custom-spinner').css('z-index', 100000000);
+    setTimeout(function(){
+      if($('.custom-spinner').css('z-index') != -10){
+        $('.custom-spinner').css('z-index', -10);
+        Materialize.toast('Errore caricamento in timeout ' , 3000);
+      }
+    }, 15000);
 }
 
 function stopSpinner() {

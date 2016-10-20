@@ -19,6 +19,7 @@
 /**
  * INITIALIZE OF APPLICATION
  */
+Materialize.toast('Device ReadY! ', 15000);
 $(document).ready(function() {
     startSpinner();
     // app initialize

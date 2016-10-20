@@ -249,7 +249,10 @@ function addMarkers(elements){
   var infowindow = new google.maps.InfoWindow;
 
   var marker;
-
+  var height = 200;
+  if(app.windowHeight >= 800){
+    height = 250;
+  }
   $.each(elements, function(index, element) {
       var storageRef = firebase.storage().ref("images/" + element.image);
       storageRef.getDownloadURL().then(function(url) {
@@ -265,7 +268,7 @@ function addMarkers(elements){
               return function() {
                   infowindow.setContent('<div class="row"><div class="col s12">' +
                       '<div class="card">' +
-                      '<div class="card-image info-image" style="height:200px;">' +
+                      '<div class="card-image info-image" style="height:'+height+'px;">' +
                       '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title text-card"">'+ element.date + '</span></div>' +
                       '<div class="card-content"><div class="row"><p class="col s12">' + element.nota + '</p><button onclick="app.openNavigator('+element.latitude+','+element.longitude+')"'+
                       ' class="waves-effect waves-light yellow darken-3 btn col s12">Portami qua</button></div></div></div></div></div>');
@@ -314,7 +317,7 @@ function CenterMyControl(controlDiv, map) {
         // Set CSS for the control interior.
         var controlText = document.createElement('div');
         controlText.id = 'CenterMyControl-text';
-        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.color = '#FFFFFF';
         controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
         controlText.style.fontSize = '16px';
         controlText.style.lineHeight = '38px';
@@ -355,7 +358,7 @@ function CenterTodayControl(controlDiv, map) {
         // Set CSS for the control interior.
         var controlText = document.createElement('div');
         controlText.id = 'CenterTodayControl-text';
-        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.color = '#FFFFFF';
         controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
         controlText.style.fontSize = '16px';
         controlText.style.lineHeight = '38px';
