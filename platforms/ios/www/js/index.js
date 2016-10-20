@@ -20,8 +20,11 @@
  * INITIALIZE OF APPLICATION
  */
 $(document).ready(function() {
+    startSpinner();
     // app initialize
     app.initialize();
+    // set timeZone difference
+    app.timeZoneDifference = new Date().getTimezoneOffset() * 60000;
     // firebase configurations
     var config = {
         apiKey: "AIzaSyBAiA4VQdynEdIgKBJJOnCY3Mz6nGhjg74",
@@ -30,33 +33,41 @@ $(document).ready(function() {
         storageBucket: "gs://sbuca-6248d.appspot.com",
         messagingSenderId: "851026370852"
     };
-    // firebase initialize and sign in
+    // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
-    firebase.auth().signInWithEmailAndPassword('sbuca.app@email.com', 'sbucaapp!').catch(function(error) {
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (!user)  {
+            startSpinner();
+            firebase.auth().signInAnonymously().catch(function(error) {
 
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        Materialize.toast('Connettività assente', 3000);
-        app.firebaseConnected = false;
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                Materialize.toast('Errore connesione: ' + error.code + " " + error.message, 5000);
+                app.firebaseConnected = false;
 
+            });
+            stopSpinner();
+        } else {
+
+        }
     });
-
-    /*global.onMapsApiLoaded = function () {
-     // Maps API loaded and ready to be used.
-     var map = new google.maps.Map(document.getElementById("map"), {
-         zoom: 8,
-         center: new google.maps.LatLng(-34.397, 150.644)
-       });
-    };*/
+    // Set window dimension variables and map dimension
+    app.windowHeight = window.innerHeight;
+    app.windowWidth = window.innerWidth;
+    $('#map').css('height', (app.windowHeight - 140));
 
     // firebase bind of connection event
     var connectedRef = firebase.database().ref(".info/connected");
     connectedRef.on("value", function(snap) {
         if (snap.val() === true) {
-            Materialize.toast('Connettività presente', 3000);
+            if (app.strating !== true) {
+                Materialize.toast('Connettività presente', 3000);
+            }
             app.firebaseConnected = true;
         } else {
-            Materialize.toast('Connettività assente', 3000);
+            if (app.strating !== true) {
+                Materialize.toast('Connettività assente', 3000);
+            }
             app.firebaseConnected = false;
         }
     });
@@ -65,7 +76,7 @@ $(document).ready(function() {
      *  SWIPE FUNCTIONS
      * Functions that detect the swipe for moving the pages.
      */
-    var pages = ["#home", "#camera", "#info"];
+    var pages = ["#home", "#camera", "#gallery", "#info"];
     $(document).on("swipeleft", pages, function() {
         var position = 0;
         // read actual position
@@ -104,10 +115,20 @@ $(document).ready(function() {
      */
     $(document).on("pagechange", function() {
         var id = $(':mobile-pagecontainer').pagecontainer('getActivePage').attr('id');
-        if (id == 'camera' && app.photoCaptured === false) {
-            if (app.takePicture() !== false) {
-                app.photoCaptured = true;
-            }
+        switch (id) {
+            case 'camera':
+                if (app.photoCaptured === false) {
+                    if (app.takePicture() !== false) {
+                        app.photoCaptured = true;
+                    }
+                }
+                break;
+            case 'home':
+                google.maps.event.trigger(app.map, 'resize');
+                break;
+            case 'gallery':
+                readFirebaseGallery();
+                break;
         }
     });
 
@@ -115,13 +136,19 @@ $(document).ready(function() {
      * ORIENTATION CHANGE BIND  for improve css
      */
     $(window).on("orientationchange", function(event) {
+
         if (event.orientation == 'portrait') {
+            $('.app-title').show();
             $('.center-div').css('margin-top', 100);
+            $('#map').css('height', (app.windowHeight - 140));
 
         } else {
             $('.center-div').css('margin-top', 30);
+            $('.app-title').hide();
+            $('#map').css('height', (app.windowWidth - 110));
 
         }
+        google.maps.event.trigger(app.map, 'resize');
 
     });
 
@@ -139,61 +166,7 @@ $(document).ready(function() {
         }
 
     });
-    /**
-     * Gallery Page function
-     */
-    document.getElementById('openGallery').addEventListener('click', function() {
-        startSpinner();
-        var code = '';
-        $(":mobile-pagecontainer").pagecontainer("change", '#gallery', {
-            transition: "flip"
-        });
 
-        firebase.database().goOnline();
-        var ref = firebase.database().ref('/images/');
-        if (device.uuid !== null) {
-            code = device.uuid.hashCode();
-        }
-        if (app.firebaseConnected === false) {
-            Materialize.toast('Connettività assente', 3000);
-            stopSpinner();
-            return false;
-        }
-
-        ref.orderByChild('user').equalTo(code).once('value').then(function(snapshot) {
-            var prova = snapshot.val();
-            $('#image-container').html('');
-            if (prova !== null && prova !== '') {
-                $.each(prova, function(index, element) {
-                    /*window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
-                        var url = fs.root.getFile(element.image, {}, function (fileEntry) {
-
-                            appendGalleryContent(fileEntry.toURL(),element);
-                            return fileEntry.toURL();
-                        }, onErrorReadFile);
-                    }, onErrorLoadFs);
-                    function onErrorReadFile(error){
-                      readFirebaseGallery(element);
-                    }
-                    function onErrorLoadFs(error){
-                      readFirebaseGallery(element);
-                    }*/
-                    readFirebaseGallery(element);
-
-
-                });
-                stopSpinner();
-            } else {
-                stopSpinner();
-                return false;
-            }
-
-        }).catch(function(error) {
-            Materialize.toast('Errore connessione: ' + error, 3000);
-            stopSpinner();
-        });
-
-    }, false);
     /**
      * SEND DATA LISTENER function use firebase for send image with data to the database
      */
@@ -208,23 +181,17 @@ $(document).ready(function() {
             return false;
         }
         startSpinner();
-        var optionsPos = {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 20000
-        };
 
-        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, optionsPos);
 
-        function onSuccess(position) {
-
+        if (app.position.longitude !== '' && app.position.latitude !== '') {
             /// Con firebase
             var code = '';
             var imageURI = document.getElementById('originalPicture').src;
             var fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
             //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
             var storageRef = firebase.storage().ref();
-            var data = (new Date(position.timestamp)).toISOString().substring(0, 19).replace('T', ' ');
+            var timeStamp = new Date().getTime();
+            var data = (new Date(timeStamp - app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' ');
             if (device.uuid === null || device.uuid === undefined) {
                 code = fileName.hashCode();
             } else {
@@ -263,7 +230,7 @@ $(document).ready(function() {
                     //console.log(snapshot);
                 }, function(error) {
                     stopSpinner();
-                    Materialize.toast("Errore salvataggio immagine: " + error, 3000);
+                    Materialize.toast("Errore salvataggio immagine: " + error, 5000);
                 }, function() {
 
                     firebase.database().goOnline();
@@ -271,13 +238,14 @@ $(document).ready(function() {
                         user: code,
                         image: id + '.jpg',
                         nota: nota,
-                        timestamp: data,
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
+                        timestamp: timeStamp,
+                        date: data,
+                        latitude: app.position.latitude,
+                        longitude: app.position.longitude
                     }).then(function() {
 
                     }).catch(function(error) {
-                        Materialize.toast('Errore scrittura database: ' + error, 3000);
+                        Materialize.toast('Errore scrittura database: ' + error, 5000);
                         stopSpinner();
 
                     });
@@ -285,13 +253,13 @@ $(document).ready(function() {
                     Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
                     $('#textarea1').val("");
 
+                    reloadMarkers();
+
 
                 });
             });
 
-        }
-
-        function onError(error) {
+        } else {
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000);
             return false;

@@ -36,43 +36,47 @@ $(document).ready(function() {
     // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged(function(user) {
-      if (!user)  {
-          startSpinner();
-        firebase.auth().signInAnonymously().catch(function(error) {
+        if (!user)  {
+            startSpinner();
+            firebase.auth().signInAnonymously().catch(function(error) {
 
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            Materialize.toast('Connettività assente', 3000);
-            app.firebaseConnected = false;
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                Materialize.toast('Errore connesione: ' + error.code + " " + error.message, 5000);
+                app.firebaseConnected = false;
 
-        });
-          stopSpinner();
-      } else {
+            });
+            stopSpinner();
+        } else {
 
-      }
+        }
     });
     // Set window dimension variables and map dimension
     app.windowHeight = window.innerHeight;
     app.windowWidth = window.innerWidth;
-    $('#map').css('height',(app.windowHeight-140));
+    $('#map').css('height', (app.windowHeight - 130));
 
     // firebase bind of connection event
     var connectedRef = firebase.database().ref(".info/connected");
     connectedRef.on("value", function(snap) {
         if (snap.val() === true) {
-            Materialize.toast('Connettività presente', 3000);
+            if (app.strating !== true) {
+                Materialize.toast('Connettività presente', 3000);
+            }
             app.firebaseConnected = true;
         } else {
-            Materialize.toast('Connettività assente', 3000);
+            if (app.strating !== true) {
+                Materialize.toast('Connettività assente', 3000);
+            }
             app.firebaseConnected = false;
         }
     });
 
-    /**
+    /********************************************
      *  SWIPE FUNCTIONS
      * Functions that detect the swipe for moving the pages.
-     */
-    var pages = ["#home", "#camera", "#info"];
+     *********************************************/
+    var pages = ["#home", "#camera", "#gallery", "#info"];
     $(document).on("swipeleft", pages, function() {
         var position = 0;
         // read actual position
@@ -102,21 +106,29 @@ $(document).ready(function() {
         }
 
     });
-    /**
+    /********************************************
      * END SWIPE FUNCTIONS
-     */
+     *********************************************/
 
     /**
      * PAGECHANGE BIND take picture if not taked
      */
     $(document).on("pagechange", function() {
         var id = $(':mobile-pagecontainer').pagecontainer('getActivePage').attr('id');
-        if (id == 'camera' && app.photoCaptured === false) {
-            if (app.takePicture() !== false) {
-                app.photoCaptured = true;
-            }
-        }else if(id == 'home'){
-          google.maps.event.trigger(app.map,'resize');
+        switch (id) {
+            case 'camera':
+                if (app.photoCaptured === false) {
+                    if (app.takePicture() !== false) {
+                        app.photoCaptured = true;
+                    }
+                }
+                break;
+            case 'home':
+                google.maps.event.trigger(app.map, 'resize');
+                break;
+            case 'gallery':
+                readFirebaseGallery();
+                break;
         }
     });
 
@@ -128,21 +140,21 @@ $(document).ready(function() {
         if (event.orientation == 'portrait') {
             $('.app-title').show();
             $('.center-div').css('margin-top', 100);
-            $('#map').css('height',(app.windowHeight-140));
+            $('#map').css('height', (app.windowHeight - 130));
 
         } else {
             $('.center-div').css('margin-top', 30);
             $('.app-title').hide();
-            $('#map').css('height',(app.windowWidth-110));
+            $('#map').css('height', (app.windowWidth - 100));
 
         }
-        google.maps.event.trigger(app.map,'resize');
+        google.maps.event.trigger(app.map, 'resize');
 
     });
 
-    /**
+    /********************************************
      * BUTTONS LISTENERS
-     */
+     *********************************************/
     document.getElementById('startCameraButton').addEventListener('click', app.takePicture, false);
     document.getElementById("getPosition").addEventListener("click", app.getPosition);
     document.getElementById("openModal").addEventListener("click", function() {
@@ -154,61 +166,7 @@ $(document).ready(function() {
         }
 
     });
-    /**
-     * Gallery Page function
-     */
-    document.getElementById('openGallery').addEventListener('click', function() {
-        startSpinner();
-        var code = '';
-        $(":mobile-pagecontainer").pagecontainer("change", '#gallery', {
-            transition: "flip"
-        });
 
-        firebase.database().goOnline();
-        var ref = firebase.database().ref('/images/');
-        if (device.uuid !== null) {
-            code = device.uuid.hashCode();
-        }
-        if (app.firebaseConnected === false) {
-            Materialize.toast('Connettività assente', 3000);
-            stopSpinner();
-            return false;
-        }
-
-        ref.orderByChild('user').equalTo(code).once('value').then(function(snapshot) {
-            var prova = snapshot.val();
-            $('#image-container').html('');
-            if (prova !== null && prova !== '') {
-                $.each(prova, function(index, element) {
-                    /*window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
-                        var url = fs.root.getFile(element.image, {}, function (fileEntry) {
-
-                            appendGalleryContent(fileEntry.toURL(),element);
-                            return fileEntry.toURL();
-                        }, onErrorReadFile);
-                    }, onErrorLoadFs);
-                    function onErrorReadFile(error){
-                      readFirebaseGallery(element);
-                    }
-                    function onErrorLoadFs(error){
-                      readFirebaseGallery(element);
-                    }*/
-                    readFirebaseGallery(element);
-
-
-                });
-                stopSpinner();
-            } else {
-                stopSpinner();
-                return false;
-            }
-
-        }).catch(function(error) {
-            Materialize.toast('Errore connessione: ' + error, 3000);
-            stopSpinner();
-        });
-
-    }, false);
     /**
      * SEND DATA LISTENER function use firebase for send image with data to the database
      */
@@ -225,86 +183,86 @@ $(document).ready(function() {
         startSpinner();
 
 
-        if(app.position.longitude !== '' && app.position.latitude !== ''){
-          /// Con firebase
-          var code = '';
-          var imageURI = document.getElementById('originalPicture').src;
-          var fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-          //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
-          var storageRef = firebase.storage().ref();
-          var timeStamp = new Date().getTime();
-          var data = (new Date(timeStamp-app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' ');
-          if (device.uuid === null || device.uuid === undefined) {
-              code = fileName.hashCode();
-          } else {
-              code = device.uuid.hashCode();
-          }
-          var id = data.replace(/ /g, '_') + '-' + code;
-          id = id.replace(/:/g, '-');
+        if (app.position.longitude !== '' && app.position.latitude !== '') {
+            /// Con firebase
+            var code = '';
+            var imageURI = document.getElementById('originalPicture').src;
+            var fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+            //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
+            var storageRef = firebase.storage().ref();
+            var timeStamp = new Date().getTime();
+            var data = (new Date(timeStamp - app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' ');
+            if (device.uuid === null || device.uuid === undefined) {
+                code = fileName.hashCode();
+            } else {
+                code = device.uuid.hashCode();
+            }
+            var id = data.replace(/ /g, '_') + '-' + code;
+            id = id.replace(/:/g, '-');
 
-          var getFileBlob = function(url, cb) {
-              var xhr = new XMLHttpRequest();
-              xhr.open("GET", url);
-              xhr.responseType = "blob";
-              xhr.addEventListener('load', function() {
-                  cb(xhr.response);
-              });
-              xhr.send();
-          };
+            var getFileBlob = function(url, cb) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.responseType = "blob";
+                xhr.addEventListener('load', function() {
+                    cb(xhr.response);
+                });
+                xhr.send();
+            };
 
-          var blobToFile = function(blob, name) {
-              blob.lastModifiedDate = new Date();
-              blob.name = name;
-              return blob;
-          };
+            var blobToFile = function(blob, name) {
+                blob.lastModifiedDate = new Date();
+                blob.name = name;
+                return blob;
+            };
 
-          var getFileObject = function(filePathOrUrl, cb) {
-              getFileBlob(filePathOrUrl, function(blob) {
-                  cb(blobToFile(blob, 'test.jpg'));
-              });
-          };
+            var getFileObject = function(filePathOrUrl, cb) {
+                getFileBlob(filePathOrUrl, function(blob) {
+                    cb(blobToFile(blob, 'test.jpg'));
+                });
+            };
 
-          getFileObject(imageURI, function(fileObject) {
-              var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
-              //app.createFile(  id + '.jpg',fileObject);
+            getFileObject(imageURI, function(fileObject) {
+                var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
+                //app.createFile(  id + '.jpg',fileObject);
 
-              uploadTask.on('state_changed', function(snapshot) {
-                  //console.log(snapshot);
-              }, function(error) {
-                  stopSpinner();
-                  Materialize.toast("Errore salvataggio immagine: " + error, 3000);
-              }, function() {
+                uploadTask.on('state_changed', function(snapshot) {
+                    //console.log(snapshot);
+                }, function(error) {
+                    stopSpinner();
+                    Materialize.toast("Errore salvataggio immagine: " + error, 5000);
+                }, function() {
 
-                  firebase.database().goOnline();
-                  firebase.database().ref('images/' + id).set({
-                      user: code,
-                      image: id + '.jpg',
-                      nota: nota,
-                      timestamp: timeStamp,
-                      date: data,
-                      latitude: app.position.latitude,
-                      longitude: app.position.longitude
-                  }).then(function() {
+                    firebase.database().goOnline();
+                    firebase.database().ref('images/' + id).set({
+                        user: code,
+                        image: id + '.jpg',
+                        nota: nota,
+                        timestamp: timeStamp,
+                        date: data,
+                        latitude: app.position.latitude,
+                        longitude: app.position.longitude
+                    }).then(function() {
 
-                  }).catch(function(error) {
-                      Materialize.toast('Errore scrittura database: ' + error, 3000);
-                      stopSpinner();
+                    }).catch(function(error) {
+                        Materialize.toast('Errore scrittura database: ' + error, 5000);
+                        stopSpinner();
 
-                  });
-                  stopSpinner();
-                  Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
-                  $('#textarea1').val("");
+                    });
+                    stopSpinner();
+                    Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
+                    $('#textarea1').val("");
 
-                  reloadMarkers();
+                    reloadMarkers();
 
 
-              });
-          });
+                });
+            });
 
-        }else{
-          stopSpinner();
-          Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000);
-          return false;
+        } else {
+            stopSpinner();
+            Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000);
+            return false;
         }
 
 

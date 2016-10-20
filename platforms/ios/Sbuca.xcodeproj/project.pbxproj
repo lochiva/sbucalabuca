@@ -34,6 +34,10 @@
 		4F8319609AE3435283C6CCDF /* CDVReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 912F9B8CBCB3468CAAF430E5 /* CDVReachability.m */; };
 		6487A6FB85484493A72CE29F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7F9DEFDC2944A218BB72213 /* SystemConfiguration.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		2AFB4BBDD2F44BEFBFF019F9 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19025CA41FC74CBBA1FDCE26 /* CoreTelephony.framework */; };
+		C8D27EE6070E4C65A67FD24F /* ActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = D601D6BAE76F4A6F9E21F930 /* ActionSheet.m */; };
+		0AD81CCACAF3434C9CCAE3CD /* CMMapLauncher.m in Sources */ = {isa = PBXBuildFile; fileRef = C1B6D58CAB0E43909D82E40A /* CMMapLauncher.m */; };
+		4D002F3BC49A4793BC5FB4CB /* LaunchNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FA508816BC48A3A2257244 /* LaunchNavigator.m */; };
+		3665FBF01807411FB475D5CF /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4920C6F0F2844DE084737585 /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +111,13 @@
 		2885F326B68E40919CD3D1F0 /* CDVReachability.h */ = {isa = PBXFileReference; name = "CDVReachability.h"; path = "cordova-plugin-network-information/CDVReachability.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		B7F9DEFDC2944A218BB72213 /* SystemConfiguration.framework */ = {isa = PBXFileReference; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		19025CA41FC74CBBA1FDCE26 /* CoreTelephony.framework */ = {isa = PBXFileReference; name = "CoreTelephony.framework"; path = "System/Library/Frameworks/CoreTelephony.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		D601D6BAE76F4A6F9E21F930 /* ActionSheet.m */ = {isa = PBXFileReference; name = "ActionSheet.m"; path = "cordova-plugin-actionsheet/ActionSheet.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		4B8005AF7B6C4D67A80BBC33 /* ActionSheet.h */ = {isa = PBXFileReference; name = "ActionSheet.h"; path = "cordova-plugin-actionsheet/ActionSheet.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		C1B6D58CAB0E43909D82E40A /* CMMapLauncher.m */ = {isa = PBXFileReference; name = "CMMapLauncher.m"; path = "uk.co.workingedge.phonegap.plugin.launchnavigator/CMMapLauncher.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		53FA508816BC48A3A2257244 /* LaunchNavigator.m */ = {isa = PBXFileReference; name = "LaunchNavigator.m"; path = "uk.co.workingedge.phonegap.plugin.launchnavigator/LaunchNavigator.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		F077C42EF0724116976A09CF /* CMMapLauncher.h */ = {isa = PBXFileReference; name = "CMMapLauncher.h"; path = "uk.co.workingedge.phonegap.plugin.launchnavigator/CMMapLauncher.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		ED8A6F23DA82442AB5D34EE9 /* LaunchNavigator.h */ = {isa = PBXFileReference; name = "LaunchNavigator.h"; path = "uk.co.workingedge.phonegap.plugin.launchnavigator/LaunchNavigator.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		4920C6F0F2844DE084737585 /* MapKit.framework */ = {isa = PBXFileReference; name = "MapKit.framework"; path = "System/Library/Frameworks/MapKit.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +131,7 @@
 				6BF699E61BB54D6DAFF07899 /* AVFoundation.framework in Frameworks */,
 				6487A6FB85484493A72CE29F /* SystemConfiguration.framework in Frameworks */,
 				2AFB4BBDD2F44BEFBFF019F9 /* CoreTelephony.framework in Frameworks */,
+				3665FBF01807411FB475D5CF /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +206,7 @@
 				4EA33889B4D64F7EB045091F /* AVFoundation.framework */,
 				B7F9DEFDC2944A218BB72213 /* SystemConfiguration.framework */,
 				19025CA41FC74CBBA1FDCE26 /* CoreTelephony.framework */,
+				4920C6F0F2844DE084737585 /* MapKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -248,6 +261,12 @@
 				912F9B8CBCB3468CAAF430E5 /* CDVReachability.m */,
 				BC0B88470F3A4C16BE6C038D /* CDVConnection.h */,
 				2885F326B68E40919CD3D1F0 /* CDVReachability.h */,
+				D601D6BAE76F4A6F9E21F930 /* ActionSheet.m */,
+				4B8005AF7B6C4D67A80BBC33 /* ActionSheet.h */,
+				C1B6D58CAB0E43909D82E40A /* CMMapLauncher.m */,
+				53FA508816BC48A3A2257244 /* LaunchNavigator.m */,
+				F077C42EF0724116976A09CF /* CMMapLauncher.h */,
+				ED8A6F23DA82442AB5D34EE9 /* LaunchNavigator.h */,
 			);
 			name = Plugins;
 			path = "Sbuca/Plugins";
@@ -373,6 +392,9 @@
 				313707BCD7EB46EDA3BC4D8B /* CDVFileTransfer.m in Sources */,
 				EDB2AE9933DD4A598DB6A186 /* CDVConnection.m in Sources */,
 				4F8319609AE3435283C6CCDF /* CDVReachability.m in Sources */,
+				C8D27EE6070E4C65A67FD24F /* ActionSheet.m in Sources */,
+				0AD81CCACAF3434C9CCAE3CD /* CMMapLauncher.m in Sources */,
+				4D002F3BC49A4793BC5FB4CB /* LaunchNavigator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

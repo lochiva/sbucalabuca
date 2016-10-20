@@ -160,3 +160,22 @@ body {
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
 }
+
+.info-image {
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+.modal {
+    width: 90% !important;
+    height: 90% !important;
+    max-height: 90% !important;
+    top: 5% !important;
+}
+
+.mouse-pointer {
+    cursor: pointer;
+}
+.text-card{
+  font-size:18px !important;
+}

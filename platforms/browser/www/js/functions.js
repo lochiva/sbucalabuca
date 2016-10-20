@@ -43,15 +43,57 @@ function deleteImage(elem) {
 }
 
 /**
+ * Function that read the list of personal image
+ */
+ function readFirebaseGallery(){
+   startSpinner();
+   var code = '';
+
+   firebase.database().goOnline();
+   var ref = firebase.database().ref('/images/');
+   if (device.uuid !== null) {
+       code = device.uuid.hashCode();
+   }
+   if (app.firebaseConnected === false) {
+       Materialize.toast('Connettività assente', 3000);
+       stopSpinner();
+       return false;
+   }
+
+   ref.orderByChild('user').equalTo(code).limitToLast(20).once('value').then(function(snapshot) {
+       var prova = snapshot.val();
+       $('#image-container').html('');
+       if (prova !== null && prova !== '') {
+           $.each(prova, function(index, element) {
+
+               readFirebaseGalleryImage(element);
+
+
+           });
+           stopSpinner();
+       } else {
+         $('#image-container').html('<h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>');
+           stopSpinner();
+           return false;
+       }
+
+   }).catch(function(error) {
+       Materialize.toast('Errore connessione: ' + error, 5000);
+       stopSpinner();
+   });
+
+ }
+
+/**
  * Function that read a image from firebase storage
  */
-function readFirebaseGallery(element) {
+function readFirebaseGalleryImage(element) {
     startSpinner();
     var storageRef = firebase.storage().ref("images/" + element.image);
     storageRef.getDownloadURL().then(function(url) {
 
         //app.saveFileDownload(url,element.image);
-        appendGalleryContent(url, element);
+        prependGalleryContent(url, element);
 
     }).catch(function(error) {
         Materialize.toast('Errore connessione: ' + error, 3000);
@@ -67,11 +109,44 @@ function readFirebaseGallery(element) {
  */
 function appendGalleryContent(url, element) {
     $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
-        '<img class="responsive-img" src="' + url + '"><span class="card-title">' + element.date + '</span></div>' +
+        '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
         '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
         '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
     );
 
+}
+/**
+ * Function that prepend gallery content
+ */
+function prependGalleryContent(url, element) {
+    $('#image-container').prepend('<div class="col s12 m6"><div class="card"><div class="card-image">' +
+        '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
+        '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
+        '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
+    );
+
+}
+
+/**
+* Function that read the info data from firebase
+*/
+function readInfoFirebase(){
+  var ref = firebase.database().ref('/info').once('value').then(function(snapshot) {
+      var prova = snapshot.val();
+      if (prova !== null && prova !== '') {
+          $('#info-text').html(prova);
+
+          stopSpinner();
+      } else {
+
+          stopSpinner();
+          return false;
+      }
+
+  }).catch(function(error) {
+      Materialize.toast('Errore connessione: ' + error, 5000);
+      stopSpinner();
+  });
 }
 
 function cleanString(string) {
@@ -95,9 +170,50 @@ String.prototype.hashCode = function() {
  * START AND STOP SPINNER FUNCTIONS
  */
 function startSpinner() {
-    $('.custom-spinner').css('z-index', 10);
+    $('.custom-spinner').css('z-index', 100000000);
+    setTimeout(function(){
+      if($('.custom-spinner').css('z-index') != -10){
+        $('.custom-spinner').css('z-index', -10);
+        Materialize.toast('Errore caricamento in timeout ' , 3000);
+      }
+    }, 15000);
 }
 
 function stopSpinner() {
     $('.custom-spinner').css('z-index', -10);
+}
+
+/**
+ * STORAGE FUNCTIONS
+ *
+ */
+
+function checkStorage() {
+    if (typeof window.localStorage != undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function setStorage(name, val) {
+    if (checkStorage()) {
+        localStorage.setItem(name, val);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getStorage(name) {
+    var val = localStorage.getItem(name);
+    if (val != undefined && val != null) {
+        return val;
+    } else {
+        return false;
+    }
+}
+
+function deleteStorage(name) {
+    localStorage.removeItem(name);
 }

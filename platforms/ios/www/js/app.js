@@ -40,7 +40,7 @@ var app = {
         }
 
         function onFail(message) {
-            Materialize.toast('Errore scatto foto: ' + message, 3000);
+            Materialize.toast('Errore scatto foto: ' + message, 5000);
             return false;
         }
 
@@ -50,37 +50,49 @@ var app = {
      */
     getPosition: function(dialog) {
         startSpinner();
+        if (app.position.longitude !== '' && app.position.latitude !== '') {
 
-        var options = {
-            enableHighAccuracy: true,
-            timeout: 20000,
-            maximumAge: 10000
-        };
-
-        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
-
-        function onSuccess(position) {
+            alert('Latitudine: ' + app.position.longitude + '\n' +
+                'Longitudine: ' + app.position.latitude + '\n' +
+                'Data ed ora della posizione: ' + (new Date(app.position.timestamp - app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' '));
             stopSpinner();
-            if (dialog !== false) {
-                alert('Latitude: ' + position.coords.latitude + '\n' +
-                    'Longitude: ' + position.coords.longitude + '\n' +
-                    'Altitude: ' + position.coords.altitude + '\n' +
-                    'Accuracy: ' + position.coords.accuracy + '\n' +
-                    'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' +
-                    'Heading: ' + position.coords.heading + '\n' +
-                    'Speed: ' + position.coords.speed + '\n' +
-                    'Timestamp: ' + position.timestamp + '\n');
-            } else {
-                return [position.coords.latitude, position.coords.longitude];
-            }
-        }
 
-        function onError(error) {
+        } else {
+
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000);
             return false;
+
         }
+
+
+
     },
+
+    watchPosition: function() {
+        function onSuccess(position) {
+            app.position.latitude = position.coords.latitude;
+            app.position.longitude = position.coords.longitude;
+            app.position.timestamp = position.timestamp;
+
+        }
+
+        // onError Callback receives a PositionError object
+        //
+        function onError(error) {
+
+        }
+
+        // Options: throw an error if no update is received every 30 seconds.
+        //
+        var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
+            maximumAge: 20000,
+            timeout: 30000,
+            enableHighAccuracy: true
+        });
+
+    },
+
 
     createFile: function(name, dataObj) {
         var uri = window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
@@ -184,19 +196,44 @@ var app = {
         return uri;
 
     },
+    /**
+     * Function that check the info and read from localstorage or firebase
+     */
+    readInfo: function() {
+        if (app.firebaseConnected === false) {
+
+            var info = getStorage('sbuca.info-text');
+            if (info === false) {
+                readInfoFirebase();
+            } else {
+                $('#info-text').html(info);
+            }
+
+        } else {
+            readInfoFirebase();
+        }
+
+    },
     onOnline: function() {
-       this.loadMapsApi();
-   },
+        app.loadMapsApi();
+    },
 
     onResume: function() {
-        this.loadMapsApi();
+
+        app.loadMapsApi();
     },
-    loadMapsApi: function() {console.log(navigator.connection);
-        if (navigator.connection.type === Connection.NONE || (global.google !== undefined && global.google.maps)) {
+    loadMapsApi: function() {
+        if (navigator.connection.type === Connection.NONE || app.map !== '') {
             return;
         }
 
-        //$.getScript('https://maps.googleapis.com/maps/api/js?sensor=true&callback=onMapsApiLoaded');
+        $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQRGGpSnZPgJBYhC1UaEfjXAJ6BUCuBBQ&libraries=geometry&sensor=true&callback=app.onMapsApiLoaded');
+    },
+
+    onMapsApiLoaded: function() {
+        // Maps API loaded and ready to be used.
+        loadMap();
+
     },
     // Bind Event Listeners
     //
@@ -210,25 +247,43 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        stopSpinner();
+        setTimeout(function() {
+            app.strating = false;
+            app.readInfo();
+        }, 2000);
         app.receivedEvent('deviceready');
-        //document.addEventListener("online", this.onOnline, false);
-        //document.addEventListener("resume", this.onResume, false);
+        document.addEventListener("online", app.onOnline, false);
+        document.addEventListener("resume", app.onResume, false);
         app.loadMapsApi();
+        app.watchPosition();
+
         //app.init();
         //console.log($(document).height()+" ---  "+$(document).width());
     },
     //
     photoCaptured: false,
+
+    position: {
+        longitude: '',
+        latitude: '',
+        timestamp: ''
+    },
+    map: '',
+    windowHeight: '',
+    windowWidth: '',
+    timeZoneDifference: '',
+    strating: true,
     //
     firebaseConnected: true,
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
+        /*var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
 
         listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        receivedElement.setAttribute('style', 'display:block;');*/
 
         console.log('Received Event: ' + id);
     }

@@ -277,6 +277,14 @@ module.exports = [
         "id": "cordova-plugin-network-information.NetworkInfoProxy",
         "pluginId": "cordova-plugin-network-information",
         "runs": true
+    },
+    {
+        "file": "plugins/uk.co.workingedge.phonegap.plugin.launchnavigator/www/common.js",
+        "id": "uk.co.workingedge.phonegap.plugin.launchnavigator.Common",
+        "pluginId": "uk.co.workingedge.phonegap.plugin.launchnavigator",
+        "clobbers": [
+            "launchnavigator"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -291,7 +299,8 @@ module.exports.metadata =
     "cordova-plugin-geolocation": "2.3.0",
     "cordova-plugin-screen-orientation": "1.4.2",
     "cordova-plugin-file-transfer": "1.6.0",
-    "cordova-plugin-network-information": "1.3.0"
+    "cordova-plugin-network-information": "1.3.0",
+    "uk.co.workingedge.phonegap.plugin.launchnavigator": "3.2.1"
 }
 // BOTTOM OF METADATA
 });

@@ -36,7 +36,14 @@
         },
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.lochiva.sbuca"
+        },
+        "uk.co.workingedge.phonegap.plugin.launchnavigator": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.lochiva.sbuca"
+        }
+    }
 }

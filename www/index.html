@@ -29,7 +29,7 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://cdn.firebase.com https://*.firebaseio.com;  media-src * 'self' data: gap: blob: ; img-src * 'self' data: gap: ;">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://maps.googleapis.com https://cdn.firebase.com https://*.firebaseio.com;  media-src * 'self' data: gap: blob: ; img-src * 'self' data: gap: ;">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -62,6 +62,7 @@
                 <ul>
                     <li><a href="#home" data-icon="home" class="ui-btn-active ui-state-persist" data-transition="slide">Home</a></li>
                     <li><a href="#camera" data-icon="camera" data-transition="slide">Photo</a></li>
+                    <li><a href="#gallery" data-icon="tag" data-transition="slide">Gallery</a></li>
                     <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
                 </ul>
             </div>
@@ -81,10 +82,10 @@
                 </div>-->
             </div>
             <div id="modal-image" class="modal modal-fixed-footer">
-            <div class="modal-content">
-              <div class="row">
-                <div class="col s12">
-                  <img id="modal-img" src="" class="responsive-img"/>
+            <div class="modal-content modal-content-img">
+              <div class="row" style="height:100%;">
+                <div class="col s12 center-align" style="height:100%;">
+                  <img id="modal-img" src="" class="responsive-img" style="max-height:100%;"/>
                 </div>
               </div>
             </div>
@@ -100,6 +101,7 @@
                 <ul>
                     <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
                     <li><a href="#camera" data-icon="camera" class="ui-btn-active ui-state-persist" data-transition="slide">Photo</a></li>
+                    <li><a href="#gallery" data-icon="tag" data-transition="slide">Gallery</a></li>
                     <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
                 </ul>
             </div>
@@ -129,36 +131,46 @@
             </div>
         </div>
     </div>
+    <div data-role="page" id="gallery">
+      <div data-role="header">
+          <div data-role="navbar">
+              <ul>
+                  <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
+                  <li><a href="#camera" data-icon="camera" data-transition="slide" data-direction="reverse">Photo</a></li>
+                  <li><a href="#gallery" data-icon="tag" class="ui-btn-active ui-state-persist" data-transition="slide" >Gallery</a></li>
+                  <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
+              </ul>
+          </div>
+      </div>
+        <div data-role="main" class="ui-content">
+          <div class="row">
+            <div class="col s12">
+              <h5 class="center app-title">Gallery</h5>
+            </div>
+          </div>
+            <div id="image-container" class="row">
+              <h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>
+            </div>
+        </div>
+    </div>
     <div data-role="page" id="info">
         <div data-role="header">
             <div data-role="navbar">
                 <ul>
                     <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
                     <li><a href="#camera" data-icon="camera" data-transition="slide" data-direction="reverse">Photo</a></li>
+                    <li><a href="#gallery" data-icon="tag" data-transition="slide" data-direction="reverse">Gallery</a></li>
                     <li><a href="#info" data-icon="info" class="ui-btn-active ui-state-persist" data-transition="slide">Info</a></li>
                 </ul>
             </div>
         </div>
         <div data-role="main" class="ui-content">
             <div class="center-div">
-                <h4>Info:</h4>
-                <h6>ITOA srl con socio unico<br />
-              Via Massari 189 - 10148 Torino<br />
-              P.IVA/C.F. 11489070018<br />
-              www.itoa.it info@itoa.it</h6><br/>
+              <div id="info-text">
+                  <h4>Info:</h4>
+                  <h6>Lettura info non riuscita!</h6>
+              </div>
                 <button id="getPosition">Posizione corrente</button>
-                <button id="openGallery">Apri galleria</button>
-            </div>
-        </div>
-    </div>
-    <div data-role="page" id="gallery">
-        <div data-role="header">
-            <h1 style="font-weight:800;">Galleria</h1>
-            <a href="#info" data-transition="flip" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-back">
-        Torna indietro</a>
-        </div>
-        <div data-role="main" class="ui-content">
-            <div id="image-container" class="row">
             </div>
         </div>
     </div>

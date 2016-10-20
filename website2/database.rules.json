@@ -4,6 +4,10 @@
     ".write": "auth != null && auth.email != 'sbuca.hosting@email.com'",
     "images": {
       ".indexOn": "user"
+    },
+    "info":{
+      ".read": true,
+      ".write": false
     }
   }
 }

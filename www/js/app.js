@@ -40,7 +40,7 @@ var app = {
         }
 
         function onFail(message) {
-            Materialize.toast('Errore scatto foto: ' + message, 3000);
+            Materialize.toast('Errore scatto foto: ' + message, 5000);
             return false;
         }
 
@@ -50,14 +50,14 @@ var app = {
      */
     getPosition: function(dialog) {
         startSpinner();
-        if(app.position.longitude !== '' && app.position.latitude !== ''){
+        if (app.position.longitude !== '' && app.position.latitude !== '') {
 
-                  alert('Latitudine: ' + app.position.longitude + '\n' +
-                      'Longitudine: ' + app.position.latitude + '\n' +
-                      'Data ed ora della posizione: '+ (new Date(app.position.timestamp-app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' ') );
-                stopSpinner();
+            alert('Latitudine: ' + app.position.longitude + '\n' +
+                'Longitudine: ' + app.position.latitude + '\n' +
+                'Data ed ora della posizione: ' + (new Date(app.position.timestamp - app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' '));
+            stopSpinner();
 
-        }else{
+        } else {
 
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000);
@@ -69,23 +69,27 @@ var app = {
 
     },
 
-    watchPosition: function(){
-      function onSuccess(position) {
-          app.position.latitude = position.coords.latitude;
-          app.position.longitude = position.coords.longitude;
-          app.position.timestamp = position.timestamp;
+    watchPosition: function() {
+        function onSuccess(position) {
+            app.position.latitude = position.coords.latitude;
+            app.position.longitude = position.coords.longitude;
+            app.position.timestamp = position.timestamp;
 
-         }
+        }
 
-         // onError Callback receives a PositionError object
-         //
-         function onError(error) {
+        // onError Callback receives a PositionError object
+        //
+        function onError(error) {
 
-         }
+        }
 
-         // Options: throw an error if no update is received every 30 seconds.
-         //
-         var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {  maximumAge: 20000, timeout: 30000,enableHighAccuracy: true });
+        // Options: throw an error if no update is received every 30 seconds.
+        //
+        var watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
+            maximumAge: 20000,
+            timeout: 30000,
+            enableHighAccuracy: true
+        });
 
     },
 
@@ -192,9 +196,27 @@ var app = {
         return uri;
 
     },
+    /**
+     * Function that check the info and read from localstorage or firebase
+     */
+    readInfo: function() {
+        if (app.firebaseConnected === false) {
+
+            var info = getStorage('sbuca.info-text');
+            if (info === false) {
+                readInfoFirebase();
+            } else {
+                $('#info-text').html(info);
+            }
+
+        } else {
+            readInfoFirebase();
+        }
+
+    },
     onOnline: function() {
-       app.loadMapsApi();
-   },
+        app.loadMapsApi();
+    },
 
     onResume: function() {
 
@@ -208,11 +230,15 @@ var app = {
         $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQRGGpSnZPgJBYhC1UaEfjXAJ6BUCuBBQ&libraries=geometry&sensor=true&callback=app.onMapsApiLoaded');
     },
 
-    onMapsApiLoaded : function () {
-     // Maps API loaded and ready to be used.
-     loadMap();
+    onMapsApiLoaded: function() {
+        // Maps API loaded and ready to be used.
+        loadMap();
 
-     },
+    },
+
+    openNavigator: function(cord1,crod2){
+      launchnavigator.navigate([cord1, crod2]);
+    },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -226,6 +252,10 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         stopSpinner();
+        setTimeout(function() {
+            app.strating = false;
+            app.readInfo();
+        }, 2000);
         app.receivedEvent('deviceready');
         document.addEventListener("online", app.onOnline, false);
         document.addEventListener("resume", app.onResume, false);
@@ -239,14 +269,16 @@ var app = {
     photoCaptured: false,
 
     position: {
-      longitude : '',
-      latitude : '',
-      timestamp: ''
+        longitude: '',
+        latitude: '',
+        timestamp: ''
     },
     map: '',
+    markers: [],
     windowHeight: '',
     windowWidth: '',
     timeZoneDifference: '',
+    strating: true,
     //
     firebaseConnected: true,
     // Update DOM on a Received Event
