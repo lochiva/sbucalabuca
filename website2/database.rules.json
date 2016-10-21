@@ -3,7 +3,7 @@
     ".read": "auth != null",
     ".write": "auth != null && auth.email != 'sbuca.hosting@email.com'",
     "images": {
-      ".indexOn": "user"
+      ".indexOn": ["user","timestamp"]
     },
     "info":{
       ".read": true,

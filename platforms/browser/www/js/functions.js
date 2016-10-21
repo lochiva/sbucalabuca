@@ -171,12 +171,6 @@ String.prototype.hashCode = function() {
  */
 function startSpinner() {
     $('.custom-spinner').css('z-index', 100000000);
-    setTimeout(function(){
-      if($('.custom-spinner').css('z-index') != -10){
-        $('.custom-spinner').css('z-index', -10);
-        Materialize.toast('Errore caricamento in timeout ' , 3000);
-      }
-    }, 15000);
 }
 
 function stopSpinner() {
@@ -189,7 +183,7 @@ function stopSpinner() {
  */
 
 function checkStorage() {
-    if (typeof window.localStorage != undefined) {
+    if (typeof window.localStorage !== undefined) {
         return true;
     } else {
         return false;

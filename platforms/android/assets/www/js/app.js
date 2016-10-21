@@ -29,7 +29,7 @@ var app = {
      */
     takePicture: function() {
         navigator.camera.getPicture(onSuccess, onFail, {
-            quality: 50,
+            quality: 40,
             correctOrientation: true,
             destinationType: Camera.DestinationType.FILE_URI
         });
@@ -224,15 +224,20 @@ var app = {
     },
     loadMapsApi: function() {
         if (navigator.connection.type === Connection.NONE || app.map !== '') {
+          if(app.map === ''){
+            $('#map').html('<h5>Connessione assente</h5>');
+          }
             return;
         }
-
+        if(app.map === ''){
+          $('#map').html('');
+        }
         $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQRGGpSnZPgJBYhC1UaEfjXAJ6BUCuBBQ&libraries=geometry&sensor=true&callback=app.onMapsApiLoaded');
     },
 
     onMapsApiLoaded: function() {
         // Maps API loaded and ready to be used.
-        loadMap();
+        loadMap(1);
 
     },
 
@@ -281,12 +286,15 @@ var app = {
     },
     map: '',
     markers: [],
+    infoWinodw: '',
+    mapImagesUrl: [],
+    markerCluster: '',
     windowHeight: '',
     windowWidth: '',
     timeZoneDifference: '',
     strating: true,
     //
-    firebaseConnected: true,
+    firebaseConnected: false,
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         /*var parentElement = document.getElementById(id);

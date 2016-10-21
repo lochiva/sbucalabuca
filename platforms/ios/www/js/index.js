@@ -19,7 +19,6 @@
 /**
  * INITIALIZE OF APPLICATION
  */
-Materialize.toast('Device ReadY! ', 15000);
 $(document).ready(function() {
     startSpinner();
     // app initialize
@@ -37,7 +36,7 @@ $(document).ready(function() {
     // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged(function(user) {
-        if (!user)  {
+        if (!user)  {
             startSpinner();
             firebase.auth().signInAnonymously().catch(function(error) {
 
@@ -55,7 +54,7 @@ $(document).ready(function() {
     // Set window dimension variables and map dimension
     app.windowHeight = window.innerHeight;
     app.windowWidth = window.innerWidth;
-    $('#map').css('height', (app.windowHeight - 140));
+    $('#map').css('height', (app.windowHeight - 130));
 
     // firebase bind of connection event
     var connectedRef = firebase.database().ref(".info/connected");
@@ -73,10 +72,10 @@ $(document).ready(function() {
         }
     });
 
-    /**
+    /********************************************
      *  SWIPE FUNCTIONS
      * Functions that detect the swipe for moving the pages.
-     */
+     *********************************************/
     var pages = ["#home", "#camera", "#gallery", "#info"];
     $(document).on("swipeleft", pages, function() {
         var position = 0;
@@ -107,9 +106,9 @@ $(document).ready(function() {
         }
 
     });
-    /**
+    /********************************************
      * END SWIPE FUNCTIONS
-     */
+     *********************************************/
 
     /**
      * PAGECHANGE BIND take picture if not taked
@@ -141,21 +140,21 @@ $(document).ready(function() {
         if (event.orientation == 'portrait') {
             $('.app-title').show();
             $('.center-div').css('margin-top', 100);
-            $('#map').css('height', (app.windowHeight - 140));
+            $('#map').css('height', (app.windowHeight - 130));
 
         } else {
             $('.center-div').css('margin-top', 30);
             $('.app-title').hide();
-            $('#map').css('height', (app.windowWidth - 110));
+            $('#map').css('height', (app.windowWidth - 100));
 
         }
         google.maps.event.trigger(app.map, 'resize');
 
     });
 
-    /**
+    /********************************************
      * BUTTONS LISTENERS
-     */
+     *********************************************/
     document.getElementById('startCameraButton').addEventListener('click', app.takePicture, false);
     document.getElementById("getPosition").addEventListener("click", app.getPosition);
     document.getElementById("openModal").addEventListener("click", function() {

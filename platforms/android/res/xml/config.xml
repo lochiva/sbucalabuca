@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.lochiva.sbuca" version="1.3.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.itoa.sbuca" version="1.3.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <feature name="Whitelist">
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
@@ -45,7 +45,7 @@
     <description>
         A sample mobile application that sends geolocalizate pictures.
     </description>
-    <author email="info@lochiva.com" href="http://www.lochiva.com">
+    <author email="info@itoa.com" href="http://www.itoa.srl">
         Lochiva Team
     </author>
     <content src="index.html" />

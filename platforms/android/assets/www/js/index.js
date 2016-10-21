@@ -48,7 +48,7 @@ $(document).ready(function() {
             });
             stopSpinner();
         } else {
-
+            app.firebaseConnected = true;
         }
     });
     // Set window dimension variables and map dimension
