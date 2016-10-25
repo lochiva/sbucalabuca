@@ -1057,7 +1057,7 @@ ClusterIcon.prototype.triggerClusterClick = function(event) {
   // if we have reached the maxZoom and there is more than 1 marker in this cluster
   // use our onClick method to popup a list of options
   if (zoom >= maxZoom && this.cluster_.markers_.length > 1) {
-     return markerClusterer.onClickZoom(this);
+     return markerClusterer.onClickZoom(this.cluster_);
   }
 
   if (markerClusterer.isZoomOnClick()) {

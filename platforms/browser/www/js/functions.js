@@ -89,17 +89,26 @@ function deleteImage(elem) {
  */
 function readFirebaseGalleryImage(element) {
     startSpinner();
-    var storageRef = firebase.storage().ref("images/" + element.image);
-    storageRef.getDownloadURL().then(function(url) {
+    var urlImage = app.galleryImagesUrl[element.image];
 
-        //app.saveFileDownload(url,element.image);
-        prependGalleryContent(url, element);
+    if(urlImage !== undefined){
+        prependGalleryContent(urlImage, element);
 
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
-        stopSpinner();
-        return false;
-    });
+    }else{
+      var storageRef = firebase.storage().ref("images/" + element.image);
+      storageRef.getDownloadURL().then(function(url) {
+          app.galleryImagesUrl[element.image] = url;
+          //app.saveFileDownload(url,element.image);
+          prependGalleryContent(url, element);
+
+      }).catch(function(error) {
+          Materialize.toast('Errore connessione: ' + error, 3000);
+          stopSpinner();
+          return false;
+      });
+
+    }
+
     stopSpinner();
 
 }
@@ -165,6 +174,18 @@ String.prototype.hashCode = function() {
     }
     return hash;
 };
+
+function escapeHtml(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
 
 /**
  * START AND STOP SPINNER FUNCTIONS

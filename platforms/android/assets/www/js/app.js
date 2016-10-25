@@ -20,6 +20,28 @@
  * APPLICATION CORE
  */
 var app = {
+  /********************************************
+   PROPRIETIES
+ *********************************************/
+    photoCaptured: false,
+
+    position: {
+        longitude: '',
+        latitude: '',
+        timestamp: ''
+    },
+    map: '',
+    markers: [],
+    infoWinodw: '',
+    mapImagesUrl: {},
+    galleryImagesUrl: {},
+    markerCluster: '',
+    windowHeight: '',
+    windowWidth: '',
+    timeZoneDifference: '',
+    strating: true,
+    //
+    firebaseConnected: false,
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -262,6 +284,15 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        var imagesUrl = getStorage('sbuca-mapImagesUrl');
+        if(imagesUrl !== false){
+          app.mapImagesUrl = JSON.parse(imagesUrl);
+        }
+        var myImagesUrl = getStorage('sbuca-galleryImagesUrl');
+        if(myImagesUrl !== false){
+          app.galleryImagesUrl = JSON.parse(myImagesUrl);
+        }
+
         stopSpinner();
         setTimeout(function() {
             app.strating = false;
@@ -277,24 +308,6 @@ var app = {
         //console.log($(document).height()+" ---  "+$(document).width());
     },
     //
-    photoCaptured: false,
-
-    position: {
-        longitude: '',
-        latitude: '',
-        timestamp: ''
-    },
-    map: '',
-    markers: [],
-    infoWinodw: '',
-    mapImagesUrl: [],
-    markerCluster: '',
-    windowHeight: '',
-    windowWidth: '',
-    timeZoneDifference: '',
-    strating: true,
-    //
-    firebaseConnected: false,
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         /*var parentElement = document.getElementById(id);

@@ -1,5 +1,6 @@
 $(document).ready(function() {
-
+    window.markersList = [];
+    window.map = '';
     //$('.my-carousel').carousel();
     //$('.carousel').carousel();
 
@@ -20,13 +21,13 @@ $(document).ready(function() {
 
     });
 
-    return firebase.database().ref('/images/').once('value').then(function(snapshot) {
+    return firebase.database().ref('/images/').limitToLast(1500).once('value').then(function(snapshot) {
         var prova = snapshot.val();
 
         if (prova !== null && prova !== undefined) {
 
             var length = Object.keys(prova).length;
-            var i = 1;
+            var i = 0;
             var firstEle = prova[Object.keys(prova)[0]];
             var sumLat = 0,
                 sumLng = 0,
@@ -40,7 +41,7 @@ $(document).ready(function() {
             medLng = sumLng / length;
 
 
-            var map = new google.maps.Map(document.getElementById('map'), {
+            window.map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
                 center: new google.maps.LatLng(medLat, medLng),
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -127,6 +128,8 @@ $(document).ready(function() {
                         map: map
                     });
                     //console.log(element.latitude);
+                    marker.firebaseElement = element;
+                    marker.firebaseUrlImage = url;
 
                     google.maps.event.addListener(marker, 'click', (function(marker, i) {
                         return function() {
@@ -138,10 +141,14 @@ $(document).ready(function() {
                             infowindow.open(map, marker);
                         };
                     })(marker, i));
-
+                    window.markersList[i] = marker;
+                    i++;
+                    if(i == length){
+                      addMarkerCluster();
+                    }
                 });
 
-                i++;
+
             });
         }else{
           var map = new google.maps.Map(document.getElementById('map'), {
@@ -225,4 +232,48 @@ function openModal(src) {
     $('#modal-image').openModal();
     $('#modal-img').attr("src", src);
 
+}
+
+function addMarkerCluster(){
+  markerCluster = new MarkerClusterer(window.map, window.markersList,
+  {imagePath: 'img/markercluster/m'});
+  markerCluster.setMaxZoom(21);
+  markerCluster.onClickZoom = function(_cluster) { multiChoice(_cluster); };
+  //app.markerCluster.onClickZoom = function() { return multiChoice(markerCluster); };
+}
+
+function multiChoice(_cluster) {
+
+     // if more than 1 point shares the same lat/long
+     // the size of the cluster array will be 1 AND
+     // the number of markers in the cluster will be > 1
+     // REMEMBER: maxZoom was already reached and we can't zoom in anymore
+
+     var contentString = '<div class="row"><ul class="collection col s12"><li class="collection-header"><h4>Lista foto: </h4></li>';
+     var element = '';
+
+     if ( _cluster.markers_.length >= 1)
+     {
+        var markers = _cluster.markers_;
+          for (var i=0; i < markers.length; i++)
+          {     element = markers[i].firebaseElement;
+                contentString +='<li class="collection-item avatar "> <img onclick="openModal(this.src)" src="' + markers[i].firebaseUrlImage + '" alt="" class="mouse-pointer circle">'+
+                      '<b>Nota:</b> '+element.nota+' <b>Data:</b>: '+ element.date+'</li>';
+
+          }
+
+          /*contentString += '</ul><button onclick="app.openNavigator('+element.latitude+','+element.longitude+')" '+
+          'class="waves-effect waves-light yellow darken-3 btn col s12">Portami qua</button></div>';*/
+
+          var infowindow = new google.maps.InfoWindow({
+            content: contentString,
+            position: new google.maps.LatLng(_cluster.center_.lat(), _cluster.center_.lng()),
+          });
+
+          infowindow.open(window.map);
+
+          return false;
+     }
+
+     return true;
 }

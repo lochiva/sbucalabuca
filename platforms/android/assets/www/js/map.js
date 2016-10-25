@@ -29,7 +29,7 @@ function loadMap(timeOut) {
       return false;
     }
 
-    firebase.database().ref('/images/').once('value').then(function(snapshot) {
+    firebase.database().ref('/images/').limitToLast(1000).once('value').then(function(snapshot) {
 
         var elements = snapshot.val();
 
@@ -49,10 +49,14 @@ function loadMap(timeOut) {
             medLat = sumLat / length;
             medLng = sumLng / length;
 
-
+            var callback = function(){
+                  google.maps.event.addListenerOnce(app.map, 'idle', function () {
+                  // Fire when map tiles are completly loaded
+                  setZoomVisibleMarkers();
+               });
+            };
             paintMap(medLat,medLng);
-
-            addMarkers(elements);
+            addMarkers(elements,callback);
             stopSpinner();
 
         } else {
@@ -239,7 +243,7 @@ function reloadMarkersToday(){
   }
   var callback = function(){
     var start = new Date().getTime()-(60*60*24*1000);
-    firebase.database().ref('/images/').orderByChild('timestamp').startAt(start).once('value').then(function(snapshot) {
+    firebase.database().ref('/images/').orderByChild('timestamp').startAt(start).limitToLast(1000).once('value').then(function(snapshot) {
         var elements = snapshot.val();
 
         if (elements !== null && elements !== undefined) {
@@ -262,7 +266,7 @@ function reloadMarkersToday(){
 
 }
 
-function addMarkers(elements){
+function addMarkers(elements,callback){
   startSpinner();
   var l = 0;
   var keys = Object.keys(elements);
@@ -286,6 +290,9 @@ function addMarkers(elements){
           if(l == length){
 
             addMarkerCluster();
+            if(callback !== undefined){
+              callback();
+            }
           }
 
       }else{
@@ -299,6 +306,10 @@ function addMarkers(elements){
             if(l == length){
 
               addMarkerCluster();
+              if(callback !== undefined){
+                callback();
+              }
+
             }
 
         });
@@ -313,7 +324,7 @@ function addMarkerCluster(){
   app.markerCluster = new MarkerClusterer(app.map, app.markers,
   {imagePath: 'js/assets/img/markercluster/m'});
   app.markerCluster.setMaxZoom(21);
-  app.markerCluster.onClickZoom = function() { multiChoice(app.markerCluster); };
+  app.markerCluster.onClickZoom = function(_cluster) { multiChoice(_cluster); };
   //app.markerCluster.onClickZoom = function() { return multiChoice(markerCluster); };
   stopSpinner();
 
@@ -366,6 +377,10 @@ function clearMarkers(callback){
 
  /********************************************
 *   END Marker functions
+*********************************************/
+
+/********************************************
+*   MAP CONTROL functions
 *********************************************/
 
 function CenterMyControl(controlDiv, map) {
@@ -465,8 +480,8 @@ function openModal(src) {
 
 }
 
-function multiChoice(mc) {
-     var cluster = mc.clusters_;
+function multiChoice(_cluster) {
+
      // if more than 1 point shares the same lat/long
      // the size of the cluster array will be 1 AND
      // the number of markers in the cluster will be > 1
@@ -475,9 +490,9 @@ function multiChoice(mc) {
      var contentString = '<div class="row"><ul class="collection col s12"><li class="collection-header"><h4>Lista foto: </h4></li>';
      var element = '';
 
-     if (cluster.length > 1 && cluster[0].markers_.length >= 1)
+     if ( _cluster.markers_.length >= 1)
      {
-        var markers = cluster[0].markers_;
+        var markers = _cluster.markers_;
           for (var i=0; i < markers.length; i++)
           {     element = markers[i].firebaseElement;
                 contentString +='<li class="collection-item avatar "> <img onclick="openModal(this.src)" src="' + markers[i].firebaseUrlImage + '" alt="" class="mouse-pointer circle">'+
@@ -489,12 +504,36 @@ function multiChoice(mc) {
           'class="waves-effect waves-light yellow darken-3 btn col s12">Portami qua</button></div>';
 
           app.infowindow = new google.maps.InfoWindow({
-            content: contentString
+            content: contentString,
+            position: new google.maps.LatLng(_cluster.center_.lat(), _cluster.center_.lng()),
           });
-          app.infowindow.open(app.map,cluster[0].markers_[0]);
+
+          app.infowindow.open(app.map);
 
           return false;
      }
 
      return true;
+}
+
+function setZoomVisibleMarkers() {
+    var bounds = app.map.getBounds(),
+        count = 0;
+
+    for (var i = 0; i < app.markers.length; i++) {
+        //var marker = app.markers.markers[i];
+            //infoPanel = $('.info-' + (i+1) ); // array indexes start at zero, but not our class names :)
+
+        if(bounds.contains(app.markers[i].getPosition())===true) {
+
+            count++;
+        }
+
+    }
+    if(count === 0){
+    	var zoom = app.map.getZoom();
+      app.map.setZoom(zoom-1);
+      setZoomVisibleMarkers();
+    }
+
 }

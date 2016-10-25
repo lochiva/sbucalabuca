@@ -26,13 +26,7 @@ $(document).ready(function() {
     // set timeZone difference
     app.timeZoneDifference = new Date().getTimezoneOffset() * 60000;
     // firebase configurations
-    var config = {
-        apiKey: "AIzaSyBAiA4VQdynEdIgKBJJOnCY3Mz6nGhjg74",
-        authDomain: "sbuca-6248d.firebaseapp.com",
-        databaseURL: "https://sbuca-6248d.firebaseio.com",
-        storageBucket: "gs://sbuca-6248d.appspot.com",
-        messagingSenderId: "851026370852"
-    };
+    var config = firebaseConfig;
     // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged(function(user) {
@@ -83,7 +77,7 @@ $(document).ready(function() {
         position = pages.indexOf("#" + $(':mobile-pagecontainer').pagecontainer('getActivePage').attr('id'));
 
         max = pages.length - 1;
-        if (position < pages.length - 1) {
+        if (position < max && position !== 0) {
             position++;
             $(":mobile-pagecontainer").pagecontainer("change", pages[position], {
                 transition: "slide"
@@ -166,12 +160,20 @@ $(document).ready(function() {
         }
 
     });
+    /**
+     * APPLICATION EXIT LISTENER
+     */
+    window.onbeforeunload = function(e) {
+        setStorage('sbuca-mapImagesUrl',JSON.stringify(app.mapImagesUrl));
+        setStorage('sbuca-galleryImagesUrl',JSON.stringify(app.galleryImagesUrl));
+    };
 
     /**
      * SEND DATA LISTENER function use firebase for send image with data to the database
      */
     document.getElementById("sendData").addEventListener("click", function() {
         var nota = $('#textarea1').val();
+        nota = escapeHtml(nota);
         if (app.photoCaptured === false) {
             Materialize.toast('Prima di inviare devi scattare una foto', 3000);
             return false;
