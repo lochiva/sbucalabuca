@@ -351,7 +351,7 @@ function setMarkerAndInfoWindow(element, url)
               '<div class="card">' +
               '<div class="card-image info-image" style="height:'+height+'px;">' +
               '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title text-card"">'+ element.date + '</span></div>' +
-              '<div class="card-content"><div class="row"><p class="col s12">' + element.nota + '</p><button onclick="app.openNavigator('+element.latitude+','+element.longitude+')"'+
+              '<div class="card-content"><div class="row"><p class="col s12">' + escapeHtml(element.nota) + '</p><button onclick="app.openNavigator('+element.latitude+','+element.longitude+')"'+
               ' class="waves-effect waves-light yellow darken-3 btn col s12">Portami qua</button></div></div></div></div></div>');
           app.infowindow.open(app.map, marker);
           setTimeout(function(){ $('.info-image').css('height',''); }, 1000);
@@ -496,7 +496,7 @@ function multiChoice(_cluster) {
           for (var i=0; i < markers.length; i++)
           {     element = markers[i].firebaseElement;
                 contentString +='<li class="collection-item avatar "> <img onclick="openModal(this.src)" src="' + markers[i].firebaseUrlImage + '" alt="" class="mouse-pointer circle">'+
-                      '<b>Nota:</b> '+element.nota+' <b>Data:</b>: '+ element.date+'</li>';
+                      '<b>Nota:</b> '+escapeHtml(element.nota)+' <b>Data:</b>: '+ element.date+'</li>';
 
           }
 

@@ -119,7 +119,7 @@ function readFirebaseGalleryImage(element) {
 function appendGalleryContent(url, element) {
     $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
         '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
-        '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
+        '<div class="card-content"><p>' + escapeHtml(element.nota) + '</p></div>' + '<div class="card-action">' +
         '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
     );
 
@@ -130,7 +130,7 @@ function appendGalleryContent(url, element) {
 function prependGalleryContent(url, element) {
     $('#image-container').prepend('<div class="col s12 m6"><div class="card"><div class="card-image">' +
         '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
-        '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
+        '<div class="card-content"><p>' + escapeHtml(element.nota) + '</p></div>' + '<div class="card-action">' +
         '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
     );
 

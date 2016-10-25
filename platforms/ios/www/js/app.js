@@ -20,6 +20,28 @@
  * APPLICATION CORE
  */
 var app = {
+  /********************************************
+   PROPRIETIES
+ *********************************************/
+    photoCaptured: false,
+
+    position: {
+        longitude: '',
+        latitude: '',
+        timestamp: ''
+    },
+    map: '',
+    markers: [],
+    infoWinodw: '',
+    mapImagesUrl: {},
+    galleryImagesUrl: {},
+    markerCluster: '',
+    windowHeight: '',
+    windowWidth: '',
+    timeZoneDifference: '',
+    strating: true,
+    //
+    firebaseConnected: false,
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -29,7 +51,7 @@ var app = {
      */
     takePicture: function() {
         navigator.camera.getPicture(onSuccess, onFail, {
-            quality: 50,
+            quality: 40,
             correctOrientation: true,
             destinationType: Camera.DestinationType.FILE_URI
         });
@@ -224,15 +246,20 @@ var app = {
     },
     loadMapsApi: function() {
         if (navigator.connection.type === Connection.NONE || app.map !== '') {
+          if(app.map === ''){
+            $('#map').html('<h5>Connessione assente</h5>');
+          }
             return;
         }
-
+        if(app.map === ''){
+          $('#map').html('');
+        }
         $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQRGGpSnZPgJBYhC1UaEfjXAJ6BUCuBBQ&libraries=geometry&sensor=true&callback=app.onMapsApiLoaded');
     },
 
     onMapsApiLoaded: function() {
         // Maps API loaded and ready to be used.
-        loadMap();
+        loadMap(1);
 
     },
 
@@ -257,6 +284,15 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        var imagesUrl = getStorage('sbuca-mapImagesUrl');
+        if(imagesUrl !== false){
+          app.mapImagesUrl = JSON.parse(imagesUrl);
+        }
+        var myImagesUrl = getStorage('sbuca-galleryImagesUrl');
+        if(myImagesUrl !== false){
+          app.galleryImagesUrl = JSON.parse(myImagesUrl);
+        }
+
         stopSpinner();
         setTimeout(function() {
             app.strating = false;
@@ -272,21 +308,6 @@ var app = {
         //console.log($(document).height()+" ---  "+$(document).width());
     },
     //
-    photoCaptured: false,
-
-    position: {
-        longitude: '',
-        latitude: '',
-        timestamp: ''
-    },
-    map: '',
-    markers: [],
-    windowHeight: '',
-    windowWidth: '',
-    timeZoneDifference: '',
-    strating: true,
-    //
-    firebaseConnected: true,
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         /*var parentElement = document.getElementById(id);

@@ -89,17 +89,26 @@ function deleteImage(elem) {
  */
 function readFirebaseGalleryImage(element) {
     startSpinner();
-    var storageRef = firebase.storage().ref("images/" + element.image);
-    storageRef.getDownloadURL().then(function(url) {
+    var urlImage = app.galleryImagesUrl[element.image];
 
-        //app.saveFileDownload(url,element.image);
-        prependGalleryContent(url, element);
+    if(urlImage !== undefined){
+        prependGalleryContent(urlImage, element);
 
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
-        stopSpinner();
-        return false;
-    });
+    }else{
+      var storageRef = firebase.storage().ref("images/" + element.image);
+      storageRef.getDownloadURL().then(function(url) {
+          app.galleryImagesUrl[element.image] = url;
+          //app.saveFileDownload(url,element.image);
+          prependGalleryContent(url, element);
+
+      }).catch(function(error) {
+          Materialize.toast('Errore connessione: ' + error, 3000);
+          stopSpinner();
+          return false;
+      });
+
+    }
+
     stopSpinner();
 
 }
@@ -110,7 +119,7 @@ function readFirebaseGalleryImage(element) {
 function appendGalleryContent(url, element) {
     $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
         '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
-        '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
+        '<div class="card-content"><p>' + escapeHtml(element.nota) + '</p></div>' + '<div class="card-action">' +
         '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
     );
 
@@ -121,7 +130,7 @@ function appendGalleryContent(url, element) {
 function prependGalleryContent(url, element) {
     $('#image-container').prepend('<div class="col s12 m6"><div class="card"><div class="card-image">' +
         '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
-        '<div class="card-content"><p>' + element.nota + '</p></div>' + '<div class="card-action">' +
+        '<div class="card-content"><p>' + escapeHtml(element.nota) + '</p></div>' + '<div class="card-action">' +
         '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
     );
 
@@ -166,17 +175,23 @@ String.prototype.hashCode = function() {
     return hash;
 };
 
+function escapeHtml(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 /**
  * START AND STOP SPINNER FUNCTIONS
  */
 function startSpinner() {
     $('.custom-spinner').css('z-index', 100000000);
-    setTimeout(function(){
-      if($('.custom-spinner').css('z-index') != -10){
-        $('.custom-spinner').css('z-index', -10);
-        Materialize.toast('Errore caricamento in timeout ' , 3000);
-      }
-    }, 15000);
 }
 
 function stopSpinner() {
@@ -189,7 +204,7 @@ function stopSpinner() {
  */
 
 function checkStorage() {
-    if (typeof window.localStorage != undefined) {
+    if (typeof window.localStorage !== undefined) {
         return true;
     } else {
         return false;

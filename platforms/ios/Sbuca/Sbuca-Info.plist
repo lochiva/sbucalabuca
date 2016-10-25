@@ -13,7 +13,7 @@
     <key>CFBundleIcons~ipad</key>
     <dict/>
     <key>CFBundleIdentifier</key>
-    <string>com.lochiva.sbuca</string>
+    <string>com.itoa.sbuca</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
@@ -21,11 +21,11 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.3.1</string>
+    <string>1.3.4</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleVersion</key>
-    <string>1.3.1</string>
+    <string>1.3.4</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>citymapper</string>

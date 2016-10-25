@@ -173,7 +173,6 @@ $(document).ready(function() {
      */
     document.getElementById("sendData").addEventListener("click", function() {
         var nota = $('#textarea1').val();
-        nota = escapeHtml(nota);
         if (app.photoCaptured === false) {
             Materialize.toast('Prima di inviare devi scattare una foto', 3000);
             return false;

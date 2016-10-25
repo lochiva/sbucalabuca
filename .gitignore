@@ -1,1 +1,4 @@
 www/js/config.js
+platforms/android/assets/www/js/config.js
+platforms/ios/www/js/config.js
+platforms/browser/www/js/config.js
