@@ -19,6 +19,10 @@
  /********************************************
   BEIGN MAP FUNCTIONS
 *********************************************/
+/**
+*  Function that read images from database, load the map and add the buttons of
+* the map.
+*/
 function loadMap(timeOut) {
   startSpinner();
     // In caso di assenza di connessione setto un timeout
@@ -28,44 +32,36 @@ function loadMap(timeOut) {
       },500*timeOut);
       return false;
     }
-
-    firebase.database().ref('/images/').limitToLast(1000).once('value').then(function(snapshot) {
-
-        var elements = snapshot.val();
-
-        if (elements !== null && elements !== undefined) {
-
-            var length = Object.keys(elements).length;
-            var i = 1;
-            var firstEle = elements[Object.keys(elements)[0]];
-            var sumLat = 0,
-                sumLng = 0,
-                medLat = 0,
-                medLng = 0;
-            for (var key in elements) {
-                sumLat += Number(elements[key].latitude);
-                sumLng += Number(elements[key].longitude);
-            }
-            medLat = sumLat / length;
-            medLng = sumLng / length;
-
-            var callback = function(){
-                  google.maps.event.addListenerOnce(app.map, 'idle', function () {
-                  // Fire when map tiles are completly loaded
-                  setZoomVisibleMarkers();
-               });
-            };
-            paintMap(medLat,medLng);
-            addMarkers(elements,callback);
-            stopSpinner();
-
-        } else {
-
-          paintMap();
-          stopSpinner();
-
+    var onSuccess = function(elements){
+      if (elements !== null && elements !== undefined) {
+        var length = Object.keys(elements).length;
+        var i = 1;
+        var firstEle = elements[Object.keys(elements)[0]];
+        var sumLat = 0,
+            sumLng = 0,
+            medLat = 0,
+            medLng = 0;
+        for (var key in elements) {
+            sumLat += Number(elements[key].latitude);
+            sumLng += Number(elements[key].longitude);
         }
+        medLat = sumLat / length;
+        medLng = sumLng / length;
 
+        var callback = function(){
+              google.maps.event.addListenerOnce(app.map, 'idle', function () {
+              // Fire when map tiles are completly loaded
+              setZoomVisibleMarkers();
+           });
+        };
+        paintMap(medLat,medLng);
+        addMarkers(elements,callback);
+        stopSpinner();
+
+      } else {
+        paintMap();
+        stopSpinner();
+      }
       var centerControlDiv = document.createElement('div');
       centerControlDiv.id = 'myControlMap';
        var centerControl = new CenterMyControl(centerControlDiv, app.map);
@@ -77,16 +73,16 @@ function loadMap(timeOut) {
        centerControlDiv.id = 'todayControlMap';
        centerControl = new CenterTodayControl(centerControlDiv, app.map);
 
-        centerControlDiv.index = 2;
+      centerControlDiv.index = 2;
         app.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(centerControlDiv);
+    };
 
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
-        stopSpinner();
-        return false;
-    });
+    readImagesForMap(onSuccess);
+
 }
-
+/**
+*  Function thta paint the map
+*/
 function paintMap(lat,lng){
   if(lat === undefined || lng === undefined){
     lat = 45.1075;
@@ -177,33 +173,22 @@ function reloadMarkers() {
       return false;
   }
     var callback = function(){
-        firebase.database().ref('/images/').once('value').then(function(snapshot) {
-        var elements = snapshot.val();
-
-        if (elements !== null && elements !== undefined) {
-
+        var onSuccess = function(elements){
+          if (elements !== null && elements !== undefined) {
             addMarkers(elements);
             google.maps.event.trigger(app.map, 'resize');
-        }else{
-          stopSpinner();
-        }
+          }else{
+            stopSpinner();
+          }
+        };
+        readImagesForMap(onSuccess);
 
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
-        stopSpinner();
-        return false;
-    });
   };
   clearMarkers(callback);
 }
 
 function reloadMarkersMy(){
   startSpinner();
-  var code = '';
-
-  if (device.uuid !== null) {
-      code = device.uuid.hashCode();
-  }
   if (app.firebaseConnected === false) {
       Materialize.toast('Connettività assente', 3000);
       stopSpinner();
@@ -211,26 +196,17 @@ function reloadMarkersMy(){
   }
   clearMarkers();
 
-    firebase.database().ref('/images/').orderByChild('user').equalTo(code).once('value').then(function(snapshot) {
-        var elements = snapshot.val();
+  var onSuccess = function(elements){
+    if (elements !== null && elements !== undefined) {
+      addMarkers(elements);
+      google.maps.event.trigger(app.map, 'resize');
+    }else{
+      stopSpinner();
+    }
+    Materialize.toast('Mappa Aggiornata ', 3000,'rounded');
+  };
 
-        if (elements !== null && elements !== undefined) {
-
-            addMarkers(elements);
-            google.maps.event.trigger(app.map, 'resize');
-
-        }else{
-          stopSpinner();
-        }
-
-        Materialize.toast('Mappa Aggiornata ', 3000,'rounded');
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
-        stopSpinner();
-        return false;
-    });
-
-
+  readUserImagesForMap(onSuccess);
 
 }
 
@@ -242,23 +218,19 @@ function reloadMarkersToday(){
       return false;
   }
   var callback = function(){
-    var start = new Date().getTime()-(60*60*24*1000);
-    firebase.database().ref('/images/').orderByChild('timestamp').startAt(start).limitToLast(1000).once('value').then(function(snapshot) {
-        var elements = snapshot.val();
 
-        if (elements !== null && elements !== undefined) {
-
-            addMarkers(elements);
-            google.maps.event.trigger(app.map, 'resize');
-        }else{
-          stopSpinner();
-        }
-        Materialize.toast('Mappa Aggiornata ', 3000,'rounded');
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
+    var onSuccess = function(elements){
+      if (elements !== null && elements !== undefined) {
+        addMarkers(elements);
+        google.maps.event.trigger(app.map, 'resize');
+      }else{
         stopSpinner();
-        return false;
-    });
+      }
+      Materialize.toast('Mappa Aggiornata ', 3000,'rounded');
+    };
+
+    readTodayImagesForMap(onSuccess);
+
 
   };
 
@@ -296,34 +268,34 @@ function addMarkers(elements,callback){
           }
 
       }else{
-        var storageRef = firebase.storage().ref("images/" + element.image);
-        storageRef.getDownloadURL().then(function(url) {
+        var onSuccess = function(url){
+          app.mapImagesUrl[index] = url;
+          marker = setMarkerAndInfoWindow(element,url);
+          app.markers[l++] = marker;
 
-            app.mapImagesUrl[index] = url;
-            marker = setMarkerAndInfoWindow(element,url);
-            app.markers[l++] = marker;
+          if(l == length){
 
-            if(l == length){
-
-              addMarkerCluster();
-              if(callback !== undefined){
-                callback();
-              }
-
+            addMarkerCluster();
+            if(callback !== undefined){
+              callback();
             }
 
-        });
+          }
+        };
+        readImageUrl(element.image,onSuccess);
 
       }
 
   });
 
 }
-
+/**
+* Add the MarkerClusterer class to the map, and personal function onClickZoom,
+* for multiple Choiche when markers are in the same spot.
+*/
 function addMarkerCluster(){
   app.markerCluster = new MarkerClusterer(app.map, app.markers,
-  {imagePath: 'js/assets/img/markercluster/m'});
-  app.markerCluster.setMaxZoom(21);
+  {imagePath: 'js/assets/img/markercluster/m', maxZoom:21});
   app.markerCluster.onClickZoom = function(_cluster) { multiChoice(_cluster); };
   //app.markerCluster.onClickZoom = function() { return multiChoice(markerCluster); };
   stopSpinner();
@@ -515,7 +487,9 @@ function multiChoice(_cluster) {
 
      return true;
 }
-
+/**
+*  Function for zoom out if no marker is found.
+*/
 function setZoomVisibleMarkers() {
     var bounds = app.map.getBounds(),
         count = 0;

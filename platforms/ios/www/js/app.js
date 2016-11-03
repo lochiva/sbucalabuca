@@ -83,6 +83,7 @@ var app = {
 
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000);
+            app.watchPosition();
             return false;
 
         }
@@ -244,6 +245,10 @@ var app = {
 
         app.loadMapsApi();
     },
+    onPause: function(){
+      setStorage('sbuca-mapImagesUrl',JSON.stringify(app.mapImagesUrl));
+      setStorage('sbuca-galleryImagesUrl',JSON.stringify(app.galleryImagesUrl));
+    },
     loadMapsApi: function() {
         if (navigator.connection.type === Connection.NONE || app.map !== '') {
           if(app.map === ''){
@@ -301,6 +306,7 @@ var app = {
         app.receivedEvent('deviceready');
         document.addEventListener("online", app.onOnline, false);
         document.addEventListener("resume", app.onResume, false);
+        document.addEventListener("pause", app.onPause, false);
         app.loadMapsApi();
         app.watchPosition();
 

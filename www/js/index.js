@@ -29,42 +29,21 @@ $(document).ready(function() {
     var config = firebaseConfig;
     // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (!user)  {
-            startSpinner();
-            firebase.auth().signInAnonymously().catch(function(error) {
+    onAuthStateChanged();
+    //Parse.initialize("sbuca");
+    //Parse.serverURL = 'http://localhost:1337/parse';
 
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                Materialize.toast('Errore connesione: ' + error.code + " " + error.message, 5000);
-                app.firebaseConnected = false;
+    //var Images = Parse.Object.extend("images");
+    //var query = new Parse.Query(Images);
+    //console.log(query.find());
 
-            });
-            stopSpinner();
-        } else {
-            app.firebaseConnected = true;
-        }
-    });
     // Set window dimension variables and map dimension
     app.windowHeight = window.innerHeight;
     app.windowWidth = window.innerWidth;
     $('#map').css('height', (app.windowHeight - 130));
 
     // firebase bind of connection event
-    var connectedRef = firebase.database().ref(".info/connected");
-    connectedRef.on("value", function(snap) {
-        if (snap.val() === true) {
-            if (app.strating !== true) {
-                Materialize.toast('Connettività presente', 3000);
-            }
-            app.firebaseConnected = true;
-        } else {
-            if (app.strating !== true) {
-                Materialize.toast('Connettività assente', 3000);
-            }
-            app.firebaseConnected = false;
-        }
-    });
+    onConnectionStateChanged();
 
     /********************************************
      *  SWIPE FUNCTIONS
@@ -224,45 +203,32 @@ $(document).ready(function() {
             };
 
             getFileObject(imageURI, function(fileObject) {
-                var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
-                //app.createFile(  id + '.jpg',fileObject);
-
-                uploadTask.on('state_changed', function(snapshot) {
-                    //console.log(snapshot);
-                }, function(error) {
-                    stopSpinner();
-                    Materialize.toast("Errore salvataggio immagine: " + error, 5000);
-                }, function() {
-
-                    firebase.database().goOnline();
-                    firebase.database().ref('images/' + id).set({
-                        user: code,
-                        image: id + '.jpg',
-                        nota: nota,
-                        timestamp: timeStamp,
-                        date: data,
-                        latitude: app.position.latitude,
-                        longitude: app.position.longitude
-                    }).then(function() {
-
-                    }).catch(function(error) {
-                        Materialize.toast('Errore scrittura database: ' + error, 5000);
-                        stopSpinner();
-
-                    });
+                var onSuccess = function(){
+                  var newData = {
+                    user: code,
+                    image: id + '.jpg',
+                    nota: nota,
+                    timestamp: timeStamp,
+                    date: data,
+                    latitude: app.position.latitude,
+                    longitude: app.position.longitude
+                  };
+                  var onSuccess = function(){
                     stopSpinner();
                     Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
                     $('#textarea1').val("");
-
                     reloadMarkers();
-
-
-                });
+                  };
+                  databasePushImage(id,newData,onSuccess);
+                };
+                storagePushImage(id,fileObject,onSuccess);
+            
             });
 
         } else {
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000);
+            app.watchPosition();
             return false;
         }
 

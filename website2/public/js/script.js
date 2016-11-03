@@ -1,6 +1,12 @@
 $(document).ready(function() {
     window.markersList = [];
     window.map = '';
+    var GlobalmarkersUrls = {};
+    var markersUrls = getStorage('sbuca-markersUrls');
+    if(markersUrls !== false){
+      GlobalmarkersUrls = JSON.parse(markersUrls);
+    }
+
     //$('.my-carousel').carousel();
     //$('.carousel').carousel();
 
@@ -115,38 +121,73 @@ $(document).ready(function() {
             var marker;
 
             $.each(prova, function(index, element) {
-                var storageRef = firebase.storage().ref("images/" + element.image);
-                storageRef.getDownloadURL().then(function(url) {
-                    /*$('.container-iamges').append('<div class="col s3">'+
-                    '<div class="card">'+
-                     '<div class="card-image">'+
-                      '<img src="'+url+'"><span class="card-title">'+element.timestamp+'</span></div>'+
-                      '<div class="card-content"><p>'+element.nota+'</p></div></div></div>');*/
+                if(GlobalmarkersUrls[index] === undefined){
 
-                    marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(element.latitude, element.longitude),
-                        map: map
-                    });
-                    //console.log(element.latitude);
-                    marker.firebaseElement = element;
-                    marker.firebaseUrlImage = url;
+                  var storageRef = firebase.storage().ref("images/" + element.image);
+                  storageRef.getDownloadURL().then(function(url) {
+                      /*$('.container-iamges').append('<div class="col s3">'+
+                      '<div class="card">'+
+                       '<div class="card-image">'+
+                        '<img src="'+url+'"><span class="card-title">'+element.timestamp+'</span></div>'+
+                        '<div class="card-content"><p>'+element.nota+'</p></div></div></div>');*/
 
-                    google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                        return function() {
-                            infowindow.setContent('<div class="row"><div class="col s8">' +
-                                '<div class="card">' +
-                                '<div class="card-image info-image">' +
-                                '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title">' + element.date + '</span></div>' +
-                                '<div class="card-content"><p>' + element.nota + '</p></div></div></div></div>');
-                            infowindow.open(map, marker);
-                        };
-                    })(marker, i));
-                    window.markersList[i] = marker;
-                    i++;
-                    if(i == length){
-                      addMarkerCluster();
-                    }
+                      marker = new google.maps.Marker({
+                          position: new google.maps.LatLng(element.latitude, element.longitude),
+                          map: map
+                      });
+                      //console.log(element.latitude);
+                      marker.firebaseElement = element;
+                      marker.firebaseUrlImage = url;
+                      GlobalmarkersUrls[index] = url;
+
+                      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                          return function() {
+                              infowindow.setContent('<div class="row"><div class="col s8">' +
+                                  '<div class="card">' +
+                                  '<div class="card-image info-image">' +
+                                  '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title">' + element.date + '</span></div>' +
+                                  '<div class="card-content"><p>' + element.nota + '</p></div></div></div></div>');
+                              infowindow.open(map, marker);
+                          };
+                      })(marker, i));
+                      window.markersList[i] = marker;
+                      i++;
+                      if(i == length){console.log(GlobalmarkersUrls);
+                        addMarkerCluster();
+                        setStorage('sbuca-markersUrls',JSON.stringify(GlobalmarkersUrls));
+                      }
                 });
+
+              }else{
+
+                var url = GlobalmarkersUrls[index];
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(element.latitude, element.longitude),
+                    map: map
+                });
+                //console.log(element.latitude);
+                marker.firebaseElement = element;
+                marker.firebaseUrlImage = url;
+
+
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        infowindow.setContent('<div class="row"><div class="col s8">' +
+                            '<div class="card">' +
+                            '<div class="card-image info-image">' +
+                            '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title">' + element.date + '</span></div>' +
+                            '<div class="card-content"><p>' + element.nota + '</p></div></div></div></div>');
+                        infowindow.open(map, marker);
+                    };
+                })(marker, i));
+                window.markersList[i] = marker;
+                i++;
+                if(i == length){console.log(GlobalmarkersUrls);
+                  addMarkerCluster();
+                  setStorage('sbuca-markersUrls',JSON.stringify(GlobalmarkersUrls));
+                }
+
+              }
 
 
             });
@@ -276,4 +317,38 @@ function multiChoice(_cluster) {
      }
 
      return true;
+}
+
+function checkStorage() {
+    if (typeof window.localStorage !== undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function setStorage(name, val) {
+    if (checkStorage()) {
+        if(val !== undefined && val !== null && val !== ''){
+          localStorage.setItem(name, val);
+          return true;
+        }else{
+          return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+function getStorage(name) {
+    var val = localStorage.getItem(name);
+    if (val != undefined && val != null) {
+        return val;
+    } else {
+        return false;
+    }
+}
+
+function deleteStorage(name) {
+    localStorage.removeItem(name);
 }

@@ -213,8 +213,12 @@ function checkStorage() {
 
 function setStorage(name, val) {
     if (checkStorage()) {
-        localStorage.setItem(name, val);
-        return true;
+        if(val !== undefined && val !== null && val !== ''){
+          localStorage.setItem(name, val);
+          return true;
+        }else{
+          return false;
+        }
     } else {
         return false;
     }
@@ -231,4 +235,11 @@ function getStorage(name) {
 
 function deleteStorage(name) {
     localStorage.removeItem(name);
+}
+
+function blobToFile(theBlob, fileName){
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = fileName;
+    return theBlob;
 }

@@ -230,6 +230,22 @@ module.exports = [
         "runs": true
     },
     {
+        "id": "cordova-plugin-file-transfer.FileTransferError",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransferError"
+        ]
+    },
+    {
+        "id": "cordova-plugin-file-transfer.FileTransfer",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
+    },
+    {
         "id": "cordova-plugin-geolocation.Coordinates",
         "file": "plugins/cordova-plugin-geolocation/www/Coordinates.js",
         "pluginId": "cordova-plugin-geolocation",
@@ -262,38 +278,6 @@ module.exports = [
         ]
     },
     {
-        "id": "cordova-plugin-screen-orientation.screenorientation",
-        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.js",
-        "pluginId": "cordova-plugin-screen-orientation",
-        "clobbers": [
-            "cordova.plugins.screenorientation"
-        ]
-    },
-    {
-        "id": "cordova-plugin-screen-orientation.screenorientation.ios",
-        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.ios.js",
-        "pluginId": "cordova-plugin-screen-orientation",
-        "merges": [
-            "cordova.plugins.screenorientation"
-        ]
-    },
-    {
-        "id": "cordova-plugin-file-transfer.FileTransferError",
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransferError"
-        ]
-    },
-    {
-        "id": "cordova-plugin-file-transfer.FileTransfer",
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransfer"
-        ]
-    },
-    {
         "id": "cordova-plugin-network-information.network",
         "file": "plugins/cordova-plugin-network-information/www/network.js",
         "pluginId": "cordova-plugin-network-information",
@@ -311,11 +295,35 @@ module.exports = [
         ]
     },
     {
-        "id": "cordova-plugin-actionsheet.ActionSheet",
-        "file": "plugins/cordova-plugin-actionsheet/www/ActionSheet.js",
-        "pluginId": "cordova-plugin-actionsheet",
+        "id": "cordova-plugin-screen-orientation.screenorientation",
+        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.js",
+        "pluginId": "cordova-plugin-screen-orientation",
         "clobbers": [
-            "window.plugins.actionsheet"
+            "cordova.plugins.screenorientation"
+        ]
+    },
+    {
+        "id": "cordova-plugin-screen-orientation.screenorientation.ios",
+        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.ios.js",
+        "pluginId": "cordova-plugin-screen-orientation",
+        "merges": [
+            "cordova.plugins.screenorientation"
+        ]
+    },
+    {
+        "id": "cordova-plugin-splashscreen.SplashScreen",
+        "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+        "pluginId": "cordova-plugin-splashscreen",
+        "clobbers": [
+            "navigator.splashscreen"
+        ]
+    },
+    {
+        "id": "cordova-plugin-statusbar.statusbar",
+        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+        "pluginId": "cordova-plugin-statusbar",
+        "clobbers": [
+            "window.StatusBar"
         ]
     },
     {
@@ -335,19 +343,11 @@ module.exports = [
         ]
     },
     {
-        "id": "cordova-plugin-statusbar.statusbar",
-        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
-        "pluginId": "cordova-plugin-statusbar",
+        "id": "cordova-plugin-actionsheet.ActionSheet",
+        "file": "plugins/cordova-plugin-actionsheet/www/ActionSheet.js",
+        "pluginId": "cordova-plugin-actionsheet",
         "clobbers": [
-            "window.StatusBar"
-        ]
-    },
-    {
-        "id": "cordova-plugin-splashscreen.SplashScreen",
-        "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
-        "pluginId": "cordova-plugin-splashscreen",
-        "clobbers": [
-            "navigator.splashscreen"
+            "window.plugins.actionsheet"
         ]
     }
 ];
@@ -359,15 +359,15 @@ module.exports.metadata =
     "cordova-plugin-console": "1.0.4",
     "cordova-plugin-device": "1.1.3",
     "cordova-plugin-file": "4.3.0",
-    "cordova-plugin-geolocation": "2.3.0",
-    "cordova-plugin-screen-orientation": "1.4.2",
-    "cordova-plugin-whitelist": "1.3.0",
     "cordova-plugin-file-transfer": "1.6.0",
+    "cordova-plugin-geolocation": "2.3.0",
     "cordova-plugin-network-information": "1.3.0",
-    "cordova-plugin-actionsheet": "2.3.1",
-    "uk.co.workingedge.phonegap.plugin.launchnavigator": "3.2.1",
+    "cordova-plugin-screen-orientation": "1.4.2",
+    "cordova-plugin-splashscreen": "4.0.0",
     "cordova-plugin-statusbar": "2.2.0",
-    "cordova-plugin-splashscreen": "4.0.0"
+    "cordova-plugin-whitelist": "1.3.0",
+    "uk.co.workingedge.phonegap.plugin.launchnavigator": "3.2.1",
+    "cordova-plugin-actionsheet": "2.3.1"
 };
 // BOTTOM OF METADATA
 });

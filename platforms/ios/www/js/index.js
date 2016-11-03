@@ -29,6 +29,13 @@ $(document).ready(function() {
     var config = firebaseConfig;
     // firebase initialize and sign in if not logged
     firebase.initializeApp(config);
+    onAuthStateChanged();
+    //Parse.initialize("sbuca");
+    //Parse.serverURL = 'http://localhost:1337/parse';
+
+    //var Images = Parse.Object.extend("images");
+    //var query = new Parse.Query(Images);
+    //console.log(query.find());
     firebase.auth().onAuthStateChanged(function(user) {
         if (!user)  {
             startSpinner();
@@ -51,6 +58,7 @@ $(document).ready(function() {
     $('#map').css('height', (app.windowHeight - 130));
 
     // firebase bind of connection event
+    onConnectionStateChanged();
     var connectedRef = firebase.database().ref(".info/connected");
     connectedRef.on("value", function(snap) {
         if (snap.val() === true) {
@@ -224,7 +232,26 @@ $(document).ready(function() {
             };
 
             getFileObject(imageURI, function(fileObject) {
-                var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
+                var onSuccess = function(){
+                  var newData = {
+                    user: code,
+                    image: id + '.jpg',
+                    nota: nota,
+                    timestamp: timeStamp,
+                    date: data,
+                    latitude: app.position.latitude,
+                    longitude: app.position.longitude
+                  };
+                  var onSuccess = function(){
+                    stopSpinner();
+                    Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
+                    $('#textarea1').val("");
+                    reloadMarkers();
+                  };
+                  databasePushImage(id,newData,onSuccess);
+                };
+                storagePushImage(id,fileObject,onSuccess);
+                /*var uploadTask = storageRef.child('images/' + id + '.jpg').put(fileObject);
                 //app.createFile(  id + '.jpg',fileObject);
 
                 uploadTask.on('state_changed', function(snapshot) {
@@ -257,12 +284,13 @@ $(document).ready(function() {
                     reloadMarkers();
 
 
-                });
+                });*/
             });
 
         } else {
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 4000);
+            app.watchPosition();
             return false;
         }
 

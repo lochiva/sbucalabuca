@@ -46,6 +46,16 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
+    cleanCache: function(length){
+      var i = 0;
+      $.each(app.mapImagesUrl, function(index,element){
+        i++;
+        if(i<length/2){
+          delete app.mapImagesUrl[index];
+        }
+
+      });
+    },
     /**
      * TAKE PICTURE FUNCTION
      */
@@ -83,6 +93,7 @@ var app = {
 
             stopSpinner();
             Materialize.toast('Non siamo riusciti a leggere la tua posizione, controlla di avere il gps attivo!!', 5000);
+            app.watchPosition();
             return false;
 
         }
@@ -244,6 +255,10 @@ var app = {
 
         app.loadMapsApi();
     },
+    onPause: function(){
+      setStorage('sbuca-mapImagesUrl',JSON.stringify(app.mapImagesUrl));
+      setStorage('sbuca-galleryImagesUrl',JSON.stringify(app.galleryImagesUrl));
+    },
     loadMapsApi: function() {
         if (navigator.connection.type === Connection.NONE || app.map !== '') {
           if(app.map === ''){
@@ -287,6 +302,10 @@ var app = {
         var imagesUrl = getStorage('sbuca-mapImagesUrl');
         if(imagesUrl !== false){
           app.mapImagesUrl = JSON.parse(imagesUrl);
+          var length = Object.keys(app.mapImagesUrl).length;
+          if(length > 1200){
+            app.cleanCache(length);
+          }
         }
         var myImagesUrl = getStorage('sbuca-galleryImagesUrl');
         if(myImagesUrl !== false){
@@ -301,6 +320,7 @@ var app = {
         app.receivedEvent('deviceready');
         document.addEventListener("online", app.onOnline, false);
         document.addEventListener("resume", app.onResume, false);
+        document.addEventListener("pause", app.onPause, false);
         app.loadMapsApi();
         app.watchPosition();
 
