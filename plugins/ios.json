@@ -7,32 +7,51 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
-        },
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
-        },
-        "cordova-plugin-console": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
-        },
         "cordova-plugin-camera": {
             "CAMERA_USAGE_DESCRIPTION": "Used to take geolocalizate picture",
             "PHOTOLIBRARY_USAGE_DESCRIPTION": "Used to look saved picture",
-            "PACKAGE_NAME": "com.lochiva.sbuca"
+            "PACKAGE_NAME": "com.itoa.sbuca"
         },
         "cordova-plugin-compat": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
         },
         "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
         },
         "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
         },
         "cordova-plugin-screen-orientation": {
-            "PACKAGE_NAME": "com.lochiva.sbuca"
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        },
+        "uk.co.workingedge.phonegap.plugin.launchnavigator": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.itoa.sbuca"
+        }
+    }
 }

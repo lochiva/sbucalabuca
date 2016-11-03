@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="iconfont/material-icons.css" media="all" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>Sbuca la Buca</title>
+  </head>
+  <body>
+    <div id="message">
+      <h1>Benvenuti a Sbuca la Buca</h1>
+      <p style="text-align:center;">Questa è la mappa della nostra straodinaria applicazione, meravigliatevi con la geolocalizzazione!</p>
+      <ul>
+        <li><a class="yellow darken-3" target="_blank" href="https://play.google.com/store/apps/details?id=com.itoa.sbuca&ah=CxYGFpuGnGKytr8rH5qDpImNFfE&hl=it">Scarica l'applicazione per Android</a></li>
+      </ul>
+      <ul>
+        <li><a class="yellow darken-3" target="_blank" href="bin/Sbuca.ipa">Scarica l'applicazione per IOS</a></li>
+      </ul>
+      <div class="row container-iamges">
+      </div>
+      <div id="map" class="" style="position: relative; overflow: hidden; width:100%;height:700px" >
+      </div>
+
+    </div>
+    <div id="modal-image" class="modal modal-fixed-footer">
+    <div class="modal-content modal-content-img">
+      <div class="row" style="height:100%;">
+        <div class="col s12 center-align" style="height:100%;">
+          <img id="modal-img" src="" class="responsive-img"  style="max-height:100%;"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-action modal-close waves-effect waves-green btn btn-flat ">Chiudi</button>
+    </div>
+  </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQRGGpSnZPgJBYhC1UaEfjXAJ6BUCuBBQ&libraries=geometry"></script>
+    <script type="text/javascript" src="js/firebase.js"></script>
+    <script type="text/javascript" src="js/markerclusterer.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+  </body>
+</html>

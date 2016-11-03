@@ -1,0 +1,8 @@
+www/js/config.js
+platforms/android/assets/www/js/config.js
+platforms/ios/www/js/config.js
+platforms/browser/www/js/config.js
+www/js/release.js
+platforms/android/assets/www/js/release.js
+platforms/ios/www/js/release.js
+platforms/browser/www/js/release.js
