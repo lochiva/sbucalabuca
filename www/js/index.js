@@ -25,25 +25,11 @@ $(document).ready(function() {
     app.initialize();
     // set timeZone difference
     app.timeZoneDifference = new Date().getTimezoneOffset() * 60000;
-    // firebase configurations
-    var config = firebaseConfig;
-    // firebase initialize and sign in if not logged
-    firebase.initializeApp(config);
-    onAuthStateChanged();
-    //Parse.initialize("sbuca");
-    //Parse.serverURL = 'http://localhost:1337/parse';
-
-    //var Images = Parse.Object.extend("images");
-    //var query = new Parse.Query(Images);
-    //console.log(query.find());
 
     // Set window dimension variables and map dimension
     app.windowHeight = window.innerHeight;
     app.windowWidth = window.innerWidth;
     $('#map').css('height', (app.windowHeight - 130));
-
-    // firebase bind of connection event
-    onConnectionStateChanged();
 
     /********************************************
      *  SWIPE FUNCTIONS
@@ -100,7 +86,7 @@ $(document).ready(function() {
                 google.maps.event.trigger(app.map, 'resize');
                 break;
             case 'gallery':
-                readFirebaseGallery();
+                readUserGallery();
                 break;
         }
     });
@@ -222,7 +208,7 @@ $(document).ready(function() {
                   databasePushImage(id,newData,onSuccess);
                 };
                 storagePushImage(id,fileObject,onSuccess);
-            
+
             });
 
         } else {

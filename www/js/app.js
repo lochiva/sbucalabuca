@@ -40,6 +40,7 @@ var app = {
     windowWidth: '',
     timeZoneDifference: '',
     strating: true,
+    serverType: 'firebase',
     //
     firebaseConnected: false,
     // Application Constructor
@@ -311,7 +312,8 @@ var app = {
         if(myImagesUrl !== false){
           app.galleryImagesUrl = JSON.parse(myImagesUrl);
         }
-
+        firebaseInit();
+        //parseInit();parseLogin();
         stopSpinner();
         setTimeout(function() {
             app.strating = false;
