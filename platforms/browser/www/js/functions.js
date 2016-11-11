@@ -45,16 +45,34 @@ function deleteImage(elem) {
 /**
  * Function that read the list of personal image
  */
- function readFirebaseGallery(){
+ function readUserGallery(){
    startSpinner();
    var code = '';
 
-   firebase.database().goOnline();
+   var onSuccess = function(elements){
+     $('#image-container').html('');
+     if (elements !== null && elements !== '') {
+         $.each(elements, function(index, element) {
+
+             readUserGalleryStorage(element);
+
+
+         });
+         stopSpinner();
+     } else {
+       $('#image-container').html('<h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>');
+         stopSpinner();
+         return false;
+     }
+
+   };
+   readFirebaseUserGallery(onSuccess);
+   /*firebase.database().goOnline();
    var ref = firebase.database().ref('/images/');
    if (device.uuid !== null) {
        code = device.uuid.hashCode();
-   }
-   if (app.firebaseConnected === false) {
+   }*/
+   /*if (app.firebaseConnected === false) {
        Materialize.toast('Connettività assente', 3000);
        stopSpinner();
        return false;
@@ -80,14 +98,14 @@ function deleteImage(elem) {
    }).catch(function(error) {
        Materialize.toast('Errore connessione: ' + error, 5000);
        stopSpinner();
-   });
+   });*/
 
  }
 
 /**
  * Function that read a image from firebase storage
  */
-function readFirebaseGalleryImage(element) {
+function readUserGalleryStorage(element) {
     startSpinner();
     var urlImage = app.galleryImagesUrl[element.image];
 
@@ -134,28 +152,6 @@ function prependGalleryContent(url, element) {
         '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
     );
 
-}
-
-/**
-* Function that read the info data from firebase
-*/
-function readInfoFirebase(){
-  var ref = firebase.database().ref('/info').once('value').then(function(snapshot) {
-      var prova = snapshot.val();
-      if (prova !== null && prova !== '') {
-          $('#info-text').html(prova);
-
-          stopSpinner();
-      } else {
-
-          stopSpinner();
-          return false;
-      }
-
-  }).catch(function(error) {
-      Materialize.toast('Errore connessione: ' + error, 5000);
-      stopSpinner();
-  });
 }
 
 function cleanString(string) {
@@ -238,8 +234,24 @@ function deleteStorage(name) {
 }
 
 function blobToFile(theBlob, fileName){
+    var reader = new window.FileReader();
+   reader.readAsDataURL(theBlob);
+   reader.onloadend = function() {
+                  base64data = reader.result;
+                  console.log(base64data );
+    };
     //A Blob() is almost a File() - it's just missing the two properties below which we will add
     theBlob.lastModifiedDate = new Date();
     theBlob.name = fileName;
     return theBlob;
+}
+function blobToBase64(theBlob,onSuccess){
+    var reader = new window.FileReader();
+   reader.readAsDataURL(theBlob);
+   reader.onloadend = function() {
+                  base64data = reader.result;
+                  if(onSuccess !== undefined){
+                    onSuccess(base64data);
+                  }
+  };
 }
