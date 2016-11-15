@@ -42,7 +42,7 @@ $(document).ready(function() {
         position = pages.indexOf("#" + $(':mobile-pagecontainer').pagecontainer('getActivePage').attr('id'));
 
         max = pages.length - 1;
-        if (position < max && position !== 0) {
+        if (position < max && position !== 0 && position !== -1) {
             position++;
             $(":mobile-pagecontainer").pagecontainer("change", pages[position], {
                 transition: "slide"
@@ -56,7 +56,7 @@ $(document).ready(function() {
         // read actual position
         position = pages.indexOf("#" + $(':mobile-pagecontainer').pagecontainer('getActivePage').attr('id'));
 
-        if (position > 0) {
+        if (position > 0 && position !== -1) {
             position--;
             $(":mobile-pagecontainer").pagecontainer("change", pages[position], {
                 transition: "slide",
@@ -115,7 +115,8 @@ $(document).ready(function() {
      * BUTTONS LISTENERS
      *********************************************/
     document.getElementById('startCameraButton').addEventListener('click', app.takePicture, false);
-    document.getElementById("getPosition").addEventListener("click", app.getPosition);
+    document.getElementById('getPosition').addEventListener('click', app.getPosition,false);
+    document.getElementById('exitApp').addEventListener('click',app.exitApp,false);
     document.getElementById("openModal").addEventListener("click", function() {
         if (app.photoCaptured === false) {
             Materialize.toast('Prima di inviare devi scattare una foto', 3000);
@@ -125,6 +126,81 @@ $(document).ready(function() {
         }
 
     });
+    // PARSE BUTTONS
+    document.getElementById('getLogout').addEventListener('click',app.logoutParse,false);
+    document.getElementById('parseLogin').addEventListener('click',function(){
+      app.loginSingUpParse('login');
+    },false);
+    document.getElementById('parseSignUp').addEventListener('click',function(){
+      app.loginSingUpParse('singup');
+    },false);
+    document.getElementById("getLogin").addEventListener("click", function(){
+      $(":mobile-pagecontainer").pagecontainer("change", "#login-parse", {
+          transition: "flip"
+      });
+    });
+    // PARSE ADMIN BUTTONS
+    document.getElementById("getAdmin").addEventListener("click", function(){
+      $(":mobile-pagecontainer").pagecontainer("change", "#admin-parse", {
+          transition: "flip"
+      });
+    });
+    document.getElementById("createAlbum").addEventListener("click", function(){
+        album = $('#newAlbum').val();
+        var onSuccess =  function(){
+          Materialize.toast("Album aggiunto con successo !", 3000, 'rounded');
+          $('#newAlbum').val('');
+          parseReadUserAlbums();
+          stopSpinner();
+        };
+        if(album !== ''){
+          parseAddAlbum(album,onSuccess);
+        }else{
+          Materialize.toast('Devi inserire un nome valido per l\'album.',5000);
+        }
+    });
+    document.getElementById("addUserAlbum").addEventListener("click", function(){
+      album = $('#album-UserAlbum').val();
+      if(album !== null && album !== undefined){
+        if(app.parseUser == {} || app.parseUser === null ){
+          Materialize.toast('Seleziona un utente presente in database !',5000);
+          return false;
+        }
+        parseAddUserAlbum(app.parseUser, app.parseUserAlbums[album]);
+      }else{
+        Materialize.toast('Devi selezionare un album !',5000);
+      }
+    });
+    document.getElementById("removeUserAlbum").addEventListener("click", function(){
+      album = $('#album-UserAlbum').val();
+      if(album !== null && album !== undefined){
+        if(app.parseUser == {} || app.parseUser === null ){
+          Materialize.toast('Seleziona un utente presente in database !',5000);
+          return false;
+        }
+        parseDeleteUserAlbum(app.parseUser, app.parseUserAlbums[album]);
+      }else{
+        Materialize.toast('Devi selezionare un album !',5000);
+      }
+    });
+    /********************************************
+     * OTHER LISTENERS
+     *********************************************/
+     document.getElementById('user-UserAlbum').addEventListener('blur',function(){
+       userEmail = $('#user-UserAlbum').val();
+       if(userEmail !== ''){
+         parseSearchUser(userEmail);
+       }
+       },false);
+     document.getElementById('album-map').addEventListener('change',function(){
+       reloadMarkers();
+       $('#album-gallery').val($('#album-map').val());
+     },false);
+     document.getElementById('album-gallery').addEventListener('change',function(){
+       $('#album-map').val($('#album-gallery').val());
+       reloadMarkers();
+       readUserGallery();
+     },false);
     /**
      * APPLICATION EXIT LISTENER
      */
@@ -142,7 +218,7 @@ $(document).ready(function() {
             Materialize.toast('Prima di inviare devi scattare una foto', 3000);
             return false;
         }
-        if (app.firebaseConnected === false) {
+        if (app.firebaseConnected === false && app.serverType == 'firebase') {
             Materialize.toast('Connettività assente', 3000);
             return false;
         }
@@ -151,18 +227,18 @@ $(document).ready(function() {
 
         if (app.position.longitude !== '' && app.position.latitude !== '') {
             /// Con firebase
-            var code = '';
+            var code = app.userCode;
             var imageURI = document.getElementById('originalPicture').src;
             var fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
             //var fileUri = imageURI.substr(0,imageURI.lastIndexOf('/')+1);
-            var storageRef = firebase.storage().ref();
+
             var timeStamp = new Date().getTime();
             var data = (new Date(timeStamp - app.timeZoneDifference)).toISOString().substring(0, 19).replace('T', ' ');
-            if (device.uuid === null || device.uuid === undefined) {
+            /*if (device.uuid === null || device.uuid === undefined) {
                 code = fileName.hashCode();
             } else {
                 code = device.uuid.hashCode();
-            }
+            }*/
             var id = data.replace(/ /g, '_') + '-' + code;
             id = id.replace(/:/g, '-');
 
@@ -189,25 +265,38 @@ $(document).ready(function() {
             };
 
             getFileObject(imageURI, function(fileObject) {
-                var onSuccess = function(){
-                  var newData = {
-                    user: code,
-                    image: id + '.jpg',
-                    nota: nota,
-                    timestamp: timeStamp,
-                    date: data,
-                    latitude: app.position.latitude,
-                    longitude: app.position.longitude
-                  };
+              var newData = {
+                user: code,
+                image: id + '.jpg',
+                nota: nota,
+                timestamp: timeStamp,
+                date: data,
+                latitude: app.position.latitude,
+                longitude: app.position.longitude
+              };
+              var onSuccessData = function(){
+                stopSpinner();
+                Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
+                $('#textarea1').val("");
+                document.getElementById('closeModal').click();
+                reloadMarkers();
+              };
+              if(app.serverType == 'firebase'){
                   var onSuccess = function(){
-                    stopSpinner();
-                    Materialize.toast('Immagine inviata con successo!', 3000, 'rounded');
-                    $('#textarea1').val("");
-                    reloadMarkers();
+
+                    databasePushImage(id,newData,onSuccessData);
                   };
-                  databasePushImage(id,newData,onSuccess);
-                };
-                storagePushImage(id,fileObject,onSuccess);
+                  storagePushImage(id,fileObject,onSuccess);
+              }else{
+                  newData.user = Parse.User.current();
+                  newData.album = app.parseUserAlbums[$('#album-list').val()];
+                  if(newData.album === null || newData.album  === '' || newData.album === undefined){
+                    Materialize.toast('Devi selezionare un album !', 5000);
+                    stopSpinner();
+                    return false;
+                  }
+                  parseUploadImage(id,fileObject,newData,onSuccessData);
+              }
 
             });
 

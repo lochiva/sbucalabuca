@@ -41,6 +41,10 @@ var app = {
     timeZoneDifference: '',
     strating: true,
     serverType: 'firebase',
+    userCode: new Date().toString(),
+    parseUserAlbums: [],
+    parseUser:{},
+    parseCustomer:{},
     //
     firebaseConnected: false,
     // Application Constructor
@@ -56,6 +60,15 @@ var app = {
         }
 
       });
+    },
+    generateUserCode : function(){
+      if(device.uuid !== undefined && device.uuid !== null){
+        app.userCode = device.uuid.hashCode();
+      }else if(device.serial !== undefined && device.serial !== null){
+        app.userCode = device.serial.hashCode();
+      }else{
+        app.userCode = app.userCode.hashCode();
+      }
     },
     /**
      * TAKE PICTURE FUNCTION
@@ -234,11 +247,13 @@ var app = {
      * Function that check the info and read from localstorage or firebase
      */
     readInfo: function() {
-        if (app.firebaseConnected === false) {
+        if ( app.firebaseConnected === false) {
 
             var info = getStorage('sbuca.info-text');
             if (info === false) {
+              if(app.serverType == 'firebase'){
                 readInfoFirebase();
+              }
             } else {
                 $('#info-text').html(info);
             }
@@ -248,6 +263,50 @@ var app = {
         }
 
     },
+
+    loginSingUpParse: function(type){
+      startSpinner();
+      var email = $("#email").val();
+      var pass = $('#password').val();
+      if(email === '' || pass === ''){
+        Materialize.toast("Assicurati di aver inserito un email o una password." , 5000);
+        return false;
+      }
+      parseInit();
+      var onSuccess = function(){
+        var success = function(){reloadMarkers();};
+        parseReadUserAlbums(success);
+        app.serverType = 'parse';
+
+
+        $('.showIfParse').show();
+        $('.showIfFirebase').hide();
+        parseCheckIfCustomer();
+        $(":mobile-pagecontainer").pagecontainer("change", "#home", {transition: "flip",reverse:true});
+      };
+      if(type == 'login'){
+        parseLogin(email,pass,onSuccess);
+      }else{
+        parseSignUp(email,pass,onSuccess);
+      }
+    },
+
+    logoutParse: function(){
+      startSpinner();
+      Parse.User.logOut();
+
+      $('.showIfParse').hide();
+      $('.showIfFirebase').show();
+      app.serverType = 'firebase';
+      if(app.firebaseConnected === false){
+        firebaseInit();
+      }
+      setTimeout(function() {
+          $(":mobile-pagecontainer").pagecontainer("change", "#home", {transition: "flip",reverse:true});
+          reloadMarkers();
+      }, 1500);
+    },
+
     onOnline: function() {
         app.loadMapsApi();
     },
@@ -312,7 +371,21 @@ var app = {
         if(myImagesUrl !== false){
           app.galleryImagesUrl = JSON.parse(myImagesUrl);
         }
-        firebaseInit();
+        parseInit();
+        if(Parse.User.current() !== null && Parse.User.current().authenticated() ){
+          var success = function(){reloadMarkers();};
+          parseReadUserAlbums(success);
+          app.serverType = 'parse';
+
+          $('.showIfParse').show();
+          $('.showIfFirebase').hide();
+          parseCheckIfCustomer();
+        }else{
+          firebaseInit();
+        }
+
+
+        app.generateUserCode();
         //parseInit();parseLogin();
         stopSpinner();
         setTimeout(function() {

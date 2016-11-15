@@ -202,3 +202,8 @@ body {
   background-color: rgb(249, 168, 37) !important;
   border-color: rgb(249, 168, 37) !important;
 }
+
+.custom-margin{
+  margin-top: 0px !important;
+  margin-bottom: 0.5rem !important;
+}
