@@ -69,8 +69,13 @@
         </div>
         <div data-role="main" class="ui-content">
             <div class="row">
+              <div class="input-field col s12 showIfParse custom-margin"  style="display:none;" data-role="none">
+                <select  id="album-map" class="browser-default album-list groupsname"  data-role="none">
+                 <option data-role="none" value="" selected>Seleziona un album da mostrare</option>
+               </select>
+              </div>
               <div class="col s12">
-                <h5 class="center app-title">Sbuca la Buca App</h5>
+                <h5 class="center app-title showIfFirebase">Sbuca la Buca App</h5>
                   <div id="map" class="" style="position: relative; overflow: hidden; width:100%;height:500px;" >
                   </div>
               </div>
@@ -120,14 +125,20 @@
                 <i class="material-icons icon-size-custom">send</i></a>
         </div>
         <div id="modalInvio" class="modal modal-fixed-footer">
-            <div class="modal-content">
-                <div class="input-field col s12">
-                    <textarea id="textarea1" class="materialize-textarea"></textarea>
-                    <label for="textarea1">Inserisci una nota</label>
+            <div class="modal-content" data-role="none">
+                <div class="col s12 right-align"><i id="closeModal" class="modal-action modal-close material-icons">clear</i></div>
+                <div class="input-field col s12" data-role="none">
+                    <textarea id="textarea1" class="materialize-textarea" data-role="none"></textarea>
+                    <label for="textarea1" data-role="none">Inserisci una nota</label>
+                </div>
+                <div class="input-field col s12 showIfParse"  style="display:none;" data-role="none">
+                  <select  id="album-list" class="browser-default album-list groupsname"  data-role="none">
+                   <option data-role="none" value="" disabled selected>Seleziona un album</option>
+                 </select>
                 </div>
             </div>
             <div class="modal-footer">
-                <a id="sendData" href="#" class=" modal-action modal-close waves-effect waves-green btn-flat">Invia Immagine</a>
+                <a id="sendData" href="#" class=" modal-action waves-effect waves-green btn-flat">Invia Immagine</a>
             </div>
         </div>
     </div>
@@ -147,6 +158,11 @@
             <div class="col s12">
               <h5 class="center app-title">Gallery</h5>
             </div>
+            <div class="input-field col s12 showIfParse custom-margin"  style="display:none;" data-role="none">
+              <select  id="album-gallery" class="browser-default album-list groupsname"  data-role="none">
+               <option data-role="none" value="" selected>Seleziona un album da mostrare</option>
+             </select>
+            </div>
           </div>
             <div id="image-container" class="row">
               <h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>
@@ -165,13 +181,97 @@
             </div>
         </div>
         <div data-role="main" class="ui-content">
-            <div class="center-div">
-              <div id="info-text">
+            <div class="row center-align" style="margin-top:30px;">
+              <div class="showIfParse" style="display:none;">
+                <h4>Stai usando un istanza privata!</h4>
+              </div>
+              <div class="showIfFirebase" id="info-text">
                   <h4>Info:</h4>
                   <h6>Lettura info non riuscita!</h6>
               </div>
                 <button id="getPosition">Posizione corrente</button>
-                <button onClick="app.exitApp()" >Chiudi app</button>
+                <button class="showIfFirebase" id="getLogin" >Login Istanza Privata</button>
+                <button class="showIfParse" id="getLogout" style="display:none;">Logout Istanza</button>
+                <button class="showIfParse" id="getAdmin" style="display:none;">Amministrazione</button>
+                <button id="exitApp" >Chiudi app</button>
+            </div>
+        </div>
+    </div>
+    <div data-role="page" id="login-parse">
+        <div data-role="header">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#home" data-icon="home" data-transition="flip" data-direction="reverse">Torna a Home</a></li>
+                </ul>
+            </div>
+        </div>
+        <div data-role="main" >
+            <div class="row center-align" style="margin-top:30px;">
+              <form class="col s12" data-role="none" id="login-form" onsubmit="event.preventDefault()">
+                <div class="row">
+                  <div class="input-field col s12" data-role="none">
+                    <input id="email" type="email" data-role="none" required>
+                    <label for="email" data-role="none">Email</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12" data-role="none">
+                    <input id="password" type="password" data-role="none" required>
+                    <label for="password" data-role="none">Password</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s6" data-role="none">
+                    <button id="parseLogin" class="waves-effect waves-light yellow darken-3 btn" data-role="none">Login</button>
+                  </div>
+                  <div class="input-field col s6" data-role="none">
+                    <button id="parseSignUp" class="waves-effect waves-light yellow darken-2 btn" data-role="none">Registrati</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+    <div data-role="page" id="admin-parse">
+        <div data-role="header">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#home" data-icon="home" data-transition="flip" data-direction="reverse">Torna a Home</a></li>
+                </ul>
+            </div>
+        </div>
+        <div data-role="main" >
+            <div class="row center-align" style="margin-top:30px;">
+              <div class="row">
+                <div class="input-field col s12" data-role="none">
+                    <i class="material-icons prefix">group_add</i>
+                    <label for="newAlbum" data-role="none">Crea un Album</label>
+                    <input id="newAlbum" name="album" type="text" data-role="none" >
+                    <div class="input-field col s12" data-role="none">
+                      <button id="createAlbum" class="waves-effect waves-light yellow darken-3 btn" data-role="none">Crea</button>
+                    </div>
+                </div>
+                <div class="col s12" style="margin-top:3rem;">
+                  <h5>Aggiungi o rimuovi un utente da un album</h5>
+                </div>
+                <div class="input-field col s6" data-role="none">
+                    <label for="newAlbum" data-role="none">Email utente</label>
+                    <input id="user-UserAlbum"  name="album" type="email" data-role="none" >
+                </div>
+                <div class="input-field col s6" data-role="none">
+                  <select id="album-UserAlbum"  class="browser-default album-list groupsname"  data-role="none">
+                   <option data-role="none" value="" disabled selected>Seleziona un album</option>
+                 </select>
+                </div>
+                <div class="col s12">
+                </div>
+                <div class="input-field col s6" data-role="none">
+                    <button id="addUserAlbum" class="waves-effect waves-light yellow darken-3 btn" data-role="none">Aggiungi</button>
+                </div>
+                <div class="input-field col s6" data-role="none">
+                    <button id="removeUserAlbum" class="waves-effect waves-light yellow darken-2 btn" data-role="none">Rimuovi</button>
+                </div>
+              </div>
             </div>
         </div>
     </div>
@@ -182,7 +282,10 @@
     <script type="text/javascript" src="js/assets/materialize.min.js"></script>
     <script type="text/javascript" src="js/assets/firebase.js"></script>
     <script type="text/javascript" src="js/assets/parse.min.js"></script>
-    <script type="text/javascript" src="js/assets/markerclusterer.js"></script>
+    <script type="text/javascript" src="js/assets/markerclusterer.min.js"></script>
+    <script type="text/javascript" src="js/assets/sha256.js"></script>
+    <!-- RELEASE ASSETS -->
+    <!--<script type="text/javascript" src="js/assets/assets.js"></script>-->
     <!-- APPLICATION SCRIPTS -->
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>

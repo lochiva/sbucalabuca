@@ -58,12 +58,12 @@ function onConnectionStateChanged() {
     var connectedRef = firebase.database().ref(".info/connected");
     connectedRef.on("value", function(snap) {
         if (snap.val() === true) {
-            if (app.strating !== true) {
+            if (app.strating !== true && app.serverType == 'firebase') {
                 Materialize.toast('Connettività presente', 3000);
             }
             app.firebaseConnected = true;
         } else {
-            if (app.strating !== true) {
+            if (app.strating !== true && app.serverType == 'firebase') {
                 Materialize.toast('Connettività assente', 3000);
             }
             app.firebaseConnected = false;
@@ -126,6 +126,7 @@ function readInfoFirebase(){
       var prova = snapshot.val();
       if (prova !== null && prova !== '') {
           $('#info-text').html(prova);
+          setStorage('sbuca.info-text',prova);
 
           stopSpinner();
       } else {
@@ -149,7 +150,7 @@ function readInfoFirebase(){
  *  Function that read images from database for the map
  */
 function readImagesForMap(onSuccess, onError) {
-  
+
     firebase.database().ref('/images/').limitToLast(1000).once('value').then(function(snapshot) {
 
         var elements = snapshot.val();
@@ -172,11 +173,11 @@ function readImagesForMap(onSuccess, onError) {
  *  Function that read user images from database for the map
  */
 function readUserImagesForMap(onSuccess, onError) {
-    var code = '';
+    var code = app.userCode;
 
-    if (device.uuid !== null) {
+    /*if (device.uuid !== null) {
         code = device.uuid.hashCode();
-    }
+    }*/
     firebase.database().ref('/images/').orderByChild('user').equalTo(code).once('value').then(function(snapshot) {
 
         var elements = snapshot.val();
@@ -246,13 +247,13 @@ function readImageUrl(url, onSuccess, onError) {
  */
 function readFirebaseUserGallery(onSuccess, onError) {
 
-    var code = '';
+    var code = app.userCode;
 
     firebase.database().goOnline();
     var ref = firebase.database().ref('/images/');
-    if (device.uuid !== null) {
+    /*if (device.uuid !== null) {
         code = device.uuid.hashCode();
-    }
+    }*/
     if (app.firebaseConnected === false) {
         Materialize.toast('Connettività assente', 3000);
         stopSpinner();
@@ -273,4 +274,24 @@ function readFirebaseUserGallery(onSuccess, onError) {
         stopSpinner();
     });
 
+}
+
+function deleteFirebaseImage(elem,onSuccess,onError){
+  var storageRef = firebase.storage().ref();
+  var desertRef = storageRef.child('images/' + elem);
+
+  // Delete the file
+  desertRef.delete().then(function() {
+      firebase.database().ref('images/' + elem.substring(0, (elem.length - 4))).remove();
+      if (onSuccess !== undefined) {
+          onSuccess(elem);
+      }
+
+  }).catch(function(error) {
+      if (onError !== undefined) {
+          onError();
+      }
+      Materialize.toast('Errore cancellazione immagine: ' + error, 3000);
+      stopSpinner();
+  });
 }

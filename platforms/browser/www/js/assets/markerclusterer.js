@@ -791,6 +791,16 @@ MarkerClusterer.prototype.createClusters_ = function() {
   }
 };
 
+MarkerClusterer.prototype.onClickZoom = function() {
+    return true;
+};
+
+MarkerClusterer.prototype.setOnClickZoom = function(toDo) {
+    //var markerClusterer = this.cluster_.getMarkerClusterer();
+    this.onClickZoom = toDo;
+    return true;
+};
+
 
 /**
  * A cluster that contains markers.
@@ -1313,6 +1323,8 @@ MarkerClusterer.prototype['setMaxZoom'] =
     MarkerClusterer.prototype.setMaxZoom;
 MarkerClusterer.prototype['onAdd'] = MarkerClusterer.prototype.onAdd;
 MarkerClusterer.prototype['draw'] = MarkerClusterer.prototype.draw;
+MarkerClusterer.prototype['onClickZoom'] = MarkerClusterer.prototype.onClickZoom;
+MarkerClusterer.prototype['setOnClickZoom'] = MarkerClusterer.prototype.setOnClickZoom;
 
 Cluster.prototype['getCenter'] = Cluster.prototype.getCenter;
 Cluster.prototype['getSize'] = Cluster.prototype.getSize;
