@@ -68,9 +68,9 @@ function parseSignUp(email,pass,onSuccess) {
             return true;
         },
         error: function(user, error) {
-            console.log(error.message);
+
             // Show the error message somewhere and let the user try again.
-            Materialize.toast("Errore connessione: " + error.code + " Controlla la connetività. ", 5000);
+            Materialize.toast("Errore: " + error.message + " ", 5000);
             stopSpinner();
             return false;
         }
@@ -274,7 +274,7 @@ function parseSaveImagesData(data,onSuccess) {
         },
         error: function(image, error) {
 
-            Materialize.toast("Errore: " + error.message + " Controlla la connetività. ", 5000);
+            Materialize.toast("Errore: " + error.message + " ", 5000);
             stopSpinner();
             return false;
             // The save failed.
@@ -360,9 +360,12 @@ function parseReadUserAlbums(onSuccess){
         $('#album-gallery').append('<option data-role="none" value="-1">Qualsiasi</option>');
         for (var i = 0; i < results.length; i++) {
           album = results[i].get("album");
-          app.parseUserAlbums[i] = album;
-          $('.album-list').append('<option data-role="none" value="'+i+'" >'+album.get("name")+'</option>');
+          if(album !== undefined){
+            app.parseUserAlbums[i] = album;
+            $('.album-list').append('<option data-role="none" value="'+i+'" >'+album.get("name")+'</option>');
+          }
         }
+        stopSpinner();
         if(onSuccess !== undefined){
           onSuccess();
         }
@@ -409,7 +412,7 @@ function parseAddAlbum(name,onSuccess){
   album.setACL(acl);
   album.set("name",name);
   album.set("customer",app.parseCustomer);
-  console.log(app.parseCustomer);
+
   album.save(null, {
       success: function(image) {
         if(onSuccess !== undefined){
@@ -419,32 +422,6 @@ function parseAddAlbum(name,onSuccess){
         return true;
       },
       error:function(image,error){
-        Materialize.toast("Errore: " + error.message + " Controlla la connetività. ", 5000);
-        stopSpinner();
-        return false;
-
-      }
-    });
-
-}
-
-function parseAddUserAlbum(user,album){
-  startSpinner();
-  var UserAlbum = Parse.Object.extend("UserAlbum");
-  var user_album = new UserAlbum();
-
-
-  user_album.set("user",user);
-  user_album.set("album",album);
-  user_album.save(null, {
-      success: function(image) {
-        $('#user-UserAlbum').val('');
-        Materialize.toast("Utente aggiunto all'album!", 3000, 'rounded');
-        stopSpinner();
-        return true;
-      },
-      error:function(image,error){
-        console.log(error);
         Materialize.toast("Errore: " + error.message + " ", 5000);
         stopSpinner();
         return false;
@@ -454,7 +431,38 @@ function parseAddUserAlbum(user,album){
 
 }
 
-function parseDeleteUserAlbum(user, album){
+function parseAddUserAlbum(user,album,onSuccess){
+  startSpinner();
+  var UserAlbum = Parse.Object.extend("UserAlbum");
+  var user_album = new UserAlbum();
+
+  var acl = generateUserACL();
+  user_album.setACL(acl);
+  user_album.set("user",user);
+  user_album.set("album",album);
+  user_album.save(null, {
+      success: function(image) {
+        $('#user-UserAlbum').val('');
+        app.parseUser = null;
+        Materialize.toast("Utente aggiunto all'album!", 3000, 'rounded');
+        if(onSuccess !== undefined){
+          onSuccess();
+        }
+        stopSpinner();
+        return true;
+      },
+      error:function(image,error){
+
+        Materialize.toast("Errore: " + error.message + " ", 5000);
+        stopSpinner();
+        return false;
+
+      }
+    });
+
+}
+
+function parseDeleteUserAlbum(user, album,onSuccess){
   startSpinner();
       var UserAlbum = Parse.Object.extend("UserAlbum");
       var query = new Parse.Query(UserAlbum);
@@ -467,13 +475,17 @@ function parseDeleteUserAlbum(user, album){
                 myObject.destroy({
                     success: function(myObject) {
                       $('#user-UserAlbum').val('');
+                      app.parseUser = null;
                       Materialize.toast("Cancellazione avvenuta con successo !", 3000, 'rounded');
+                      if(onSuccess !== undefined){
+                        onSuccess();
+                      }
                       stopSpinner();
                     },
                     error: function(myObject, error) {
                         //console.log(myObject);
                         if(error !== undefined){
-                          Materialize.toast("Errore cancellazione: " + error.message + " Controlla la connetività. ", 5000);
+                          Materialize.toast("Errore cancellazione: " + error.message + "  ", 5000);
                         }else{
                           Materialize.toast("Errore cancellazione: " + myObject.message + " ", 5000);
                         }
@@ -496,7 +508,7 @@ function parseDeleteUserAlbum(user, album){
 
 }
 
-function parseSearchUser(email){
+function parseSearchUser(email,onSuccess){
     startSpinner();
     var query = new Parse.Query(Parse.User);
     query.equalTo("email",email);
@@ -506,21 +518,99 @@ function parseSearchUser(email){
         stopSpinner();
         app.parseUser = object;
         if(object === null || object === undefined){
-              Materialize.toast("L'email inserita non corrisponde a nessun utente registrato !", 5000);
+              if(onSuccess === undefined){
+                Materialize.toast("L'email inserita non corrisponde a nessun utente registrato !", 5000);
+              }
+
 
               return false;
             }else{
+              if(onSuccess !== undefined){
+                onSuccess();
+              }
 
               return true;
             }
       },
       error: function(){
         app.parseUser = {};
-        Materialize.toast("Errore: " + error.message + " Controlla la connetività. ", 5000);
+        Materialize.toast("Errore: " + error.message + " ", 5000);
         stopSpinner();
         return false;
       }
     });
+}
+
+function parseUserPerAlbum(album,onSuccess,onError){
+  startSpinner();
+  var UserAlbum = Parse.Object.extend("UserAlbum");
+  var query = new Parse.Query(UserAlbum);
+  query.include('user');
+  query.equalTo("album",album);
+  query.find({
+      success: function(results) {
+          if (results.length === 0) {
+              results = null;
+          }
+          if (onSuccess !== undefined) {
+              onSuccess(results);
+
+          }
+
+      },
+      error: function(error) {
+          if (onError !== undefined) {
+              onError();
+          }
+          Materialize.toast("Errore connessione: " + error.code + " Controlla la connetività. ", 5000);
+          stopSpinner();
+          return false;
+      }
+  });
+
+
+}
+
+function parseEditAlbum(album,onSuccess,onError){
+
+  album.save(null, {
+      success: function(album) {
+        if (onSuccess !== undefined) {
+            onSuccess(album);
+        }
+
+      },
+      error: function(album, error){
+        if (onError !== undefined) {
+            onError();
+        }
+        Materialize.toast("Errore connessione: " + error.code + " Controlla la connetività. ", 5000);
+        stopSpinner();
+        return false;
+      }
+    });
+}
+
+function parseDeleteAlbum(album, onSuccess, onError){
+      album.destroy({
+      success: function(myObject) {
+        if (onSuccess !== undefined) {
+            onSuccess(album);
+        }
+
+      },
+      error: function( error) {
+        if (onError !== undefined) {
+            onError();
+        }
+        Materialize.toast("Errore: " + error.message + "  ", 5000);
+        stopSpinner();
+        return false;
+      }
+
+    });
+
+
 }
 /********************************************
  *  END admin functions

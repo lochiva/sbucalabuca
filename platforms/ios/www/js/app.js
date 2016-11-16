@@ -45,6 +45,7 @@ var app = {
     parseUserAlbums: [],
     parseUser:{},
     parseCustomer:{},
+    parseEditingAlbum: '',
     //
     firebaseConnected: false,
     // Application Constructor

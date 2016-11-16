@@ -88,6 +88,28 @@ $(document).ready(function() {
             case 'gallery':
                 readUserGallery();
                 break;
+            case 'admin-album':
+                var album = $('#album-admin').val();
+                $('#lista-utenti').html('');
+                $('#edit-AlbumName').val('');
+                if(album === null || album === undefined){
+                  album = app.parseEditingAlbum;
+                }
+                if(album === null || album === undefined){
+                  Materialize.toast('Non hai selezionato un album !', 5000);
+                  break;
+                }
+                $('#edit-AlbumName').val(app.parseUserAlbums[album].get('name'));
+                var success = function(results){
+                  if(results !== null){
+                    for (var i = 0; i < results.length; i++) {
+                      $('#lista-utenti').append('<li class="collection-item">'+results[i].get('user').get('email')+'</li>');
+                    }
+                  }
+                  stopSpinner();
+                };
+                parseUserPerAlbum(app.parseUserAlbums[album],success);
+                break;
         }
     });
 
@@ -145,8 +167,15 @@ $(document).ready(function() {
           transition: "flip"
       });
     });
+    document.getElementById("getAdmin-album").addEventListener("click", function(){
+      app.parseEditingAlbum = $('#album-admin').val();
+      $(":mobile-pagecontainer").pagecontainer("change", "#admin-album", {
+          transition: "flip"
+      });
+    });
+    // Creazione Album
     document.getElementById("createAlbum").addEventListener("click", function(){
-        album = $('#newAlbum').val();
+        var album = $('#newAlbum').val();
         var onSuccess =  function(){
           Materialize.toast("Album aggiunto con successo !", 3000, 'rounded');
           $('#newAlbum').val('');
@@ -159,35 +188,95 @@ $(document).ready(function() {
           Materialize.toast('Devi inserire un nome valido per l\'album.',5000);
         }
     });
+    // Gestione utenti Album
     document.getElementById("addUserAlbum").addEventListener("click", function(){
-      album = $('#album-UserAlbum').val();
-      if(album !== null && album !== undefined){
-        if(app.parseUser == {} || app.parseUser === null ){
-          Materialize.toast('Seleziona un utente presente in database !',5000);
-          return false;
+      var album = app.parseEditingAlbum;
+      var userEmail = $('#user-UserAlbum').val();
+      var onSuccess = function(){
+        if(album !== null && album !== undefined){
+          if(app.parseUser == {} || app.parseUser === null ){
+            Materialize.toast('Seleziona un utente presente in database !',5000);
+            return false;
+          }
+          var success = function(){
+            $(":mobile-pagecontainer").pagecontainer("change", "#admin-album", {
+                transition: "fade"
+            });
+          };
+          parseAddUserAlbum(app.parseUser, app.parseUserAlbums[album],success);
+        }else{
+          Materialize.toast('Devi selezionare un album !',5000);
         }
-        parseAddUserAlbum(app.parseUser, app.parseUserAlbums[album]);
-      }else{
-        Materialize.toast('Devi selezionare un album !',5000);
-      }
+
+      };
+      parseSearchUser(userEmail,onSuccess);
+
     });
     document.getElementById("removeUserAlbum").addEventListener("click", function(){
-      album = $('#album-UserAlbum').val();
-      if(album !== null && album !== undefined){
-        if(app.parseUser == {} || app.parseUser === null ){
-          Materialize.toast('Seleziona un utente presente in database !',5000);
-          return false;
+      var album = app.parseEditingAlbum;
+      var userEmail = $('#user-UserAlbum').val();
+      var onSuccess = function(){
+        if(album !== null && album !== undefined){
+          if(app.parseUser == {} || app.parseUser === null ){
+            Materialize.toast('Seleziona un utente presente in database !',5000);
+            return false;
+          }
+          var success = function(){
+            $(":mobile-pagecontainer").pagecontainer("change", "#admin-album", {
+                transition: "fade"
+            });
+          };
+          parseDeleteUserAlbum(app.parseUser, app.parseUserAlbums[album],success);
+        }else{
+          Materialize.toast('Devi selezionare un album !',5000);
         }
-        parseDeleteUserAlbum(app.parseUser, app.parseUserAlbums[album]);
-      }else{
-        Materialize.toast('Devi selezionare un album !',5000);
+
+      };
+      parseSearchUser(userEmail,onSuccess);
+
+
+    });
+    // Edit Delete Album
+    document.getElementById("edit-AlbumName").addEventListener('blur', function(){
+      var album = app.parseEditingAlbum;
+      if(album === null || album === undefined){
+        Materialize.toast('Non hai selezionato un album !', 5000);
+        return false;
       }
+      var name = $('#edit-AlbumName').val();
+      if(name === null || name === undefined || name === ''){
+        Materialize.toast('Devi inserire un nome !', 5000);
+        return false;
+      }
+      app.parseUserAlbums[album].set("name",name);
+      var success = function(){
+        stopSpinner();
+        parseReadUserAlbums();
+        Materialize.toast('Nome modificato !', 3000, 'rounded');
+      };
+      parseEditAlbum(app.parseUserAlbums[album],success);
+    });
+    document.getElementById("deleteAlbum").addEventListener("click", function(){
+      var album = app.parseEditingAlbum;
+      if(album === null || album === undefined){
+        Materialize.toast('Non hai selezionato un album !', 5000);
+        return false;
+      }
+      var success = function(){
+        stopSpinner();
+        parseReadUserAlbums();
+        Materialize.toast('Album eliminato !', 3000, 'rounded');
+        $(":mobile-pagecontainer").pagecontainer("change", "#admin-parse", {
+            transition: "flip", reverse:true
+        });
+      };
+      parseDeleteAlbum(app.parseUserAlbums[album],success);
     });
     /********************************************
      * OTHER LISTENERS
      *********************************************/
      document.getElementById('user-UserAlbum').addEventListener('blur',function(){
-       userEmail = $('#user-UserAlbum').val();
+       var userEmail = $('#user-UserAlbum').val();
        if(userEmail !== ''){
          parseSearchUser(userEmail);
        }
