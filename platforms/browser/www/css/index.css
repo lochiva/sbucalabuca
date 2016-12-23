@@ -202,6 +202,7 @@ body {
   background-color: rgb(249, 168, 37) !important;
   border-color: rgb(249, 168, 37) !important;
 }
+
 header.header {
     position: fixed;
     top: 0;
@@ -211,4 +212,9 @@ header.header {
 }
 .ui-content{
     margin-top:60px;
+
+
+.custom-margin{
+  margin-top: 0px !important;
+  margin-bottom: 0.5rem !important;
 }

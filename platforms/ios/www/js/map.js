@@ -26,7 +26,7 @@
 function loadMap(timeOut) {
   startSpinner();
     // In caso di assenza di connessione setto un timeout
-    if(app.firebaseConnected === false){
+    if(app.serverType == 'firebase' && app.firebaseConnected === false){
       setTimeout(function(timeOut){
         loadMap((timeOut+1));
       },500*timeOut);
@@ -36,7 +36,7 @@ function loadMap(timeOut) {
       if (elements !== null && elements !== undefined) {
         var length = Object.keys(elements).length;
         var i = 1;
-        var firstEle = elements[Object.keys(elements)[0]];
+        //var firstEle = elements[Object.keys(elements)[0]];
         var sumLat = 0,
             sumLng = 0,
             medLat = 0,
@@ -76,8 +76,11 @@ function loadMap(timeOut) {
       centerControlDiv.index = 2;
         app.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(centerControlDiv);
     };
-
-    readImagesForMap(onSuccess);
+    if(app.serverType == 'firebase'){
+      readImagesForMap(onSuccess);
+    }else{
+      parseReadImagesForMap(onSuccess);
+    }
 
 }
 /**
@@ -167,7 +170,7 @@ function paintMap(lat,lng){
 
 function reloadMarkers() {
   startSpinner();
-  if (app.firebaseConnected === false) {
+  if (app.firebaseConnected === false && app.serverType == 'firebase') {
       Materialize.toast('Connettività assente', 3000);
       stopSpinner();
       return false;
@@ -181,28 +184,19 @@ function reloadMarkers() {
             stopSpinner();
           }
         };
-        readImagesForMap(onSuccess);
-        /*firebase.database().ref('/images/').once('value').then(function(snapshot) {
-        var elements = snapshot.val();
-
-        if (elements !== null && elements !== undefined) {
-
+        if(app.serverType == 'firebase'){
+          readImagesForMap(onSuccess);
         }else{
-
+          parseReadImagesForMap(onSuccess);
         }
 
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
-        stopSpinner();
-        return false;
-    });*/
   };
   clearMarkers(callback);
 }
 
 function reloadMarkersMy(){
   startSpinner();
-  if (app.firebaseConnected === false) {
+  if (app.firebaseConnected === false && app.serverType == 'firebase') {
       Materialize.toast('Connettività assente', 3000);
       stopSpinner();
       return false;
@@ -218,14 +212,17 @@ function reloadMarkersMy(){
     }
     Materialize.toast('Mappa Aggiornata ', 3000,'rounded');
   };
-
-  readUserImagesForMap(onSuccess);
+  if(app.serverType == 'firebase'){
+    readUserImagesForMap(onSuccess);
+  }else{
+    parseReadUserImagesForMap(onSuccess);
+  }
 
 }
 
 function reloadMarkersToday(){
   startSpinner();
-  if (app.firebaseConnected === false) {
+  if (app.firebaseConnected === false && app.serverType == 'firebase') {
       Materialize.toast('Connettività assente', 3000);
       stopSpinner();
       return false;
@@ -241,25 +238,11 @@ function reloadMarkersToday(){
       }
       Materialize.toast('Mappa Aggiornata ', 3000,'rounded');
     };
-
-    readTodayImagesForMap(onSuccess);
-    /*var start = new Date().getTime()-(60*60*24*1000);
-    firebase.database().ref('/images/').orderByChild('timestamp').startAt(start).limitToLast(1000).once('value').then(function(snapshot) {
-        var elements = snapshot.val();
-
-        if (elements !== null && elements !== undefined) {
-
-            addMarkers(elements);
-            google.maps.event.trigger(app.map, 'resize');
-        }else{
-          stopSpinner();
-        }
-        Materialize.toast('Mappa Aggiornata ', 3000,'rounded');
-    }).catch(function(error) {
-        Materialize.toast('Errore connessione: ' + error, 3000);
-        stopSpinner();
-        return false;
-    });*/
+    if(app.serverType == 'firebase'){
+      readTodayImagesForMap(onSuccess);
+    }else{
+      parseReadTodayImagesForMap(onSuccess);
+    }
 
   };
 
@@ -282,53 +265,51 @@ function addMarkers(elements,callback){
   $.each(elements, function(index, element) {
 
       var url = '';
-      if(app.mapImagesUrl[index] !== undefined){
+      if(app.serverType == "firebase"){
+          if(app.mapImagesUrl[index] !== undefined){
 
-          url = app.mapImagesUrl[index];
-          marker = setMarkerAndInfoWindow(element,url);
-          app.markers[l++] = marker;
+              url = app.mapImagesUrl[index];
+              marker = setMarkerAndInfoWindow(element,url);
+              app.markers[l++] = marker;
 
-          if(l == length){
+              if(l == length){
 
-            addMarkerCluster();
-            if(callback !== undefined){
-              callback();
-            }
-          }
-
-      }else{
-        var onSuccess = function(url){
-          app.mapImagesUrl[index] = url;
-          marker = setMarkerAndInfoWindow(element,url);
-          app.markers[l++] = marker;
-
-          if(l == length){
-
-            addMarkerCluster();
-            if(callback !== undefined){
-              callback();
-            }
-
-          }
-        };
-        readImageUrl(element.image,onSuccess);
-        /*var storageRef = firebase.storage().ref("images/" + element.image);
-        storageRef.getDownloadURL().then(function(url) {
-
-            app.mapImagesUrl[index] = url;
-            marker = setMarkerAndInfoWindow(element,url);
-            app.markers[l++] = marker;
-
-            if(l == length){
-
-              addMarkerCluster();
-              if(callback !== undefined){
-                callback();
+                addMarkerCluster();
+                if(callback !== undefined){
+                  callback();
+                }
               }
 
-            }
+          }else{
+            var onSuccess = function(url){
+              app.mapImagesUrl[index] = url;
+              marker = setMarkerAndInfoWindow(element,url);
+              app.markers[l++] = marker;
 
-        });*/
+              if(l == length){
+
+                addMarkerCluster();
+                if(callback !== undefined){
+                  callback();
+                }
+
+              }
+            };
+            readImageUrl(element.image,onSuccess);
+
+          }
+      }else{
+        url = element.image.url;//console.log(element);
+        marker = setMarkerAndInfoWindow(element,url);
+        app.markers[l++] = marker;
+
+        if(l == length){
+
+          addMarkerCluster();
+          if(callback !== undefined){
+            callback();
+          }
+        }
 
       }
 
@@ -342,7 +323,7 @@ function addMarkers(elements,callback){
 function addMarkerCluster(){
   app.markerCluster = new MarkerClusterer(app.map, app.markers,
   {imagePath: 'js/assets/img/markercluster/m', maxZoom:21});
-  app.markerCluster.onClickZoom = function(_cluster) { multiChoice(_cluster); };
+  app.markerCluster.setOnClickZoom(function(cluster) { multiChoice(cluster); }) ;
   //app.markerCluster.onClickZoom = function() { return multiChoice(markerCluster); };
   stopSpinner();
 
@@ -368,7 +349,8 @@ function setMarkerAndInfoWindow(element, url)
           app.infowindow.setContent('<div class="row"><div class="col s12">' +
               '<div class="card">' +
               '<div class="card-image info-image" style="height:'+height+'px;">' +
-              '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title text-card"">'+ element.date + '</span></div>' +
+              '<img onclick="openModal(this.src)" src="' + url + '" class="responsive-img mouse-pointer"><span class="card-title text-card"">'+ element.date +
+              (app.serverType == 'parse' ?' - Album: '+element.album.name:'' )+'</span></div>' +
               '<div class="card-content"><div class="row"><p class="col s12">' + escapeHtml(element.nota) + '</p><button onclick="app.openNavigator('+element.latitude+','+element.longitude+')"'+
               ' class="waves-effect waves-light yellow darken-3 btn col s12">Portami qua</button></div></div></div></div></div>');
           app.infowindow.open(app.map, marker);
@@ -498,7 +480,7 @@ function openModal(src) {
 
 }
 
-function multiChoice(_cluster) {
+function multiChoice(cluster) {
 
      // if more than 1 point shares the same lat/long
      // the size of the cluster array will be 1 AND
@@ -507,14 +489,15 @@ function multiChoice(_cluster) {
 
      var contentString = '<div class="row"><ul class="collection col s12"><li class="collection-header"><h4>Lista foto: </h4></li>';
      var element = '';
-
-     if ( _cluster.markers_.length >= 1)
+     var markers = cluster.getMarkers();
+     //console.log(_cluster);
+     if ( markers.length >= 1)
      {
-        var markers = _cluster.markers_;
+        //markers = _cluster.markers_;
           for (var i=0; i < markers.length; i++)
           {     element = markers[i].firebaseElement;
                 contentString +='<li class="collection-item avatar "> <img onclick="openModal(this.src)" src="' + markers[i].firebaseUrlImage + '" alt="" class="mouse-pointer circle">'+
-                      '<b>Nota:</b> '+escapeHtml(element.nota)+' <b>Data:</b>: '+ element.date+'</li>';
+                      '<b>Nota:</b> '+escapeHtml(element.nota)+' <b>Data:</b>: '+ element.date+(app.serverType == 'parse' ?' <b>Album:</b> '+element.album.name:'' )+'</li>';
 
           }
 
@@ -523,7 +506,7 @@ function multiChoice(_cluster) {
 
           app.infowindow = new google.maps.InfoWindow({
             content: contentString,
-            position: new google.maps.LatLng(_cluster.center_.lat(), _cluster.center_.lng()),
+            position: new google.maps.LatLng(cluster.getCenter().lat(), cluster.getCenter().lng()),
           });
 
           app.infowindow.open(app.map);

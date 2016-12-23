@@ -26,12 +26,16 @@
  */
 function deleteImage(elem) {
     startSpinner();
-    var onSuccess = function(elem){
-      Materialize.toast('Immagine cancellata con successo!', 3000, 'rounded');
-      document.getElementById(elem).parentElement.parentElement.parentElement.innerHTML = '';
-      stopSpinner();
+    var onSuccess = function(elem) {
+        Materialize.toast('Immagine cancellata con successo!', 3000, 'rounded');
+        document.getElementById(elem).parentElement.parentElement.parentElement.innerHTML = '';
+        stopSpinner();
     };
-    deleteFirebaseImage(elem,onSuccess);
+    if (app.serverType == "firebase") {
+      deleteFirebaseImage(elem, onSuccess);
+    }else{
+      parseDeleteImage(elem,onSuccess);
+    }
 
     /*var storageRef = firebase.storage().ref();
     var desertRef = storageRef.child('images/' + elem);
@@ -52,62 +56,84 @@ function deleteImage(elem) {
 /**
  * Function that read the list of personal image
  */
- function readUserGallery(){
-   startSpinner();
-   var code = '';
+function readUserGallery() {
+    startSpinner();
+    var code = '';
 
-   var onSuccess = function(elements){
-     $('#image-container').html('');
-     if (elements !== null && elements !== '') {
-         $.each(elements, function(index, element) {
+    if (app.serverType == "firebase") {
+        var onSuccess = function(elements) {
+            $('#image-container').html('');
+            if (elements !== null && elements !== '') {
+                $.each(elements, function(index, element) {
 
-             readUserGalleryStorage(element);
-
-
-         });
-         stopSpinner();
-     } else {
-       $('#image-container').html('<h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>');
-         stopSpinner();
-         return false;
-     }
-
-   };
-   readFirebaseUserGallery(onSuccess);
-   /*firebase.database().goOnline();
-   var ref = firebase.database().ref('/images/');
-   if (device.uuid !== null) {
-       code = device.uuid.hashCode();
-   }*/
-   /*if (app.firebaseConnected === false) {
-       Materialize.toast('Connettività assente', 3000);
-       stopSpinner();
-       return false;
-   }
-
-   ref.orderByChild('user').equalTo(code).limitToLast(20).once('value').then(function(snapshot) {
-       var prova = snapshot.val();
-       $('#image-container').html('');
-       if (prova !== null && prova !== '') {
-           $.each(prova, function(index, element) {
-
-               readFirebaseGalleryImage(element);
+                    readUserGalleryStorage(element);
 
 
-           });
-           stopSpinner();
-       } else {
-         $('#image-container').html('<h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>');
-           stopSpinner();
-           return false;
-       }
+                });
+                stopSpinner();
+            } else {
+                $('#image-container').html('<h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>');
+                stopSpinner();
+                return false;
+            }
 
-   }).catch(function(error) {
-       Materialize.toast('Errore connessione: ' + error, 5000);
-       stopSpinner();
-   });*/
+        };
+        readFirebaseUserGallery(onSuccess);
+    } else {
+        var onSuccessParse = function(elements) {
+            $('#image-container').html('');
+            if (elements !== null && elements !== '') {
+                $.each(elements, function(index, element) {
+                    var urlImage = element.image.url;
+                    if (urlImage !== undefined) {
+                        prependGalleryContent(urlImage, element);
 
- }
+                    }
+                });
+                stopSpinner();
+            } else {
+                $('#image-container').html('<h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>');
+                stopSpinner();
+                return false;
+            }
+
+        };
+        parseReadUserImagesForMap(onSuccessParse);
+    }
+    /*firebase.database().goOnline();
+    var ref = firebase.database().ref('/images/');
+    if (device.uuid !== null) {
+        code = device.uuid.hashCode();
+    }*/
+    /*if (app.firebaseConnected === false) {
+        Materialize.toast('Connettività assente', 3000);
+        stopSpinner();
+        return false;
+    }
+
+    ref.orderByChild('user').equalTo(code).limitToLast(20).once('value').then(function(snapshot) {
+        var prova = snapshot.val();
+        $('#image-container').html('');
+        if (prova !== null && prova !== '') {
+            $.each(prova, function(index, element) {
+
+                readFirebaseGalleryImage(element);
+
+
+            });
+            stopSpinner();
+        } else {
+          $('#image-container').html('<h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>');
+            stopSpinner();
+            return false;
+        }
+
+    }).catch(function(error) {
+        Materialize.toast('Errore connessione: ' + error, 5000);
+        stopSpinner();
+    });*/
+
+}
 
 /**
  * Function that read a image from firebase storage
@@ -116,21 +142,21 @@ function readUserGalleryStorage(element) {
     startSpinner();
     var urlImage = app.galleryImagesUrl[element.image];
 
-    if(urlImage !== undefined){
+    if (urlImage !== undefined) {
         prependGalleryContent(urlImage, element);
 
-    }else{
-      var storageRef = firebase.storage().ref("images/" + element.image);
-      storageRef.getDownloadURL().then(function(url) {
-          app.galleryImagesUrl[element.image] = url;
-          //app.saveFileDownload(url,element.image);
-          prependGalleryContent(url, element);
+    } else {
+        var storageRef = firebase.storage().ref("images/" + element.image);
+        storageRef.getDownloadURL().then(function(url) {
+            app.galleryImagesUrl[element.image] = url;
+            //app.saveFileDownload(url,element.image);
+            prependGalleryContent(url, element);
 
-      }).catch(function(error) {
-          Materialize.toast('Errore connessione: ' + error, 3000);
-          stopSpinner();
-          return false;
-      });
+        }).catch(function(error) {
+            Materialize.toast('Errore connessione: ' + error, 3000);
+            stopSpinner();
+            return false;
+        });
 
     }
 
@@ -143,9 +169,11 @@ function readUserGalleryStorage(element) {
  */
 function appendGalleryContent(url, element) {
     $('#image-container').append('<div class="col s12 m6"><div class="card"><div class="card-image">' +
-        '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
+        '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date +
+        (app.serverType == 'parse' ?' - Album: '+element.album.name:'' )+'</span></div>' +
         '<div class="card-content"><p>' + escapeHtml(element.nota) + '</p></div>' + '<div class="card-action">' +
-        '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
+        '<a class="delete-image" onclick="deleteImage(this.id)" id="' +
+        (app.serverType == "firebase" ? element.image : element.objectId)+ '" href="#">Cancella Immagine</a></div>'
     );
 
 }
@@ -154,9 +182,11 @@ function appendGalleryContent(url, element) {
  */
 function prependGalleryContent(url, element) {
     $('#image-container').prepend('<div class="col s12 m6"><div class="card"><div class="card-image">' +
-        '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date + '</span></div>' +
+        '<img class="responsive-img" src="' + url + '"><span class="card-title text-card">' + element.date +
+        (app.serverType == 'parse' ?' - Album: '+element.album.name:'' )+'</span></div>' +
         '<div class="card-content"><p>' + escapeHtml(element.nota) + '</p></div>' + '<div class="card-action">' +
-        '<a class="delete-image" onclick="deleteImage(this.id)" id="' + element.image + '" href="#">Cancella Immagine</a></div>'
+        '<a class="delete-image" onclick="deleteImage(this.id)" id="' +
+        (app.serverType == "firebase" ? element.image : element.objectId)+ '" href="#">Cancella Immagine</a></div>'
     );
 
 }
@@ -179,15 +209,17 @@ String.prototype.hashCode = function() {
 };
 
 function escapeHtml(text) {
-  var map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  };
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
 
-  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    return text.replace(/[&<>"']/g, function(m) {
+        return map[m];
+    });
 }
 
 /**
@@ -216,11 +248,11 @@ function checkStorage() {
 
 function setStorage(name, val) {
     if (checkStorage()) {
-        if(val !== undefined && val !== null && val !== ''){
-          localStorage.setItem(name, val);
-          return true;
-        }else{
-          return false;
+        if (val !== undefined && val !== null && val !== '') {
+            localStorage.setItem(name, val);
+            return true;
+        } else {
+            return false;
         }
     } else {
         return false;
@@ -240,25 +272,26 @@ function deleteStorage(name) {
     localStorage.removeItem(name);
 }
 
-function blobToFile(theBlob, fileName){
+function blobToFile(theBlob, fileName) {
     var reader = new window.FileReader();
-   reader.readAsDataURL(theBlob);
-   reader.onloadend = function() {
-                  base64data = reader.result;
-                  console.log(base64data );
+    reader.readAsDataURL(theBlob);
+    reader.onloadend = function() {
+        base64data = reader.result;
+        console.log(base64data);
     };
     //A Blob() is almost a File() - it's just missing the two properties below which we will add
     theBlob.lastModifiedDate = new Date();
     theBlob.name = fileName;
     return theBlob;
 }
-function blobToBase64(theBlob,onSuccess){
+
+function blobToBase64(theBlob, onSuccess) {
     var reader = new window.FileReader();
-   reader.readAsDataURL(theBlob);
-   reader.onloadend = function() {
-                  base64data = reader.result;
-                  if(onSuccess !== undefined){
-                    onSuccess(base64data);
-                  }
-  };
+    reader.readAsDataURL(theBlob);
+    reader.onloadend = function() {
+        base64data = reader.result;
+        if (onSuccess !== undefined) {
+            onSuccess(base64data);
+        }
+    };
 }
