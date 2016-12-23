@@ -25,8 +25,15 @@
  * data in the firebase database
  */
 function deleteImage(elem) {
+    startSpinner();
+    var onSuccess = function(elem){
+      Materialize.toast('Immagine cancellata con successo!', 3000, 'rounded');
+      document.getElementById(elem).parentElement.parentElement.parentElement.innerHTML = '';
+      stopSpinner();
+    };
+    deleteFirebaseImage(elem,onSuccess);
 
-    var storageRef = firebase.storage().ref();
+    /*var storageRef = firebase.storage().ref();
     var desertRef = storageRef.child('images/' + elem);
     startSpinner();
     // Delete the file
@@ -39,7 +46,7 @@ function deleteImage(elem) {
     }).catch(function(error) {
         Materialize.toast('Errore cancellazione immagine: ' + error, 3000);
         stopSpinner();
-    });
+    });*/
 }
 
 /**

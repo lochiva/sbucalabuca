@@ -149,7 +149,7 @@ function readInfoFirebase(){
  *  Function that read images from database for the map
  */
 function readImagesForMap(onSuccess, onError) {
-  
+
     firebase.database().ref('/images/').limitToLast(1000).once('value').then(function(snapshot) {
 
         var elements = snapshot.val();
@@ -273,4 +273,24 @@ function readFirebaseUserGallery(onSuccess, onError) {
         stopSpinner();
     });
 
+}
+
+function deleteFirebaseImage(elem,onSuccess,onError){
+  var storageRef = firebase.storage().ref();
+  var desertRef = storageRef.child('images/' + elem);
+
+  // Delete the file
+  desertRef.delete().then(function() {
+      firebase.database().ref('images/' + elem.substring(0, (elem.length - 4))).remove();
+      if (onSuccess !== undefined) {
+          onSuccess(elem);
+      }
+
+  }).catch(function(error) {
+      if (onError !== undefined) {
+          onError();
+      }
+      Materialize.toast('Errore cancellazione immagine: ' + error, 3000);
+      stopSpinner();
+  });
 }

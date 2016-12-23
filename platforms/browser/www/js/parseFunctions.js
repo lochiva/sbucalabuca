@@ -261,3 +261,31 @@ function saveImageFromFirebase(imageURI, data) {
 /********************************************
  *  END upload functions
  *********************************************/
+
+function parseDeleteImage(id){
+  var Images = Parse.Object.extend("images");
+  var query = new Parse.Query(Images);
+  var file = '';
+  query.get(id, {
+    success: function(myObject) {
+    file = myObject.get("image");
+    
+    myObject.destroy({
+      success: function(myObject) {
+        // The object was deleted from the Parse Cloud.
+      },
+      error: function(myObject, error) {
+        Materialize.toast("Errore connessione: " + error.code + " Controlla la connetività. ", 5000);
+        stopSpinner();
+        return false;
+      }
+});
+    },
+    error: function(object, error) {
+      Materialize.toast("Errore connessione: " + error.code + " Controlla la connetività. ", 5000);
+      stopSpinner();
+      return false;
+    }
+  });
+
+}
