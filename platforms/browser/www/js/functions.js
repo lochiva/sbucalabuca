@@ -26,7 +26,6 @@
  */
 function deleteImage(elem) {
     startSpinner();
-
     var onSuccess = function(elem) {
         Materialize.toast('Immagine cancellata con successo!', 3000, 'rounded');
         document.getElementById(elem).parentElement.parentElement.parentElement.innerHTML = '';
@@ -37,7 +36,6 @@ function deleteImage(elem) {
     }else{
       parseDeleteImage(elem,onSuccess);
     }
-
 
     /*var storageRef = firebase.storage().ref();
     var desertRef = storageRef.child('images/' + elem);
