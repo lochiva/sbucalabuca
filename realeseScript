@@ -94,11 +94,11 @@ shell_exec('cordova prepare');
 for($i=0;$i<3;$i++){
   echo "\n ...";sleep(1);
 }
-echo "\n Build di android ...";
+/*echo "\n Build di android ...";
 shell_exec('cordova build android');
 for($i=0;$i<3;$i++){
   echo "\n ...";sleep(1);
-}
+}*/
 /********************************************
   Cancellazione files
 *********************************************/
