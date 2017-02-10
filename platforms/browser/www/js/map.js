@@ -96,6 +96,10 @@ function paintMap(lat,lng){
       center: new google.maps.LatLng(lat, lng),
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       draggable: true,
+      fullscreenControl: true,
+      fullscreenControlOptions: {
+        position: google.maps.ControlPosition.LEFT_BOTTOM,
+      },
       styles: [{
           "featureType": "administrative",
           "elementType": "all",

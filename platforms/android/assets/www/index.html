@@ -56,8 +56,20 @@
           </div>
       </div>
   </div>
+  <div id="false-header" tabindex="0" class="ui-page ui-page-theme-a ui-page-active">
+    <header data-role="header" class="header ui-header ui-bar-inherit">
+        <div data-role="navbar" class="ui-navbar">
+            <ul class="ui-grid-c">
+                <li class="ui-block-a"><a class="ui-link ui-btn ui-icon-home ui-btn-icon-top"  disabled >Home</a></li>
+                <li class="ui-block-b"><a class="ui-link ui-btn ui-icon-camera ui-btn-icon-top"  disabled >Photo</a></li>
+                <li class="ui-block-c"><a class="ui-link ui-btn ui-icon-tag ui-btn-icon-top"  disabled >Gallery</a></li>
+                <li class="ui-block-d"><a class="ui-link ui-btn ui-icon-info ui-btn-icon-top"  disabled >Info</a></li>
+            </ul>
+        </div>
+    </header>
+  </div>
     <div data-role="page" id="home">
-        <div data-role="header">
+        <header data-role="header" class="header">
             <div data-role="navbar">
                 <ul>
                     <li><a href="#home" data-icon="home" class="ui-btn-active ui-state-persist" data-transition="slide">Home</a></li>
@@ -66,7 +78,7 @@
                     <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
                 </ul>
             </div>
-        </div>
+        </header>
         <div data-role="main" class="ui-content">
             <div class="row">
               <div class="input-field col s12 showIfParse custom-margin"  style="display:none;" data-role="none">
@@ -101,7 +113,7 @@
         </div>
     </div>
     <div data-role="page" id="camera">
-        <div data-role="header" id="headerCamera">
+        <header data-role="header" id="headerCamera" class="header">
             <div data-role="navbar">
                 <ul>
                     <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
@@ -110,7 +122,7 @@
                     <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
                 </ul>
             </div>
-        </div>
+        </header>
         <div data-role="main" class="ui-content">
             <div class="pictures row">
                 <div class="col s12">
@@ -143,7 +155,7 @@
         </div>
     </div>
     <div data-role="page" id="gallery">
-      <div data-role="header">
+      <header data-role="header" class="header">
           <div data-role="navbar">
               <ul>
                   <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
@@ -152,7 +164,7 @@
                   <li><a href="#info" data-icon="info" data-transition="slide">Info</a></li>
               </ul>
           </div>
-      </div>
+      </header>
         <div data-role="main" class="ui-content">
           <div class="row">
             <div class="col s12">
@@ -170,7 +182,7 @@
         </div>
     </div>
     <div data-role="page" id="info">
-        <div data-role="header">
+        <header data-role="header" class="header">
             <div data-role="navbar">
                 <ul>
                     <li><a href="#home" data-icon="home" data-transition="slide" data-direction="reverse">Home</a></li>
@@ -179,7 +191,7 @@
                     <li><a href="#info" data-icon="info" class="ui-btn-active ui-state-persist" data-transition="slide">Info</a></li>
                 </ul>
             </div>
-        </div>
+        </header>
         <div data-role="main" class="ui-content">
             <div class="row center-align" style="margin-top:30px;">
               <div class="showIfParse" style="display:none;">
@@ -198,14 +210,17 @@
         </div>
     </div>
     <div data-role="page" id="login-parse">
-        <div data-role="header">
+        <header data-role="header" class="header">
             <div data-role="navbar">
                 <ul>
-                    <li><a href="#home" data-icon="home" data-transition="flip" data-direction="reverse">Torna a Home</a></li>
+                    <li><a href="#home" data-icon="home" data-transition="flip" data-direction="reverse">Home</a></li>
+                    <li><a href="#camera" data-icon="camera" data-transition="flip" data-direction="reverse">Photo</a></li>
+                    <li><a href="#gallery" data-icon="tag" data-transition="flip" data-direction="reverse">Gallery</a></li>
+                    <li><a href="#info" data-icon="info" data-transition="flip">Info</a></li>
                 </ul>
             </div>
-        </div>
-        <div data-role="main" >
+        </header>
+        <div data-role="main" class="ui-content">
             <div class="row center-align" style="margin-top:30px;">
               <form class="col s12" data-role="none" id="login-form" onsubmit="event.preventDefault()">
                 <div class="row">
@@ -233,14 +248,17 @@
         </div>
     </div>
     <div data-role="page" id="admin-parse">
-        <div data-role="header">
+        <header data-role="header" class="header">
             <div data-role="navbar">
                 <ul>
-                    <li><a href="#home" data-icon="home" data-transition="flip" data-direction="reverse">Torna a Home</a></li>
+                    <li><a href="#home" data-icon="home" data-transition="flip" data-direction="reverse">Home</a></li>
+                    <li><a href="#camera" data-icon="camera" data-transition="flip" data-direction="reverse">Photo</a></li>
+                    <li><a href="#gallery" data-icon="tag" data-transition="flip" data-direction="reverse">Gallery</a></li>
+                    <li><a href="#info" data-icon="info" data-transition="flip">Info</a></li>
                 </ul>
             </div>
-        </div>
-        <div data-role="main" >
+        </header>
+        <div data-role="main" class="ui-content">
             <div class="row center-align" style="margin-top:30px;">
               <div class="row">
                 <div class="col s12">
@@ -314,15 +332,15 @@
     <!-- ASSETS SCRIPTS-->
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/assets/jquery2.1.4.js"></script>
-    <script type="text/javascript" src="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script> <!--
     <script type="text/javascript" src="js/assets/materialize.min.js"></script>
     <script type="text/javascript" src="js/assets/firebase.js"></script>
     <script type="text/javascript" src="js/assets/parse.min.js"></script>
     <script type="text/javascript" src="js/assets/markerclusterer.min.js"></script>
     <script type="text/javascript" src="js/assets/sha256.js"></script>
-    <!-- RELEASE ASSETS -->
-    <!--<script type="text/javascript" src="js/assets/assets.js"></script>-->
-    <!-- APPLICATION SCRIPTS -->
+    --><!-- RELEASE ASSETS -->
+    <script type="text/javascript" src="js/assets/assets.js"></script>
+    <!-- APPLICATION SCRIPTS --> <!--
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>
     <script type="text/javascript" src="js/firebaseFunctions.js"></script>
@@ -330,8 +348,8 @@
     <script type="text/javascript" src="js/map.js"></script>
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
-    <!-- RELEASE MINIFIED SCRIPT -->
-    <!--<script type="text/javascript" src="js/release.js"></script>-->
+    --><!-- RELEASE MINIFIED SCRIPT -->
+    <script type="text/javascript" src="js/release.js"></script>
 </body>
 
 </html>

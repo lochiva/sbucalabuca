@@ -68,12 +68,24 @@ $(document).ready(function() {
     /********************************************
      * END SWIPE FUNCTIONS
      *********************************************/
-
+    /**
+    * PAGEBEFORECHANGE BIND
+    */
+    $(document).on("pagebeforechange", function( event, data ) {
+      
+    });
     /**
      * PAGECHANGE BIND take picture if not taked
      */
     $(document).on("pagechange", function() {
         var id = $(':mobile-pagecontainer').pagecontainer('getActivePage').attr('id');
+        // Nel caso che non si è in una delle pagine principali bisogna nascondere l'header fittizzio
+        if(id == 'admin-album'){
+          $('#false-header').hide();
+        }else{
+          $('#false-header').show();
+        }
+        // Azioni da eseguire a seconda della pagina caricata
         switch (id) {
             case 'camera':
                 if (app.photoCaptured === false) {

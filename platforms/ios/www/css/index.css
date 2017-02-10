@@ -203,7 +203,19 @@ body {
   border-color: rgb(249, 168, 37) !important;
 }
 
+header.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index:1000;
+}
+.ui-content{
+    margin-top:60px;
+}
+
 .custom-margin{
   margin-top: 0px !important;
   margin-bottom: 0.5rem !important;
+
 }

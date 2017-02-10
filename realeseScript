@@ -1,0 +1,137 @@
+#!/usr/bin/php
+<?php
+// ~/Library/Android/sdk/build-tools/22.0.1/zipalign -v 4 android-release.apk sbuca.apk
+define('DS', DIRECTORY_SEPARATOR);
+define('ROOT', dirname(__FILE__));
+$js = ROOT.DS.'www'.DS.'js'.DS;
+$www = ROOT.DS.'www'.DS;
+$assets = $js.'assets'.DS;
+define('ANDROID',ROOT.DS.'platforms'.DS.'android'.DS.'assets'.DS.'www'.DS);
+define('IOS',ROOT.DS.'platforms'.DS.'ios'.DS.'www'.DS);
+define('BROWSER',ROOT.DS.'platforms'.DS.'browser'.DS.'www'.DS);
+$platforms = array(ANDROID,IOS,BROWSER);
+$jsFiles = array('app.js','functions.js','firebaseFunctions.js','parseFunctions.js','map.js','config.js','index.js');
+$jsAssets = array('materialize.min.js','firebase.js','parse.min.js','markerclusterer.min.js','sha256.js');
+/********************************************
+  Preparazione release.js
+*********************************************/
+
+echo "\n Scrittura file realese.js ...";
+$text = '';
+foreach($jsFiles as $file){
+  $text .= file_get_contents($js.$file);
+}
+
+echo "\n Compilazione file realese.js ...";
+$url = 'http://closure-compiler.appspot.com/compile';
+$data = array('compilation_level' => 'SIMPLE_OPTIMIZATIONS', 'output_format' => 'text', 'output_info'=>'compiled_code', 'js_code'=>$text);
+
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+$context  = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+if ($result === FALSE) { echo "\nErrrore chiamata al closure_compiler per realese.js";die; }
+
+file_put_contents($js.'release.js',$result);
+
+
+/********************************************
+  Preparazione assets.js
+*********************************************/
+echo "\n Scrittura file assets.js ...";
+
+$text = '';
+foreach($jsAssets as $file){
+  $text .= file_get_contents($assets.$file);
+}
+
+echo "\n Compilazione file assets.js ...";
+$url = 'http://closure-compiler.appspot.com/compile';
+$data = array('compilation_level' => 'WHITESPACE_ONLY', 'output_format' => 'text', 'output_info'=>'compiled_code', 'js_code'=>$text);
+
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+$context  = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+if ($result === FALSE) { echo "\nErrrore chiamata al closure_compiler per assets.js";die; }
+
+file_put_contents($assets.'assets.js',$result);
+
+
+
+/********************************************
+  Scrittura index
+*********************************************/
+echo "\n Modifica file index.html ...";
+$index = file_get_contents($www.'index.html');
+$index = str_replace('<!-- APPLICATION SCRIPTS -->', '<!-- APPLICATION SCRIPTS --> <!--', $index);
+$index = str_replace('<!-- RELEASE MINIFIED SCRIPT -->', '--><!-- RELEASE MINIFIED SCRIPT -->', $index);
+$index = str_replace('<!--<script type="text/javascript" src="js/release.js"></script>-->',
+ '<script type="text/javascript" src="js/release.js"></script>', $index);
+
+ $index = str_replace('js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script>',
+ 'js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script> <!--', $index);
+$index = str_replace('<!-- RELEASE ASSETS -->', '--><!-- RELEASE ASSETS -->', $index);
+$index = str_replace('<!--<script type="text/javascript" src="js/assets/assets.js"></script>-->',
+ '<script type="text/javascript" src="js/assets/assets.js"></script>', $index);
+file_put_contents($www.'index.html',$index);
+/********************************************
+  Compilazione cordova
+*********************************************/
+echo "\n Prepare di cordova ...";
+
+shell_exec('cordova prepare');
+for($i=0;$i<3;$i++){
+  echo "\n ...";sleep(1);
+}
+echo "\n Build di android ...";
+shell_exec('cordova build android');
+for($i=0;$i<3;$i++){
+  echo "\n ...";sleep(1);
+}
+/********************************************
+  Cancellazione files
+*********************************************/
+
+echo "\n Cancellazione file inutili ...";
+foreach($platforms as $platform){
+  foreach($jsFiles as $file){
+    unlink($platform.'js'.DS.$file);
+  }
+  foreach($jsAssets as $file){
+    unlink($platform.'js'.DS.'assets'.DS.$file);
+  }
+  unlink($platform.'js'.DS.'config.example.js');
+  unlink($platform.'js'.DS.'assets'.DS.'markerclusterer.js');
+}
+
+
+/********************************************
+  Riscrittura index
+*********************************************/
+echo "\n Riscrittura index ...";
+$index = file_get_contents($www.'index.html');
+$index = str_replace( '<!-- APPLICATION SCRIPTS --> <!--','<!-- APPLICATION SCRIPTS -->', $index);
+$index = str_replace( '--><!-- RELEASE MINIFIED SCRIPT -->','<!-- RELEASE MINIFIED SCRIPT -->', $index);
+$index = str_replace('<script type="text/javascript" src="js/release.js"></script>',
+'<!--<script type="text/javascript" src="js/release.js"></script>-->', $index);
+
+$index = str_replace('js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script> <!--',
+'js/jquerymobile1.4.5/jquery.mobile-1.4.5.min.js"></script>', $index);
+$index = str_replace('--><!-- RELEASE ASSETS -->','<!-- RELEASE ASSETS -->',  $index);
+$index = str_replace('<script type="text/javascript" src="js/assets/assets.js"></script>',
+'<!--<script type="text/javascript" src="js/assets/assets.js"></script>-->', $index);
+
+
+file_put_contents($www.'index.html',$index);
+echo "\n Pronto per Build con sdk...\n";
