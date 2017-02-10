@@ -220,11 +220,19 @@ header.header {
 
 }
 
-.header ul li a{
+.ui-page .header ul li a.ui-btn{
     font-size: 30px!important;
     padding: 10px;
     border: 0px;
+    color:#7d7d7d;
+    background-color: transparent;
 }
+/*.ui-page .header ul li a.ui-btn:hover{
+    background-color: #f6f6f6;
+}*/
 .header ul li a i{
     text-shadow: none;
+}
+.ui-navbar, .header{
+    border:0px!important;
 }
