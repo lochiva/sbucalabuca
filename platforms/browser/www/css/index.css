@@ -199,10 +199,10 @@ body {
   }
 }
 .ui-btn-active{
-  background-color: rgb(249, 168, 37) !important;
-  border-color: rgb(249, 168, 37) !important;
+    background-color: #f6f6f6!important;
+  color: rgb(249, 168, 37) !important;
 }
-<<<<<<< HEAD
+
 header.header {
     position: fixed;
     top: 0;
@@ -212,10 +212,19 @@ header.header {
 }
 .ui-content{
     margin-top:60px;
-=======
+}
 
 .custom-margin{
   margin-top: 0px !important;
   margin-bottom: 0.5rem !important;
->>>>>>> ed2a1ef4c7b7b0856086f24e937e32f49acaa176
+
+}
+
+.header ul li a{
+    font-size: 30px!important;
+    padding: 10px;
+    border: 0px;
+}
+.header ul li a i{
+    text-shadow: none;
 }
