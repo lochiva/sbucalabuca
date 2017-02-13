@@ -87,10 +87,37 @@
                  <option data-role="none" value="" selected>Seleziona un album da mostrare</option>
                </select>
               </div>
-              <div class="col s12">
-                <h5 class="center app-title showIfFirebase">Sbuca la Buca App</h5>
-                  <div id="map" class="" style="position: relative; overflow: hidden; width:100%;height:500px;" >
+              <div class="row app-title page-title" >
+                <div class="col s12">
+                  <h5 class="center showIfFirebase"><b>Sbuca la Buca</b></h5>
+                  <p>Segnala le <b>buche</b> scattando una <b>foto</b></p>
+                </div>
+              </div>
+              <div class="row filtri-map">
+                <div class="col s6">
+                  <div class="switch" data-role="none">
+                    <label data-role="none">
+                      Solo le mie
+                      <input type="checkbox" data-role="none">
+                      <span class="lever" data-role="none"></span>
+                    </label>
                   </div>
+                </div>
+                <div class="col s6">
+                  <div class="switch" data-role="none">
+                    <label data-role="none">
+                      Solo oggi
+                      <input type="checkbox" data-role="none">
+                      <span class="lever" data-role="none"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12">
+                    <div id="map" class="" style="position: relative; overflow: hidden; width:100%;height:500px;" >
+                    </div>
+                </div>
               </div>
                 <!--<img src="img/logo.png" width="200" height="150" />
                 <h5>Sbuca la Buca App</h5>
@@ -167,19 +194,23 @@
           </div>
       </header>
         <div data-role="main" class="ui-content">
-          <div class="row">
-            <div class="col s12">
-              <h5 class="center app-title">Gallery</h5>
+          <div class="page-title">
+            <div class="row">
+              <div class="col s12 ">
+                <h5 class="center app-title">Gallery</h5>
+              </div>
+              <div class="input-field col s12 showIfParse custom-margin"  style="display:none;" data-role="none">
+                <select  id="album-gallery" class="browser-default album-list groupsname"  data-role="none">
+                 <option data-role="none" value="" selected>Seleziona un album da mostrare</option>
+               </select>
+              </div>
             </div>
-            <div class="input-field col s12 showIfParse custom-margin"  style="display:none;" data-role="none">
-              <select  id="album-gallery" class="browser-default album-list groupsname"  data-role="none">
-               <option data-role="none" value="" selected>Seleziona un album da mostrare</option>
-             </select>
+            <div id="image-container" class="row">
+              <div class="col s12 ">
+                <p class="center-align">Non ci sono <b>immagini</b> presenti in galleria!</p>
+              </div>
             </div>
           </div>
-            <div id="image-container" class="row">
-              <h6 class="center-align">Non ci sono immagini presenti in galleria!</h6>
-            </div>
         </div>
     </div>
     <div data-role="page" id="info">
@@ -194,13 +225,13 @@
             </div>
         </header>
         <div data-role="main" class="ui-content">
-            <div class="row center-align" style="margin-top:30px;">
-              <div class="showIfParse" style="display:none;">
+            <div class="row center-align page-title">
+              <div class="showIfParse col s12" style="display:none;">
                 <h4>Stai usando un istanza privata!</h4>
               </div>
-              <div class="showIfFirebase" id="info-text">
-                  <h4>Info:</h4>
-                  <h6>Lettura info non riuscita!</h6>
+              <div class="showIfFirebase col s12" id="info-text">
+                  <h5 class="txt-sbuca center">Info su <b>Sbuca la Buca</b> App</h5>
+                  <p>Lettura <b>info</b> non riuscita!</p>
               </div>
                 <button id="getPosition">Posizione corrente</button>
                 <button class="showIfFirebase" id="getLogin" >Login Istanza Privata</button>
@@ -208,6 +239,10 @@
                 <button class="showIfParse" id="getAdmin" style="display:none;">Amministrazione</button>
                 <button id="exitApp" >Chiudi app</button>
             </div>
+            
+                        
+            
+            
         </div>
     </div>
     <div data-role="page" id="login-parse">

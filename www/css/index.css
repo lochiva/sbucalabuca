@@ -236,3 +236,42 @@ header.header {
 .ui-navbar, .header{
     border:0px!important;
 }
+.page-title h5{
+    color: rgb(249, 168, 37);
+    margin:5px 0 0 0;
+}
+.page-title p{
+    text-align: center;
+    margin:5px 0 ;
+    border-bottom: 1px dotted rgb(249, 168, 37);
+    padding-bottom: 10px;
+}
+.filtri-map label{
+    font-size:14px;
+    text-shadow: none;
+}
+.filtri-map{
+    margin-top:10px;
+    margin-bottom: 10px!important;
+}
+.row{
+    margin-bottom:auto;
+}
+.txt-sbuca{
+    color: rgb(249, 168, 37);
+}
+h1, h2, h3, h4, h5, h6, body, a{
+    text-shadow: none;
+}
+.box-full{
+    margin-left: -1.75em;
+    margin-right: -1.75em;
+    padding-left: 1.75em;
+    padding-right: 1.75em;
+}
+.dati-itoa{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
