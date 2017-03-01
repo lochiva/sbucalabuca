@@ -62,7 +62,7 @@ function loadMap(timeOut) {
         paintMap();
         stopSpinner();
       }
-      var centerControlDiv = document.createElement('div');
+      /*var centerControlDiv = document.createElement('div');
       centerControlDiv.id = 'myControlMap';
        var centerControl = new CenterMyControl(centerControlDiv, app.map);
 
@@ -74,7 +74,7 @@ function loadMap(timeOut) {
        centerControl = new CenterTodayControl(centerControlDiv, app.map);
 
       centerControlDiv.index = 2;
-        app.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(centerControlDiv);
+        app.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(centerControlDiv);*/
     };
     if(app.serverType == 'firebase'){
       readImagesForMap(onSuccess);
@@ -386,8 +386,8 @@ function clearMarkers(callback){
 /********************************************
 *   MAP CONTROL functions
 *********************************************/
-
-function CenterMyControl(controlDiv, map) {
+// Non usate più
+/*function CenterMyControl(controlDiv, map) {
 
         // Set CSS for the control border.
         var controlUI = document.createElement('div');
@@ -467,7 +467,7 @@ function CenterTodayControl(controlDiv, map) {
 
         });
 
-}
+}*/
 
 function showMapControls(){
   $('#myControlMap').css('z-index',0);

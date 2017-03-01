@@ -82,66 +82,51 @@
         </header>
         <div data-role="main" class="ui-content">
             <div class="row">
-              <div class="input-field col s12 showIfParse custom-margin"  style="display:none;" data-role="none">
-                <select  id="album-map" class="browser-default album-list groupsname"  data-role="none">
-                 <option data-role="none" value="" selected>Seleziona un album da mostrare</option>
-               </select>
-              </div>
               <div class="row app-title page-title" >
                 <div class="col s12">
                   <h5 class="center showIfFirebase"><b>Sbuca la Buca</b></h5>
+                  <h6 class="center showIfParse" style="display: none;"><b>Stai usando un istanza privata</b></h6>
                   <p>Segnala le <b>buche</b> scattando una <b>foto</b></p>
                 </div>
               </div>
               <div class="row filtri-map">
-                <!--<div class="col s12">
-                  <span class="teal-text"><b>Filtra</b> cosa vedere sulla mappa</span> <a class=" btn-floating btn-large waves-effect waves-light teal lighten-1"><i class="fa fa-sliders"></i></a>
-                </div>-->
                 <div class="col s6">
                   <h6 class="text-left"><b>FOTO PUBBLICHE</b></h6>
-                  <!--<div class="switch" data-role="none">
-                    <label data-role="none">
-                      Solo le mie
-                      <input type="checkbox" data-role="none">
-                      <span class="lever" data-role="none"></span>
-                    </label>
-                  </div>-->
                 </div>
                 <div class="col s6 ">
                   <a id="filtri" class="waves-effect yellow darken-3 btn white-text" href="#modal-filtri"><i class="fa fa-sliders"></i> filtri </a>
-                  
                   <!-- Modal Structure -->
                   <div id="modal-filtri" class="modal">
                     <div class="modal-content">
-                    <i id="closeModal" class="modal-action modal-close material-icons right">clear</i>
+                    <i class="modal-action modal-close material-icons right">clear</i>
                       <h5><i class="fa fa-sliders"></i> <b>FILTRI</b></h5>
 
                       <div class="switch" data-role="none">
                         <label data-role="none">
-                          
-                          <input type="checkbox" data-role="none">
+
+                          <input class="filter-map disableBy-today" type="checkbox" data-role="none" value="user">
                           <span class="lever" data-role="none"></span>
                           Solo i <b>miei</b> scatti
                         </label>
                       </div>
                       <div class="switch" data-role="none">
                         <label data-role="none">
-                          
-                          <input type="checkbox" data-role="none">
+
+                          <input class="filter-map disableBy-user"  type="checkbox" data-role="none" value="today">
                           <span class="lever" data-role="none"></span>
                           Solo gli scatti di <b>oggi</b>
                         </label>
                       </div>
                       <div class="input-field showIfParse"  style="display: none;" data-role="none">
-                        <select  id="album-list" class="browser-default album-list groupsname"  data-role="none">
+                        <select  id="album-map" class="browser-default album-list groupsname"  data-role="none">
                          <option data-role="none" value="" disabled selected>Seleziona un album</option>
                        </select>
                       </div>
 
                     </div>
-                    
+
                   </div>
-          
+
                 </div>
               </div>
               <div class="row">
@@ -150,14 +135,8 @@
                     </div>
                 </div>
               </div>
-                <!--<img src="img/logo.png" width="200" height="150" />
-                <h5>Sbuca la Buca App</h5>
-                <div id="deviceready" class="blink">
-                    <p class="event listening">Connecting to Device</p>
-                    <p class="event received">Device is Ready</p>
-                </div>-->
             </div>
-            <div id="modal-image" class="modal modal-fixed-footer">
+            <div id="modal-image" class="modal modal-large modal-fixed-footer">
             <div class="modal-content modal-content-img">
               <div class="row" style="height:100%;">
                 <div class="col s12 center-align" style="height:100%;">
@@ -195,7 +174,7 @@
             <a id="openModal" class="waves-effect waves-light btn ">
                 <i class="material-icons icon-size-custom">send</i></a>
         </div>
-        <div id="modalInvio" class="modal modal-fixed-footer">
+        <div id="modalInvio" class="modal modal-large modal-fixed-footer">
             <div class="modal-content" data-role="none">
                 <div class="col s12 right-align"><i id="closeModal" class="modal-action modal-close material-icons">clear</i></div>
                 <div class="input-field col s12" data-role="none">
@@ -270,10 +249,6 @@
                 <button class="showIfParse" id="getAdmin" style="display:none;">Amministrazione</button>
                 <button id="exitApp" >Chiudi app</button>
             </div>
-            
-                        
-            
-            
         </div>
     </div>
     <div data-role="page" id="login-parse">

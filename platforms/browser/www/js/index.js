@@ -27,10 +27,17 @@ $(document).ready(function() {
     app.timeZoneDifference = new Date().getTimezoneOffset() * 60000;
 
     // Set window dimension variables and map dimension
-    app.windowHeight = window.innerHeight;
-    app.windowWidth = window.innerWidth;
-    $('#map').css('height', (app.windowHeight - 220));
-
+    if(window.screen.orientation.type.search('portrait') !== -1){
+      app.windowHeight = window.innerHeight;
+      app.windowWidth = window.innerWidth;
+      $('#map').css('height', (app.windowHeight - 200));
+    }else{
+      app.windowHeight = window.innerWidth;
+      app.windowWidth = window.innerHeight;
+      $('.center-div').css('margin-top', 30);
+      $('.app-title').hide();
+      $('#map').css('height', (app.windowWidth - 145));
+    }
     /********************************************
      *  SWIPE FUNCTIONS
      * Functions that detect the swipe for moving the pages.
@@ -72,7 +79,7 @@ $(document).ready(function() {
     * PAGEBEFORECHANGE BIND
     */
     $(document).on("pagebeforechange", function( event, data ) {
-      
+
     });
     /**
      * PAGECHANGE BIND take picture if not taked
@@ -129,16 +136,16 @@ $(document).ready(function() {
      * ORIENTATION CHANGE BIND  for improve css
      */
     $(window).on("orientationchange", function(event) {
-
+        console.log(event.orientation);
         if (event.orientation == 'portrait') {
             $('.app-title').show();
             $('.center-div').css('margin-top', 100);
-            $('#map').css('height', (app.windowHeight - 220));
+            $('#map').css('height', (app.windowHeight - 200));
 
         } else {
             $('.center-div').css('margin-top', 30);
             $('.app-title').hide();
-            $('#map').css('height', (app.windowWidth - 170));
+            $('#map').css('height', (app.windowWidth - 145));
 
         }
         google.maps.event.trigger(app.map, 'resize');
@@ -161,10 +168,23 @@ $(document).ready(function() {
 
     });
     document.getElementById("filtri").addEventListener("click", function() {
-        
         $('#modal-filtri').openModal();
-       
-
+    });
+    $(".filter-map").on("click", function() {
+        var type = $(this).val();
+        if($(this).is(":checked")){
+          $(".disableBy-"+type).attr('checked',false);
+          switch (type) {
+            case 'user':
+              reloadMarkersMy();
+              break;
+            case 'today':
+              reloadMarkersToday();
+              break;
+          }
+        }else{
+          reloadMarkers();
+        }
     });
     // PARSE BUTTONS
     document.getElementById('getLogout').addEventListener('click',app.logoutParse,false);

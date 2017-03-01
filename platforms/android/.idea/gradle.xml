@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../../../xamppfiles/htdocs/sbucalabuca/platforms/android" />
-            <option value="$PROJECT_DIR$/../../../../xamppfiles/htdocs/sbucalabuca/platforms/android/CordovaLib" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/CordovaLib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

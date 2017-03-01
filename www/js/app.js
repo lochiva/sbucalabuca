@@ -283,6 +283,7 @@ var app = {
         $('.showIfParse').show();
         $('.showIfFirebase').hide();
         parseCheckIfCustomer();
+        $('.filter-map').attr('checked', false);
         $(":mobile-pagecontainer").pagecontainer("change", "#home", {transition: "flip",reverse:true});
       };
       if(type == 'login'){
@@ -303,6 +304,7 @@ var app = {
         firebaseInit();
       }
       setTimeout(function() {
+          $('.filter-map').attr('checked', false);
           $(":mobile-pagecontainer").pagecontainer("change", "#home", {transition: "flip",reverse:true});
           reloadMarkers();
       }, 1500);
