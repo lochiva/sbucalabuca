@@ -29,7 +29,7 @@ $(document).ready(function() {
     // Set window dimension variables and map dimension
     app.windowHeight = window.innerHeight;
     app.windowWidth = window.innerWidth;
-    $('#map').css('height', (app.windowHeight - 200));
+    $('#map').css('height', (app.windowHeight - 220));
 
     /********************************************
      *  SWIPE FUNCTIONS
@@ -133,7 +133,7 @@ $(document).ready(function() {
         if (event.orientation == 'portrait') {
             $('.app-title').show();
             $('.center-div').css('margin-top', 100);
-            $('#map').css('height', (app.windowHeight - 200));
+            $('#map').css('height', (app.windowHeight - 220));
 
         } else {
             $('.center-div').css('margin-top', 30);
@@ -158,6 +158,12 @@ $(document).ready(function() {
         } else {
             $('#modalInvio').openModal();
         }
+
+    });
+    document.getElementById("filtri").addEventListener("click", function() {
+        
+        $('#modal-filtri').openModal();
+       
 
     });
     // PARSE BUTTONS

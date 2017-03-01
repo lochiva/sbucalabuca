@@ -94,23 +94,54 @@
                 </div>
               </div>
               <div class="row filtri-map">
+                <!--<div class="col s12">
+                  <span class="teal-text"><b>Filtra</b> cosa vedere sulla mappa</span> <a class=" btn-floating btn-large waves-effect waves-light teal lighten-1"><i class="fa fa-sliders"></i></a>
+                </div>-->
                 <div class="col s6">
-                  <div class="switch" data-role="none">
+                  <h6 class="text-left"><b>FOTO PUBBLICHE</b></h6>
+                  <!--<div class="switch" data-role="none">
                     <label data-role="none">
                       Solo le mie
                       <input type="checkbox" data-role="none">
                       <span class="lever" data-role="none"></span>
                     </label>
-                  </div>
+                  </div>-->
                 </div>
-                <div class="col s6">
-                  <div class="switch" data-role="none">
-                    <label data-role="none">
-                      Solo oggi
-                      <input type="checkbox" data-role="none">
-                      <span class="lever" data-role="none"></span>
-                    </label>
+                <div class="col s6 ">
+                  <a id="filtri" class="waves-effect yellow darken-3 btn white-text" href="#modal-filtri"><i class="fa fa-sliders"></i> filtri </a>
+                  
+                  <!-- Modal Structure -->
+                  <div id="modal-filtri" class="modal">
+                    <div class="modal-content">
+                    <i id="closeModal" class="modal-action modal-close material-icons right">clear</i>
+                      <h5><i class="fa fa-sliders"></i> <b>FILTRI</b></h5>
+
+                      <div class="switch" data-role="none">
+                        <label data-role="none">
+                          
+                          <input type="checkbox" data-role="none">
+                          <span class="lever" data-role="none"></span>
+                          Solo i <b>miei</b> scatti
+                        </label>
+                      </div>
+                      <div class="switch" data-role="none">
+                        <label data-role="none">
+                          
+                          <input type="checkbox" data-role="none">
+                          <span class="lever" data-role="none"></span>
+                          Solo gli scatti di <b>oggi</b>
+                        </label>
+                      </div>
+                      <div class="input-field showIfParse"  style="display: none;" data-role="none">
+                        <select  id="album-list" class="browser-default album-list groupsname"  data-role="none">
+                         <option data-role="none" value="" disabled selected>Seleziona un album</option>
+                       </select>
+                      </div>
+
+                    </div>
+                    
                   </div>
+          
                 </div>
               </div>
               <div class="row">
@@ -227,10 +258,10 @@
         <div data-role="main" class="ui-content">
             <div class="row center-align page-title">
               <div class="showIfParse col s12" style="display:none;">
-                <h4>Stai usando un istanza privata!</h4>
+                <h5 class="center">Stai usando un istanza privata!</h5>
               </div>
               <div class="showIfFirebase col s12" id="info-text">
-                  <h5 class="txt-sbuca center">Info su <b>Sbuca la Buca</b> App</h5>
+                  <h5 class="center">Info su <b>Sbuca la Buca</b> App</h5>
                   <p>Lettura <b>info</b> non riuscita!</p>
               </div>
                 <button id="getPosition">Posizione corrente</button>
@@ -240,7 +271,7 @@
                 <button id="exitApp" >Chiudi app</button>
             </div>
             
-            <h5 class="txt-sbuca center">Info su <b>Sbuca la Buca</b> App</h5><h6 class="center" style="margin-bottom: 15px;"> Sbuca la buca è una applicazione di <b>pubblico dominio</b>. Se sei interessato ad usare una <b>istanza privata</b>, per un <b>gruppo</b> di persone, e con il supporto di <b>funzionalità</b> aggiuntive, puoi attivare la configurazione desiderata <b>accedendo</b> al pannello di configurazione.</h6>             <a style="font-weight: normal;" class="center btn waves-light waves-effect white-text" href="http://www.itoa.it/sbuca"> ACCEDI ORA </a>               <div class="grey lighten-3 box-full dati-itoa">             <h6 class="blue-grey-text darken-2">ITOA srl con socio unico<br />Via Massari 189 - 10148 Torino<br />P.IVA/C.F. 11489070018<br />www.itoa.it info@itoa.it</h6>           </div>            
+                        
             
             
         </div>
