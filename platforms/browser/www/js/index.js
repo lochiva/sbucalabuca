@@ -322,6 +322,8 @@ $(document).ready(function() {
      document.getElementById('album-map').addEventListener('change',function(){
        reloadMarkers();
        $('#album-gallery').val($('#album-map').val());
+       $('#nome-album').html($( "#album-map option:selected" ).text());
+
      },false);
      document.getElementById('album-gallery').addEventListener('change',function(){
        $('#album-map').val($('#album-gallery').val());

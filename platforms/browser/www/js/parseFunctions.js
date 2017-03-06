@@ -356,8 +356,8 @@ function parseReadUserAlbums(onSuccess){
       success: function(results){
         app.parseUserAlbums = [];
         $('.album-list').html('<option data-role="none" value="" disabled selected>Seleziona un album</option>');
-        $('#album-map').append('<option data-role="none" value="-1">Qualsiasi</option>');
-        $('#album-gallery').append('<option data-role="none" value="-1">Qualsiasi</option>');
+        $('#album-map').append('<option data-role="none" value="-1">Tutti i tuoi album</option>');
+        $('#album-gallery').append('<option data-role="none" value="-1">Tutti i tuoi album</option>');
         for (var i = 0; i < results.length; i++) {
           album = results[i].get("album");
           if(album !== undefined){
