@@ -85,13 +85,14 @@
               <div class="row app-title page-title" >
                 <div class="col s12">
                   <h5 class="center showIfFirebase"><b>Sbuca la Buca</b></h5>
-                  <h6 class="center showIfParse" style="display: none;"><b>Stai usando un istanza privata</b></h6>
+                  <h5 class="center showIfParse" style="display: none;"><b>Istanza privata</b></h5>
                   <p>Segnala le <b>buche</b> scattando una <b>foto</b></p>
                 </div>
               </div>
               <div class="row filtri-map">
                 <div class="col s6">
-                  <h6 class="text-left"><b>FOTO PUBBLICHE</b></h6>
+                  <h6 class="text-left showIfFirebase"><b>FOTO PUBBLICHE</b></h6>
+                  <h6 class="text-left showIfParse" style="display: none;"><b><span id="nome-album" style="text-transform: uppercase;">Tutti i tuoi album</span></b></h6>
                 </div>
                 <div class="col s6 ">
                   <a id="filtri" class="waves-effect yellow darken-3 btn white-text" href="#modal-filtri"><i class="fa fa-sliders"></i> filtri </a>
@@ -119,7 +120,7 @@
                       </div>
                       <div class="input-field showIfParse"  style="display: none;" data-role="none">
                         <select  id="album-map" class="browser-default album-list groupsname"  data-role="none">
-                         <option data-role="none" value="" disabled selected>Seleziona un album</option>
+                         <option data-role="none" value="-1" selected>Tutti i tuoi album</option>
                        </select>
                       </div>
 
